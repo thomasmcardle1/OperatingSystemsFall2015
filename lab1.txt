@@ -1,0 +1,15 @@
+Thomas McArdle
+Lab #1
+
+Updated and made changes to shell.ts along with gulpfile.js 
+
+Questions
+1) What are the advantages and disadvantages of using the same system call interface for manipulating both file and devices?
+
+The advantages of using the same system call interface for manipulating both file and devices is that devices are often handled as though it is a file system. The only differences are the device driver needs to be implemented by adding the hardware specific code. 
+
+The disadvantages would be understanding the specific functions of a specific device.
+
+2) Would it be possible for the user to develop a new command interpreter using the system call interface provided by the operating system? How?	
+
+Yes users would be able to add a new command interpreter using the system-call interface. By creating a new command interpreter that manages processes and determines their functionality and communication abilities.

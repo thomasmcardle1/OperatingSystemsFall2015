@@ -33,8 +33,8 @@ gulp.task('compile-typescript', function() {
 // This is just to show some good front-end web development techniques.
 gulp.task('copy-css', function() {
 	var cssPaths = {
-		src: ['source/*.css'],
-		dest: 'distrib/'
+		src: ['source*.css'],
+		dest: 'distrib/styles/'
 	};
 
 	return gulp.src(cssPaths.src)
@@ -46,5 +46,10 @@ gulp.task('default', function() {
 	gulp.watch('source/*.ts',      ['compile-typescript']);
 	gulp.watch('source/host/*.ts', ['compile-typescript']);
 	gulp.watch('source/os/*.ts',   ['compile-typescript']);
-	gulp.watch('source/*.css',      ['copy-css']);
+	gulp.watch('source/*.css',       ['copy-css']);
+});
+
+var watcher = gulp.watch('js/**/*.js', ['uglify','reload']);
+watcher.on('change', function(event) {
+	console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
 });

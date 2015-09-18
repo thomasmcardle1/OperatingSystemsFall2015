@@ -286,7 +286,7 @@ var TSOS;
             _StdOut.putText("The current date is " + currentDate);
         };
         Shell.prototype.shellLocation = function (args) {
-            _StdOut.putText("You are probably sitting at your desk eating donuts");
+            _StdOut.putText("You are probably sitting at your computer");
         };
         Shell.prototype.shellJoke = function (args) {
             _StdOut.putText("What do u get when u put root beer in a square glass?");

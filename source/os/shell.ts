@@ -33,50 +33,74 @@ module TSOS {
 
             // ver
             sc = new ShellCommand(this.shellVer,
-                                  "ver",
-                                  "- Displays the current version data.");
+                "ver",
+                "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
 
             // help
             sc = new ShellCommand(this.shellHelp,
-                                  "help",
-                                  "- This is the help command. Seek help.");
+                "help",
+                "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
 
             // shutdown
             sc = new ShellCommand(this.shellShutdown,
-                                  "shutdown",
-                                  "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+                "shutdown",
+                "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
             this.commandList[this.commandList.length] = sc;
 
             // cls
             sc = new ShellCommand(this.shellCls,
-                                  "cls",
-                                  "- Clears the screen and resets the cursor position.");
+                "cls",
+                "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
 
             // man <topic>
             sc = new ShellCommand(this.shellMan,
-                                  "man",
-                                  "<topic> - Displays the MANual page for <topic>.");
+                "man",
+                "<topic> - Displays the MANual page for <topic>.");
             this.commandList[this.commandList.length] = sc;
 
             // trace <on | off>
             sc = new ShellCommand(this.shellTrace,
-                                  "trace",
-                                  "<on | off> - Turns the OS trace on or off.");
+                "trace",
+                "<on | off> - Turns the OS trace on or off.");
             this.commandList[this.commandList.length] = sc;
 
             // rot13 <string>
             sc = new ShellCommand(this.shellRot13,
-                                  "rot13",
-                                  "<string> - Does rot13 obfuscation on <string>.");
+                "rot13",
+                "<string> - Does rot13 obfuscation on <string>.");
             this.commandList[this.commandList.length] = sc;
 
             // prompt <string>
             sc = new ShellCommand(this.shellPrompt,
-                                  "prompt",
-                                  "<string> - Sets the prompt.");
+                "prompt",
+                "<string> - Sets the prompt.");
+            this.commandList[this.commandList.length] = sc;
+
+            //Date
+            sc = new ShellCommand(this.shellDate,
+                "date",
+                "- Displays the Date.");
+            this.commandList[this.commandList.length] = sc;
+
+            //whereami
+            sc = new ShellCommand(this.shellLocation,
+                "whereami",
+                "-Your current location");
+            this.commandList[this.commandList.length] = sc;
+
+            //Joke command
+            sc = new ShellCommand(this.shellJoke,
+                "joke",
+                "- Tells a funny joke");
+            this.commandList[this.commandList.length] = sc;
+
+            //Joke command
+            sc = new ShellCommand(this.shellPunchLine,
+                "punchline",
+                "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -105,8 +129,8 @@ module TSOS {
             //
             // TypeScript/JavaScript may not support associative arrays in all browsers so we have to iterate over the
             // command list in attempt to find a match.  TODO: Is there a better way? Probably. Someone work it out and tell me in class.
-            var index: number = 0;
-            var found: boolean = false;
+            var index:number = 0;
+            var found:boolean = false;
             var fn = undefined;
             while (!found && index < this.commandList.length) {
                 if (this.commandList[index].command === cmd) {
@@ -144,7 +168,7 @@ module TSOS {
             this.putPrompt();
         }
 
-        public parseInput(buffer): UserCommand {
+        public parseInput(buffer):UserCommand {
             var retVal = new UserCommand();
 
             // 1. Remove leading and trailing spaces.
@@ -196,14 +220,14 @@ module TSOS {
         }
 
         public shellApology() {
-           if (_SarcasticMode) {
-              _StdOut.putText("I think we can put our differences behind us.");
-              _StdOut.advanceLine();
-              _StdOut.putText("For science . . . You monster.");
-              _SarcasticMode = false;
-           } else {
-              _StdOut.putText("For what?");
-           }
+            if (_SarcasticMode) {
+                _StdOut.putText("I think we can put our differences behind us.");
+                _StdOut.advanceLine();
+                _StdOut.putText("For science . . . You monster.");
+                _SarcasticMode = false;
+            } else {
+                _StdOut.putText("For what?");
+            }
         }
 
         public shellVer(args) {
@@ -219,8 +243,8 @@ module TSOS {
         }
 
         public shellShutdown(args) {
-             _StdOut.putText("Shutting down...");
-             // Call Kernel shutdown routine.
+            _StdOut.putText("Shutting down...");
+            // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
         }
@@ -237,6 +261,28 @@ module TSOS {
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
+                    case "ver":
+                        _StdOut.putText("Displays the current version");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("Shuts down the virtual OS but leaves the OS actually running..")
+                    case "date":
+                        _StdOut.putText("date displays the current date and time");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("whereami tell you your current location");
+                        break;
+                    case "cls":
+                        _StdOut.putText("Clears the enter the screen");
+                        break;
+                    case "joke":
+                        _StdOut.putText("Will display a hilarious joke!");
+                        break;
+                    case "punchline":
+                        _StdOut.putText("Displays the punch line of the joke!");
+                        break;
+                    case "prompt":
+                        _StdOut.putText("Similar to  an echo command in windows. Reitterates the string after prompt.")
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -273,7 +319,7 @@ module TSOS {
         public shellRot13(args) {
             if (args.length > 0) {
                 // Requires Utils.ts for rot13() function.
-                _StdOut.putText(args.join(' ') + " = '" + Utils.rot13(args.join(' ')) +"'");
+                _StdOut.putText(args.join(' ') + " = '" + Utils.rot13(args.join(' ')) + "'");
             } else {
                 _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
             }
@@ -287,5 +333,22 @@ module TSOS {
             }
         }
 
+        public shellDate(args) {
+            var date = new Date();
+            var currentDate = new Date().toLocaleDateString();
+            _StdOut.putText("The current date is " + currentDate);
+        }
+
+        public shellLocation(args) {
+            _StdOut.putText("You are probably sitting at your desk eating donuts");
+        }
+
+        public shellJoke(args) {
+            _StdOut.putText("What do u get when u put root beer in a square glass?");
+        }
+
+        public shellPunchLine(args){
+            _StdOut.putText("A: Beer");
+        }
     }
 }
