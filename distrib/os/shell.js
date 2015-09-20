@@ -61,6 +61,8 @@ var TSOS;
             //Joke command
             sc = new TSOS.ShellCommand(this.shellPunchLine, "punchline", "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the prompt.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -293,6 +295,13 @@ var TSOS;
         };
         Shell.prototype.shellPunchLine = function (args) {
             _StdOut.putText("A: Beer");
+        };
+        Shell.prototype.shellStatus = function (args) {
+            var string = "";
+            for (var i = 0; i < args.length; i++) {
+                string += args[i] + " ";
+            }
+            document.getElementById("statusBox2").value = string;
         };
         return Shell;
     })();

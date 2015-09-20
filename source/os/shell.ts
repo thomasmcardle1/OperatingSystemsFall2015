@@ -103,6 +103,12 @@ module TSOS {
                 "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellStatus,
+                "status",
+                "<string> - Sets the prompt.");
+            this.commandList[this.commandList.length] = sc;
+
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -349,6 +355,14 @@ module TSOS {
 
         public shellPunchLine(args){
             _StdOut.putText("A: Beer");
+        }
+
+        public shellStatus(args){
+            var string = "";
+            for(var i=0; i<args.length; i++){
+                string += args[i] + " ";
+            }
+            (<HTMLInputElement>document.getElementById("statusBox2")).value = string;
         }
     }
 }
