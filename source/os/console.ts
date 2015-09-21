@@ -20,6 +20,10 @@ module TSOS {
                     public buffer = "") {
         }
 
+        public getBuffer(): String{
+            return this.buffer;
+        }
+
         public init(): void {
             this.clearScreen();
             this.resetXY();

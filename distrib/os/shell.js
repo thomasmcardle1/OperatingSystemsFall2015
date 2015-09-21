@@ -61,12 +61,10 @@ var TSOS;
             //Joke command
             sc = new TSOS.ShellCommand(this.shellPunchLine, "punchline", "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the prompt.");
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the Status.");
             this.commandList[this.commandList.length] = sc;
-            // ps  - list the running processes and their IDs
-            // kill <id> - kills the specified process id.
-            //
-            // Display the initial prompt.
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -230,7 +228,10 @@ var TSOS;
                         _StdOut.putText("Displays the punch line of the joke!");
                         break;
                     case "prompt":
-                        _StdOut.putText("Similar to  an echo command in windows. Reitterates the string after prompt.");
+                        _StdOut.putText("Similar to  an echo command in windows. Reiterates the string after prompt.");
+                        break;
+                    case "status":
+                        _StdOut.putText("Will update the status box with the string after the key work STATUS ");
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -302,6 +303,58 @@ var TSOS;
                 string += args[i] + " ";
             }
             document.getElementById("statusBox2").value = string;
+        };
+        Shell.prototype.shellLoad = function (args) {
+            var inputString = document.getElementById("taProgramInput").value;
+            var valid = true;
+            var i = 0;
+            // While loop to loop through all of the characters of the string to validate each character is 0-9 and a-f or a space
+            while (inputString.length > i) {
+                if (inputString.charAt(i) == "0") {
+                }
+                else if (inputString.charAt(i) == '1') {
+                }
+                else if (inputString.charAt(i) == '2') {
+                }
+                else if (inputString.charAt(i) == '3') {
+                }
+                else if (inputString.charAt(i) == '4') {
+                }
+                else if (inputString.charAt(i) == '5') {
+                }
+                else if (inputString.charAt(i) == '6') {
+                }
+                else if (inputString.charAt(i) == '7') {
+                }
+                else if (inputString.charAt(i) == '8') {
+                }
+                else if (inputString.charAt(i) == '9') {
+                }
+                else if (inputString.charAt(i).toLowerCase() == 'a') {
+                }
+                else if (inputString.charAt(i).toLowerCase() == 'b') {
+                }
+                else if (inputString.charAt(i).toLowerCase() == 'c') {
+                }
+                else if (inputString.charAt(i).toLowerCase() == 'd') {
+                }
+                else if (inputString.charAt(i).toLowerCase() == 'e') {
+                }
+                else if (inputString.charAt(i).toLowerCase() == 'f') {
+                }
+                else if (inputString.charAt(i).toLowerCase() == ' ') {
+                }
+                else {
+                    valid = false;
+                }
+                i++;
+            }
+            if (valid == false) {
+                _StdOut.putText("Code is invalid. Please try again");
+            }
+            else {
+                _StdOut.putText("Code is valid!");
+            }
         };
         return Shell;
     })();

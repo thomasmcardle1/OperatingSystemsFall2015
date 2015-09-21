@@ -22,6 +22,9 @@ var TSOS;
             this.currentYPosition = currentYPosition;
             this.buffer = buffer;
         }
+        Console.prototype.getBuffer = function () {
+            return this.buffer;
+        };
         Console.prototype.init = function () {
             this.clearScreen();
             this.resetXY();
