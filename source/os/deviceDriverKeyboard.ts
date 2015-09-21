@@ -148,7 +148,7 @@ module TSOS {
                 _KernelInputQueue.enqueue(chr);
             }
         }
-       /* public executeBacksace(buffer):UserCommand {
+       public executeBacksace(buffer):UserCommand {
             buffer = Utils.trim(buffer);
             buffer = buffer.toLowerCase();
             var deletedChar = buffer.charAt(buffer.length);
@@ -156,6 +156,6 @@ module TSOS {
             var width = CanvasTextFunctions.symbols.valueOf(deletedChar).getWidth();
             _StdOut.advanceLine();
             _StdOut.putText(width);
-        }*/
+        }
     }
 }
