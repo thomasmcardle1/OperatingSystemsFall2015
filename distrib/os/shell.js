@@ -299,7 +299,11 @@ var TSOS;
             _StdOut.putText("You are probably sitting at your desk eating donuts");
         };
         Shell.prototype.shellJoke = function (args) {
-            _StdOut.putText("What do u get when u put root beer in a square glass?");
+            _StdOut.putText("What do you get when you put root");
+            _StdOut.advanceLine();
+            _StdOut.putText("beer in a square glass?");
+            _StdOut.advanceLine();
+            _StdOut.putText("Now Type 'punchline'");
         };
         Shell.prototype.shellPunchLine = function (args) {
             _StdOut.putText("A: Beer");

@@ -297,6 +297,8 @@ module TSOS {
                     case "status":
                         _StdOut.putText("Will update the status box with the string after the key work STATUS ");
                         break;
+                    case "load":
+                        _StdOut.putText("This will load the program based on what was typed in the program input field");
                     case "bsod":
                         _StdOut.putText("Causes the Kernel to throw a trap error");
                         _StdOut.advanceLine();
@@ -362,11 +364,15 @@ module TSOS {
         }
 
         public shellJoke(args) {
-            _StdOut.putText("What do u get when u put root beer in a square glass?");
+            _StdOut.putText("What do you get when you put root");
+            _StdOut.advanceLine();
+            _StdOut.putText("beer in a square glass?");
+            _StdOut.advanceLine();
+            _StdOut.putText("Now Type 'punchline'");
         }
 
         public shellPunchLine(args){
-            _StdOut.putText("A: Beer");
+            _StdOut.putText("Beer!");
         }
 
         public shellStatus(args){
@@ -382,6 +388,7 @@ module TSOS {
 
         public shellLoad(args) {
             var inputString = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
+            console.log(inputString);
             var valid = true;
             var i =0;
 
@@ -397,13 +404,13 @@ module TSOS {
                 }else if(inputString.charAt(i) == '7'){
                 }else if(inputString.charAt(i) == '8'){
                 }else if(inputString.charAt(i) == '9'){
-                }else if(inputString.charAt(i).toLowerCase() == 'a'){
-                }else if(inputString.charAt(i).toLowerCase() == 'b'){
-                }else if(inputString.charAt(i).toLowerCase() == 'c'){
-                }else if(inputString.charAt(i).toLowerCase() == 'd'){
-                }else if(inputString.charAt(i).toLowerCase() == 'e'){
-                }else if(inputString.charAt(i).toLowerCase() == 'f'){
-                }else if(inputString.charAt(i).toLowerCase() == ' '){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'a'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'b'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'c'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'd'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'e'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'f'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == ' '){
                 }else {
                     valid = false;
                 }
