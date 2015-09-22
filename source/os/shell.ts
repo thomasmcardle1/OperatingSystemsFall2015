@@ -113,6 +113,11 @@ module TSOS {
                 "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellBSODMsg,
+                "bsod",
+                "- Calls Kernel Trap Error Message.");
+            this.commandList[this.commandList.length] = sc;
+
             this.putPrompt();
         }
 
@@ -291,6 +296,11 @@ module TSOS {
                         break;
                     case "status":
                         _StdOut.putText("Will update the status box with the string after the key work STATUS ");
+                        break;
+                    case "bsod":
+                        _StdOut.putText("Causes the Kernel to throw a trap error");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("OS WILL SHUT DOWN!");
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -364,7 +374,10 @@ module TSOS {
             for(var i=0; i<args.length; i++){
                 string += args[i] + " ";
             }
-            (<HTMLInputElement>document.getElementById("statusBox2")).value = string;
+            var date = new Date();
+            var currentDateAndTime = date.toLocaleTimeString();
+
+            (<HTMLInputElement>document.getElementById("statusBox2")).value +=  "\n" + currentDateAndTime + " : " + string;
         }
 
         public shellLoad(args) {
@@ -401,6 +414,10 @@ module TSOS {
             }else{
                 _StdOut.putText("Code is valid!");
             }
+        }
+
+        public shellBSODMsg(args){
+            _Kernel.krnTrapError("BSOD");
         }
 
 

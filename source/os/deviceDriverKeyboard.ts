@@ -137,25 +137,22 @@ module TSOS {
                 chr = String.fromCharCode(63);
                 _KernelInputQueue.enqueue(chr);
             }else if(keyCode == 8){
-                var input = console.clear;
-                _StdOut.advanceLine();
-                _StdOut.putText(input);
-            }
-            else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
+                _StdIn.handleBackspace();
+            }else if(keyCode == 9){
+                chr = String.fromCharCode(9);
+                if(_TabHitCount == 0){
+                    _cmdEntered = _Console.buffer;
+                }
+                _KernelInputQueue.enqueue(chr);
+            }else if(keyCode == 38){
+                chr = String.fromCharCode(129);
+                _KernelInputQueue.enqueue(chr);
+            }else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
                         (keyCode == 32)                     ||   // space
                         (keyCode == 13)){                 // enter
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             }
-        }
-       public executeBacksace(buffer):UserCommand {
-            buffer = Utils.trim(buffer);
-            buffer = buffer.toLowerCase();
-            var deletedChar = buffer.charAt(buffer.length);
-            new CanvasTextFunctions();
-            var width = CanvasTextFunctions.symbols.valueOf(deletedChar).getWidth();
-            _StdOut.advanceLine();
-            _StdOut.putText(width);
         }
     }
 }

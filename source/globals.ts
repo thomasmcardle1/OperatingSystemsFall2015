@@ -68,3 +68,11 @@ var _GLaDOS: any = null; // If the above is linked in, this is the instantiated 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };
+
+
+
+var _cmdEntered: string = ""; //Keeps track of the command entered
+var _NumOfCMDs: number = null;       //Keeps track of the number of commands executed in the console
+var _TabHitCount: number = 0;   //Number of times the tab key is pressed on one line
+
+

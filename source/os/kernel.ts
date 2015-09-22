@@ -87,7 +87,6 @@ module TSOS {
             var date = new Date();
             var currentDateAndTime = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
             (<HTMLInputElement>document.getElementById("statusBox1")).value = currentDateAndTime;
-
             if (_KernelInterruptQueue.getSize() > 0) {
                 // Process the first interrupt on the interrupt queue.
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
@@ -178,7 +177,11 @@ module TSOS {
 
         public krnTrapError(msg) {
             Control.hostLog("OS ERROR - TRAP: " + msg);
-
+            var htmlPage = (<HTMLElement>document.getElementById("divMain"));
+            var style = htmlPage.setAttribute("style","width:100%; background-color: blue");
+            console.log(style);
+            //var style = consoleCanvas.style.getPropertyValue("style");
+            _StdOut.putText("YOU HAVE REACHED THE ALMOST BSOD");
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             this.krnShutdown();
         }
