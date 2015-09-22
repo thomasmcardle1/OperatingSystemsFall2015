@@ -31,7 +31,7 @@
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment this line below to enable GLaDOS testing -->
-   <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
+    <!--  <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script> -->
 </head>
 
 <body onload="onDocumentLoad()">
@@ -97,6 +97,27 @@
          ></textarea>
       </label>
    </div>
+    <div>
+        <label >
+            Status Section
+        </label>
+    </div>
+    <div id="statusBar">
+        <textarea id="statusBox1"
+                tabindex="0"
+                  style="background-color: aqua; resize: none; width: 250px; height: 55px; text-align: left"
+                  readonly = true"
+                  draggable="false"
+                >
+        </textarea>
+        <textarea id="statusBox2"
+                  tabindex="1"
+                  style="background-color: aqua; resize: none; width: 250px; height: 55px; text-align: match-parent"
+                  readonly="true"
+                  draggable="false"
+                >
+        </textarea>
+    </div>
 </div>
 
 <p class="footerText" style="clear:both;">

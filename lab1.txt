@@ -13,3 +13,11 @@ The disadvantages would be understanding the specific functions of a specific de
 2) Would it be possible for the user to develop a new command interpreter using the system call interface provided by the operating system? How?	
 
 Yes users would be able to add a new command interpreter using the system-call interface. By creating a new command interpreter that manages processes and determines their functionality and communication abilities.
+
+
+if(this.currentYPosition >= _Canvas.height){
+                var offset =_DefaultFontSize + _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) + _FontHeightMargin;
+                var currentCanvas = _DrawingContext.getImageData(0,offset,_Canvas.width,_Canvas.height);
+                _DrawingContext.putImageData(currentCanvas, 0, 0);
+                this.currentYPosition = _Canvas.height - this.currentFontSize;
+            }

@@ -69,6 +69,10 @@ var TSOS;
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
                that it has to look for interrupts and process them if it finds any.                           */
             // Check for an interrupt, are any. Page 560
+            //Sets the date and time in the staus box every clock tick
+            var date = new Date();
+            var currentDateAndTime = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
+            document.getElementById("statusBox1").value = currentDateAndTime;
             if (_KernelInterruptQueue.getSize() > 0) {
                 // Process the first interrupt on the interrupt queue.
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
@@ -154,6 +158,11 @@ var TSOS;
         };
         Kernel.prototype.krnTrapError = function (msg) {
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
+            var htmlPage = document.getElementById("divMain");
+            var style = htmlPage.setAttribute("style", "width:100%; background-color: blue");
+            console.log(style);
+            //var style = consoleCanvas.style.getPropertyValue("style");
+            _StdOut.putText("YOU HAVE REACHED THE ALMOST BSOD");
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             this.krnShutdown();
         };
