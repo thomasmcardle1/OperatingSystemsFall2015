@@ -108,6 +108,7 @@ module TSOS {
             var newBuffer= "";
             var lastChar = inputString[inputString.length-1];
             var charWidth = CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,lastChar);
+            _TabHitCount =0;
 
 
             for(var i=0; i<inputString.length-1; i++){
