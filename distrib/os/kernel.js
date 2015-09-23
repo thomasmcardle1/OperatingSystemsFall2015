@@ -160,7 +160,6 @@ var TSOS;
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
             var htmlPage = document.getElementById("divMain");
             var style = htmlPage.setAttribute("style", "width:100%; background-color: blue");
-            console.log(style);
             //var style = consoleCanvas.style.getPropertyValue("style");
             _StdOut.putText("YOU HAVE REACHED THE ALMOST BSOD");
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)

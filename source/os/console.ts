@@ -116,6 +116,7 @@ module TSOS {
             }
 
             _Console.buffer = newBuffer;
+
             if(_Console.currentXPosition > CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, ">")){
                 _Console.currentXPosition = cursorPos - charWidth;
                 _DrawingContext.fillStyle= "#DFDBC3";

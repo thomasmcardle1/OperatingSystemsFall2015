@@ -235,6 +235,8 @@ var TSOS;
                     case "status":
                         _StdOut.putText("Will update the status box with the string after the key work STATUS ");
                         break;
+                    case "load":
+                        _StdOut.putText("This will load the program based on what was typed in the program input field");
                     case "bsod":
                         _StdOut.putText("Causes the Kernel to throw a trap error");
                         _StdOut.advanceLine();
@@ -306,7 +308,7 @@ var TSOS;
             _StdOut.putText("Now Type 'punchline'");
         };
         Shell.prototype.shellPunchLine = function (args) {
-            _StdOut.putText("A: Beer");
+            _StdOut.putText("Beer!");
         };
         Shell.prototype.shellStatus = function (args) {
             var string = "";
@@ -319,6 +321,7 @@ var TSOS;
         };
         Shell.prototype.shellLoad = function (args) {
             var inputString = document.getElementById("taProgramInput").value;
+            console.log(inputString);
             var valid = true;
             var i = 0;
             // While loop to loop through all of the characters of the string to validate each character is 0-9 and a-f or a space
@@ -343,19 +346,19 @@ var TSOS;
                 }
                 else if (inputString.charAt(i) == '9') {
                 }
-                else if (inputString.charAt(i).toLowerCase() == 'a') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'a') {
                 }
-                else if (inputString.charAt(i).toLowerCase() == 'b') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'b') {
                 }
-                else if (inputString.charAt(i).toLowerCase() == 'c') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'c') {
                 }
-                else if (inputString.charAt(i).toLowerCase() == 'd') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'd') {
                 }
-                else if (inputString.charAt(i).toLowerCase() == 'e') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'e') {
                 }
-                else if (inputString.charAt(i).toLowerCase() == 'f') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'f') {
                 }
-                else if (inputString.charAt(i).toLowerCase() == ' ') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == ' ') {
                 }
                 else {
                     valid = false;
