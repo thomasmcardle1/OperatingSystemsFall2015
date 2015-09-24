@@ -104,6 +104,7 @@ var TSOS;
             var newBuffer = "";
             var lastChar = inputString[inputString.length - 1];
             var charWidth = TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, lastChar);
+            _TabHitCount = 0;
             for (var i = 0; i < inputString.length - 1; i++) {
                 newBuffer += inputString[i];
             }

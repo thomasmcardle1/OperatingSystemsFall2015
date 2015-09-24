@@ -108,7 +108,7 @@ module TSOS {
             var newBuffer= "";
             var lastChar = inputString[inputString.length-1];
             var charWidth = CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,lastChar);
-
+            _TabHitCount =0;
 
             for(var i=0; i<inputString.length-1; i++){
                 newBuffer += inputString[i];
@@ -157,8 +157,6 @@ module TSOS {
             this.currentYPosition += _DefaultFontSize + 
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
-
-
             // TODO: Handle scrolling. (iProject 1)
             //Get Canvas From HTML Element
             var canvas = <HTMLCanvasElement> document.getElementById("display");
@@ -170,8 +168,6 @@ module TSOS {
                 ctx.putImageData(currCanvas, 0, 0);
                 this.currentYPosition = canvas.height - this.currentFontSize;
             }
-
-
         }
     }
  }
