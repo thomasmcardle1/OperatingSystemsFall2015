@@ -180,8 +180,10 @@ var TSOS;
                 _KernelInputQueue.enqueue(chr);
             }
             else if (keyCode == 38) {
-                chr = String.fromCharCode(129);
-                _KernelInputQueue.enqueue(chr);
+                _StdIn.UpArrow();
+            }
+            else if (keyCode == 40) {
+                _StdOut.DownArrow();
             }
             else if (((keyCode >= 48) && (keyCode <= 57)) ||
                 (keyCode == 32) ||

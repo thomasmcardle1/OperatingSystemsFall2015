@@ -18,7 +18,6 @@ module TSOS {
                     public currentFontSize = _DefaultFontSize,
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
-                    public _ExecutedCMDs = new Array<string>(),
                     public buffer = "") {
         }
 
@@ -47,25 +46,23 @@ module TSOS {
                 if (chr === String.fromCharCode(13)) { //     Enter key
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
+                    _LineCount =0;
                     var buf = this.buffer;
-                    this._ExecutedCMDs[_NumOfCMDs]=buf;
-                    console.log(this._ExecutedCMDs[_NumOfCMDs]);
-                    _NumOfCMDs +=1;
+                    _ExecutedCMDs.push(buf);
+                    console.log(_ExecutedCMDs);
                     // ... and reset our buffer.
                     _OsShell.handleInput(buf);
                     this.buffer = "";
                     _TabHitCount =0;
+                    _CurrCMDArrayPos = 0;
 
                 } else if (chr == String.fromCharCode(9)){
-                    console.log(_TabHitCount);
-                    console.log(_cmdEntered);
                     var availableCMDs = new Array<string>();
                     for (var x = 0; x < _OsShell.commandList.length; x++){
                         if (_OsShell.commandList[x].command.search(_cmdEntered) == 0){
                             availableCMDs.push(_OsShell.commandList[x].command);
                         }
                     }
-                    console.log(availableCMDs);
                     if(availableCMDs.length > 1){
                         this.clearCMDLine();
                         if(_TabHitCount > availableCMDs.length-1){
@@ -104,32 +101,46 @@ module TSOS {
         }
 
         public handleBackspace(): void{
-           var inputString = _Console.buffer;
+            var inputString = _Console.buffer;
             var cursorPos = _Console.currentXPosition;
             var newBuffer= "";
             var lastChar = inputString[inputString.length-1];
-            var charWidth = CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,lastChar);
-            _TabHitCount =0;
-
-
+           _TabHitCount =0;
             for(var i=0; i<inputString.length-1; i++){
                 newBuffer += inputString[i];
             }
 
-            _Console.buffer = newBuffer;
-
-            if(_Console.currentXPosition > CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, ">")){
-                _Console.currentXPosition = cursorPos - charWidth;
-                _DrawingContext.fillStyle= "#DFDBC3";
-                _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition-_DefaultFontSize - 2, charWidth, _DefaultFontSize + _FontHeightMargin + 4);
-                _Console.currentXPosition = cursorPos - CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,lastChar);
-            }
-            if(_Console.buffer.length == 0){
-                _cmdEntered = "";
-                _TabHitCount =0;
+            if(_Console.buffer.length != 0){
+                if(_Console.currentXPosition > CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, ">")){
+                    _Console.currentXPosition = cursorPos - CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,_Console.buffer.charAt(_Console.buffer.length - 1));
+                    _DrawingContext.fillStyle= "#DFDBC3";
+                    _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition-_DefaultFontSize - 2, CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,_Console.buffer.charAt(_Console.buffer.length - 1)), _DefaultFontSize + _FontHeightMargin + 4);
+                    _Console.currentXPosition = cursorPos - CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,_Console.buffer.charAt(_Console.buffer.length - 1));
+                }else if(_LineCount > 0){
+                    _LineCount --;
+                    var ypos;
+                    _Console.currentXPosition = _LastCursorPos;
+                    _Console.currentYPosition = _Console.currentYPosition -  _DefaultFontSize - _FontHeightMargin;
+                    ypos = _Console.currentYPosition;
+                    _Console.currentXPosition = _Console.currentXPosition - CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,_Console.buffer.charAt(_Console.buffer.length - 1));
+                    console.log("Draw rectangle starting from: " + _Console.currentXPosition);
+                    this.drawRec();
+                    _Console.currentYPosition = ypos - _FontHeightMargin + 1;
+                }
+            }else {
+                if(_Console.buffer.length == 0){
+                    _cmdEntered = "";
+                    _TabHitCount = 0;
+                }
             }
             //Shows it works
-            console.log(_Console.buffer);
+            _Console.buffer = newBuffer;
+        }
+
+        private drawRec():void{
+            console.log("Drawing Rectangle.....");
+            _DrawingContext.fillStyle= "#DFDBC3";
+            _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition-_DefaultFontSize - 2, CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,_Console.buffer.charAt(_Console.buffer.length - 1)), _DefaultFontSize + _FontHeightMargin + 4);
         }
 
         public putText(text): void {
@@ -141,13 +152,31 @@ module TSOS {
             //
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
+
+            var charWidth = CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,text);
+
             if (text !== "") {
                 // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;
+                if((this.currentXPosition + charWidth) < _Canvas.width){
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                    // Move the current X position.
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                    this.currentXPosition = this.currentXPosition + offset;
+                    _LastCharOnLine = text;
+                }else {
+                    _LastCursorPos = _Console.currentXPosition;
+                    console.log("Last Cursor Pos = " + _LastCursorPos);
+                    console.log("Last Char online above = " + _LastCharOnLine);
+                    this.advanceLine();
+                    _LineCount += 1;
+                    this.currentXPosition = CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, ">");
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                    // Move the current X position.
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                    this.currentXPosition = this.currentXPosition + offset;
+                }
             }
+            console.log("Put text X Pos: " + _Console.currentXPosition);
          }
 
         public advanceLine(): void {
@@ -173,8 +202,26 @@ module TSOS {
                 ctx.putImageData(currCanvas, 0, 0);
                 this.currentYPosition = canvas.height - this.currentFontSize;
             }
+        }
 
+        public UpArrow():void{
+            if(_CurrCMDArrayPos <= _ExecutedCMDs.length){
+                this.clearCMDLine();
+                var command =_ExecutedCMDs[_CurrCMDArrayPos+1];
+                _Console.buffer = command;
+                this.putText(command);
+                _CurrCMDArrayPos ++;
+            }
 
+        }
+        public DownArrow():void{
+            if(_CurrCMDArrayPos >= 1){
+                this.clearCMDLine();
+                var command =_ExecutedCMDs[_CurrCMDArrayPos-1];
+                _Console.buffer = command;
+                this.putText(command);
+                _CurrCMDArrayPos = _CurrCMDArrayPos-1;
+            }
         }
     }
  }

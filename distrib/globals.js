@@ -37,6 +37,8 @@ var _KernelBuffers = null; // when clearly 'any' is not what we want. There is l
 // Standard input and output
 var _StdIn; // Same "to null or not to null" issue as above.
 var _StdOut;
+//CPU Things
+var _PID = 0;
 // UI
 var _Console;
 var _OsShell;
@@ -51,6 +53,11 @@ var _GLaDOS = null; // If the above is linked in, this is the instantiated insta
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };
+var _ExecutedCMDs = new Array(); //Keeps track of all commands
+var _CurrCMDArrayPos = 0; //Position of which we are in the Array
 var _cmdEntered = ""; //Keeps track of the command entered
 var _NumOfCMDs = null; //Keeps track of the number of commands executed in the console
 var _TabHitCount = 0; //Number of times the tab key is pressed on one line
+var _LineCount = 0; //Keeps track of what line typed we are on
+var _LastCharOnLine = "";
+var _LastCursorPos = 0;

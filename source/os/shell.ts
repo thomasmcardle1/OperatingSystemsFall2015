@@ -248,7 +248,11 @@ module TSOS {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
-                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
+                var cmd  = _OsShell.commandList[i].command;
+                var descrip = _OsShell.commandList[i].description;
+                _StdOut.putText("  " );
+                _StdOut.putText(cmd);
+                _StdOut.putText(descrip);
             }
         }
 
@@ -275,7 +279,8 @@ module TSOS {
                         _StdOut.putText("Displays the current version");
                         break;
                     case "shutdown":
-                        _StdOut.putText("Shuts down the virtual OS but leaves the OS actually running..")
+                        _StdOut.putText("Shuts down the virtual OS but leaves the OS actually running..");
+                        break;
                     case "date":
                         _StdOut.putText("date displays the current date and time");
                         break;
@@ -299,10 +304,12 @@ module TSOS {
                         break;
                     case "load":
                         _StdOut.putText("This will load the program based on what was typed in the program input field");
+                        break;
                     case "bsod":
                         _StdOut.putText("Causes the Kernel to throw a trap error");
                         _StdOut.advanceLine();
                         _StdOut.putText("OS WILL SHUT DOWN!");
+                        break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -393,28 +400,31 @@ module TSOS {
             var i =0;
 
             // While loop to loop through all of the characters of the string to validate each character is 0-9 and a-f or a space
-            while (inputString.length > i){
-                if(inputString.charAt(i)  == "0"){
-                }else if(inputString.charAt(i) == '1'){
-                }else if(inputString.charAt(i) == '2'){
-                }else if(inputString.charAt(i) == '3'){
-                }else if(inputString.charAt(i) == '4'){
-                }else if(inputString.charAt(i) == '5'){
-                }else if(inputString.charAt(i) == '6'){
-                }else if(inputString.charAt(i) == '7'){
-                }else if(inputString.charAt(i) == '8'){
-                }else if(inputString.charAt(i) == '9'){
-                }else if(inputString.charAt(i).toLocaleUpperCase() == 'a'){
-                }else if(inputString.charAt(i).toLocaleUpperCase() == 'b'){
-                }else if(inputString.charAt(i).toLocaleUpperCase() == 'c'){
-                }else if(inputString.charAt(i).toLocaleUpperCase() == 'd'){
-                }else if(inputString.charAt(i).toLocaleUpperCase() == 'e'){
-                }else if(inputString.charAt(i).toLocaleUpperCase() == 'f'){
-                }else if(inputString.charAt(i).toLocaleUpperCase() == ' '){
-                }else {
-                    valid = false;
+                while (inputString.length > i){
+                    if(inputString.charAt(i)  == "0"){
+                    }else if(inputString.charAt(i) == '1'){
+                    }else if(inputString.charAt(i) == '2'){
+                    }else if(inputString.charAt(i) == '3'){
+                    }else if(inputString.charAt(i) == '4'){
+                    }else if(inputString.charAt(i) == '5'){
+                    }else if(inputString.charAt(i) == '6'){
+                    }else if(inputString.charAt(i) == '7'){
+                    }else if(inputString.charAt(i) == '8'){
+                    }else if(inputString.charAt(i) == '9'){
+                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'A'){
+                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'B'){
+                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'C'){
+                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'D'){
+                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'E'){
+                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'F'){
+                    }else if(inputString.charAt(i) == ' '){
+                    }else {
+                        valid = false;
+                    }
+                    i++;
                 }
-                i++;
+            if(inputString.length <= 0){
+                valid = false;
             }
             if(valid == false){
                 _StdOut.putText("Code is invalid. Please try again");

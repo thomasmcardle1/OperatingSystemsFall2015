@@ -49,6 +49,10 @@ var _KernelBuffers: any[] = null;   // when clearly 'any' is not what we want. T
 var _StdIn;    // Same "to null or not to null" issue as above.
 var _StdOut;
 
+//CPU Things
+var _PID = 0;
+
+
 // UI
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
@@ -70,9 +74,13 @@ var onDocumentLoad = function() {
 };
 
 
-
-var _cmdEntered: string = ""; //Keeps track of the command entered
-var _NumOfCMDs: number = null;       //Keeps track of the number of commands executed in the console
-var _TabHitCount: number = 0;   //Number of times the tab key is pressed on one line
+var _ExecutedCMDs = new Array<string>();  //Keeps track of all commands
+var _CurrCMDArrayPos = 0;                 //Position of which we are in the Array
+var _cmdEntered: string = "";             //Keeps track of the command entered
+var _NumOfCMDs: number = null;            //Keeps track of the number of commands executed in the console
+var _TabHitCount: number = 0;             //Number of times the tab key is pressed on one line
+var _LineCount: number = 0;               //Keeps track of what line typed we are on
+var _LastCharOnLine = "";
+var _LastCursorPos: number = 0;
 
 

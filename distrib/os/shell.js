@@ -189,7 +189,11 @@ var TSOS;
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
-                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
+                var cmd = _OsShell.commandList[i].command;
+                var descrip = _OsShell.commandList[i].description;
+                _StdOut.putText("  ");
+                _StdOut.putText(cmd);
+                _StdOut.putText(descrip);
             }
         };
         Shell.prototype.shellShutdown = function (args) {
@@ -214,6 +218,7 @@ var TSOS;
                         break;
                     case "shutdown":
                         _StdOut.putText("Shuts down the virtual OS but leaves the OS actually running..");
+                        break;
                     case "date":
                         _StdOut.putText("date displays the current date and time");
                         break;
@@ -237,10 +242,12 @@ var TSOS;
                         break;
                     case "load":
                         _StdOut.putText("This will load the program based on what was typed in the program input field");
+                        break;
                     case "bsod":
                         _StdOut.putText("Causes the Kernel to throw a trap error");
                         _StdOut.advanceLine();
                         _StdOut.putText("OS WILL SHUT DOWN!");
+                        break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -346,24 +353,27 @@ var TSOS;
                 }
                 else if (inputString.charAt(i) == '9') {
                 }
-                else if (inputString.charAt(i).toLocaleUpperCase() == 'a') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'A') {
                 }
-                else if (inputString.charAt(i).toLocaleUpperCase() == 'b') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'B') {
                 }
-                else if (inputString.charAt(i).toLocaleUpperCase() == 'c') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'C') {
                 }
-                else if (inputString.charAt(i).toLocaleUpperCase() == 'd') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'D') {
                 }
-                else if (inputString.charAt(i).toLocaleUpperCase() == 'e') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'E') {
                 }
-                else if (inputString.charAt(i).toLocaleUpperCase() == 'f') {
+                else if (inputString.charAt(i).toLocaleUpperCase() == 'F') {
                 }
-                else if (inputString.charAt(i).toLocaleUpperCase() == ' ') {
+                else if (inputString.charAt(i) == ' ') {
                 }
                 else {
                     valid = false;
                 }
                 i++;
+            }
+            if (inputString.length <= 0) {
+                valid = false;
             }
             if (valid == false) {
                 _StdOut.putText("Code is invalid. Please try again");
