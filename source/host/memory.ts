@@ -1,20 +1,28 @@
-
+///<reference path="../globals.ts" />
 
 
 module TSOS {
     export class Memory {
-        public dataArray: Array<String>
-        constructor(public byte: number){
-            this.byte = byte;
-            this.dataArray = new Array(byte);
+        public memoryArray:string [] ;
+        public memoryBlockSize: number;
+        constructor(size:number) {
+            this.memoryBlockSize = size;
             this.init();
         }
 
-        private init() : void{
-            var zero = "00";
-            for( var i = 0; i <this.byte; i++){
-                this.dataArray[i] = zero;
+        public init(): void {
+            _Memory = new Memory(256);
+            var zero: string = "00";
+            for (var i =0; i< this.memoryBlockSize; i++){
+                this.memoryArray[i] = zero;
             }
         }
+
+        public getMemoryBlock(){
+            return this.memoryBlockSize;
+        }
+
+        public clearMem(): void {}
+
     }
 }

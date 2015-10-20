@@ -1,5 +1,7 @@
 ///<reference path="../globals.ts" />
+///<reference path="../os/memoryManager.ts"/>
 ///<reference path="../os/canvastext.ts" />
+///<reference path="../host/Memory.ts" />
 
 /* ------------
      Control.ts
@@ -55,6 +57,7 @@ module TSOS {
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
+
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -90,7 +93,7 @@ module TSOS {
             document.getElementById("display").focus();
 
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
-            _CPU = new Cpu();  // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
+            _CPU = new Cpu(); // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
 
             // ... then set the host clock pulse ...
@@ -98,6 +101,9 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+
+            //Init Memory
+            _MemoryManager = new MemoryManager();
         }
 
         public static hostBtnHaltOS_click(btn): void {

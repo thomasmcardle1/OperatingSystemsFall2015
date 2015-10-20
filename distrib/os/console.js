@@ -45,7 +45,6 @@ var TSOS;
                     _LineCount = 0;
                     var buf = this.buffer;
                     _ExecutedCMDs.push(buf);
-                    console.log(_ExecutedCMDs);
                     // ... and reset our buffer.
                     _OsShell.handleInput(buf);
                     this.buffer = "";
@@ -117,7 +116,6 @@ var TSOS;
                     _Console.currentYPosition = _Console.currentYPosition - _DefaultFontSize - _FontHeightMargin;
                     ypos = _Console.currentYPosition;
                     _Console.currentXPosition = _Console.currentXPosition - TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, _Console.buffer.charAt(_Console.buffer.length - 1));
-                    console.log("Draw rectangle starting from: " + _Console.currentXPosition);
                     this.drawRec();
                     _Console.currentYPosition = ypos - _FontHeightMargin + 1;
                 }
@@ -132,7 +130,6 @@ var TSOS;
             _Console.buffer = newBuffer;
         };
         Console.prototype.drawRec = function () {
-            console.log("Drawing Rectangle.....");
             _DrawingContext.fillStyle = "#DFDBC3";
             _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition - _DefaultFontSize - 2, TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, _Console.buffer.charAt(_Console.buffer.length - 1)), _DefaultFontSize + _FontHeightMargin + 4);
         };
@@ -157,8 +154,6 @@ var TSOS;
                 }
                 else {
                     _LastCursorPos = _Console.currentXPosition;
-                    console.log("Last Cursor Pos = " + _LastCursorPos);
-                    console.log("Last Char online above = " + _LastCharOnLine);
                     this.advanceLine();
                     _LineCount += 1;
                     this.currentXPosition = TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, ">");
@@ -168,7 +163,6 @@ var TSOS;
                     this.currentXPosition = this.currentXPosition + offset;
                 }
             }
-            console.log("Put text X Pos: " + _Console.currentXPosition);
         };
         Console.prototype.advanceLine = function () {
             this.currentXPosition = 0;

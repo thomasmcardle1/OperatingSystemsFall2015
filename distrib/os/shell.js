@@ -2,6 +2,7 @@
 ///<reference path="../utils.ts" />
 ///<reference path="shellCommand.ts" />
 ///<reference path="userCommand.ts" />
+///<reference path="memoryManager.ts" />
 /* ------------
    Shell.ts
 
@@ -328,7 +329,7 @@ var TSOS;
         };
         Shell.prototype.shellLoad = function (args) {
             var inputString = document.getElementById("taProgramInput").value;
-            console.log(inputString);
+            //console.log(inputString);
             var valid = true;
             var i = 0;
             // While loop to loop through all of the characters of the string to validate each character is 0-9 and a-f or a space
@@ -379,7 +380,12 @@ var TSOS;
                 _StdOut.putText("Code is invalid. Please try again");
             }
             else {
+                console.log(_MemoryManager);
+                var newInputString = inputString.replace(/\n/g, " ").split(" ");
+                console.log(newInputString);
                 _StdOut.putText("Code is valid!");
+                _MemoryManager.loadProgram(newInputString);
+                _StdOut.advanceLine();
             }
         };
         Shell.prototype.shellBSODMsg = function (args) {

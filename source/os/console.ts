@@ -49,7 +49,6 @@ module TSOS {
                     _LineCount =0;
                     var buf = this.buffer;
                     _ExecutedCMDs.push(buf);
-                    console.log(_ExecutedCMDs);
                     // ... and reset our buffer.
                     _OsShell.handleInput(buf);
                     this.buffer = "";
@@ -123,7 +122,6 @@ module TSOS {
                     _Console.currentYPosition = _Console.currentYPosition -  _DefaultFontSize - _FontHeightMargin;
                     ypos = _Console.currentYPosition;
                     _Console.currentXPosition = _Console.currentXPosition - CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,_Console.buffer.charAt(_Console.buffer.length - 1));
-                    console.log("Draw rectangle starting from: " + _Console.currentXPosition);
                     this.drawRec();
                     _Console.currentYPosition = ypos - _FontHeightMargin + 1;
                 }
@@ -138,7 +136,6 @@ module TSOS {
         }
 
         private drawRec():void{
-            console.log("Drawing Rectangle.....");
             _DrawingContext.fillStyle= "#DFDBC3";
             _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition-_DefaultFontSize - 2, CanvasTextFunctions.measure(_DefaultFontFamily,_DefaultFontSize,_Console.buffer.charAt(_Console.buffer.length - 1)), _DefaultFontSize + _FontHeightMargin + 4);
         }
@@ -165,8 +162,6 @@ module TSOS {
                     _LastCharOnLine = text;
                 }else {
                     _LastCursorPos = _Console.currentXPosition;
-                    console.log("Last Cursor Pos = " + _LastCursorPos);
-                    console.log("Last Char online above = " + _LastCharOnLine);
                     this.advanceLine();
                     _LineCount += 1;
                     this.currentXPosition = CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, ">");
@@ -176,7 +171,6 @@ module TSOS {
                     this.currentXPosition = this.currentXPosition + offset;
                 }
             }
-            console.log("Put text X Pos: " + _Console.currentXPosition);
          }
 
         public advanceLine(): void {

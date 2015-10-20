@@ -39,6 +39,13 @@ var _StdIn; // Same "to null or not to null" issue as above.
 var _StdOut;
 //CPU Things
 var _PID = 0;
+var _ProgramList = [];
+var _ProgramSize = 256;
+var _CurrPCB = null;
+var _Program = 1;
+var _Memory = null;
+var _MemorySize = _ProgramSize;
+var _MemoryManager = null;
 // UI
 var _Console;
 var _OsShell;
