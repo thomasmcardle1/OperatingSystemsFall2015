@@ -66,6 +66,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "<ID> - runs the program with the given ID.");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSODMsg, "bsod", "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
             this.putPrompt();
@@ -380,12 +382,22 @@ var TSOS;
                 _StdOut.putText("Code is invalid. Please try again");
             }
             else {
-                console.log(_MemoryManager);
+                _CurrPCB = new TSOS.PCB();
                 var newInputString = inputString.replace(/\n/g, " ").split(" ");
-                console.log(newInputString);
                 _StdOut.putText("Code is valid!");
-                _MemoryManager.loadProgram(newInputString);
                 _StdOut.advanceLine();
+                _StdOut.putText(_MemoryManager.loadProgram(newInputString));
+                _StdOut.advanceLine();
+            }
+        };
+        Shell.prototype.shellRun = function (args) {
+            if (_CurrPCB.pid == args) {
+                //run program
+                _CPU.isExecuting = true;
+            }
+            else {
+                //check for valid id
+                _StdOut.putText("Invalid program id");
             }
         };
         Shell.prototype.shellBSODMsg = function (args) {

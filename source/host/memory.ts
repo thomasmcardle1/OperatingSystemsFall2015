@@ -2,24 +2,27 @@
 
 
 module TSOS {
+
     export class Memory {
+
         public memoryArray:string [] ;
-        public memoryBlockSize: number;
+        public memoryBlockSize: number = 256;
+
         constructor(size:number) {
             this.memoryBlockSize = size;
-            this.init();
+            this.initialize(this.memoryBlockSize);
         }
 
-        public init(): void {
-            _Memory = new Memory(256);
+        public initialize(size): void {
+            this.memoryArray = [size];
             var zero: string = "00";
-            for (var i =0; i< this.memoryBlockSize; i++){
+            for (var i =0; i< size; i++){
                 this.memoryArray[i] = zero;
             }
         }
 
         public getMemoryBlock(){
-            return this.memoryBlockSize;
+            return this.memoryArray;
         }
 
         public clearMem(): void {}

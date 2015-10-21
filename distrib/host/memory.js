@@ -3,18 +3,19 @@ var TSOS;
 (function (TSOS) {
     var Memory = (function () {
         function Memory(size) {
+            this.memoryBlockSize = 256;
             this.memoryBlockSize = size;
-            this.init();
+            this.initialize(this.memoryBlockSize);
         }
-        Memory.prototype.init = function () {
-            _Memory = new Memory(256);
+        Memory.prototype.initialize = function (size) {
+            this.memoryArray = [size];
             var zero = "00";
-            for (var i = 0; i < this.memoryBlockSize; i++) {
+            for (var i = 0; i < size; i++) {
                 this.memoryArray[i] = zero;
             }
         };
         Memory.prototype.getMemoryBlock = function () {
-            return this.memoryBlockSize;
+            return this.memoryArray;
         };
         Memory.prototype.clearMem = function () { };
         return Memory;

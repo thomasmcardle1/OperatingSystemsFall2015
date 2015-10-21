@@ -57,7 +57,6 @@ module TSOS {
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
-
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -103,7 +102,10 @@ module TSOS {
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
             //Init Memory
+            _Memory = new Memory(256);
             _MemoryManager = new MemoryManager();
+
+            this.generateMemoryTable();
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -122,6 +124,28 @@ module TSOS {
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+        public static updateMemTable(tableRow, tableCel, newCode): void {
+            _MemoryTable.rows[tableRow].cells[tableCel].innerHTML = newCode;
+        }
+
+        public static generateMemoryTable(): void {
+            _MemoryTable = <HTMLTableElement>document.getElementById("memTable");
+            for (var j = 0; j < 32; j++) {
+                if (j === 31) {
+                    var tr = document.createElement("tr");
+                    tr.id = "botRow";
+                    _MemoryTable.appendChild(tr);
+                } else {
+                    var tr = document.createElement("tr");
+                    _MemoryTable.appendChild(tr);
+                }
+                for (var k = 0; k < 8; k++) {
+                    var td = document.createElement("td");
+                    td.innerHTML = "00";
+                    tr.appendChild(td);
+                }
+            }
         }
     }
 }

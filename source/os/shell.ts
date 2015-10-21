@@ -113,6 +113,11 @@ module TSOS {
                 "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                "<ID> - runs the program with the given ID.");
+            this.commandList[this.commandList.length] = sc;
+
             sc = new ShellCommand(this.shellBSODMsg,
                 "bsod",
                 "- Calls Kernel Trap Error Message.");
@@ -428,19 +433,33 @@ module TSOS {
             if(valid == false){
                 _StdOut.putText("Code is invalid. Please try again");
             }else{
-                console.log(_MemoryManager);
+                _CurrPCB = new PCB();
                 var newInputString = inputString.replace( /\n/g, " " ).split( " " );
-                console.log(newInputString);
                 _StdOut.putText("Code is valid!");
-                _MemoryManager.loadProgram(newInputString);
                 _StdOut.advanceLine();
+                _StdOut.putText(_MemoryManager.loadProgram(newInputString));
+                _StdOut.advanceLine();
+            }
+        }
+
+        public shellRun(args){
+            if (_CurrPCB.pid == args){
+                //run program
+                _CPU.isExecuting = true;
+              /*  _StdOut.putText("1");
+                _StdOut.advanceLine();
+                _StdOut.putText("2");
+                _StdOut.advanceLine();
+                _StdOut.putText("DONE");
+                _StdOut.advanceLine();*/
+            }else {
+                //check for valid id
+                _StdOut.putText("Invalid program id");
             }
         }
 
         public shellBSODMsg(args){
             _Kernel.krnTrapError("BSOD");
         }
-
-
     }
 }

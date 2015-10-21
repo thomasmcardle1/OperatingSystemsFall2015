@@ -38,14 +38,15 @@ var _KernelBuffers = null; // when clearly 'any' is not what we want. There is l
 var _StdIn; // Same "to null or not to null" issue as above.
 var _StdOut;
 //CPU Things
-var _PID = 0;
-var _ProgramList = [];
+var _PID = -1;
 var _ProgramSize = 256;
 var _CurrPCB = null;
 var _Program = 1;
+var _ProgramEXE = null;
 var _Memory = null;
 var _MemorySize = _ProgramSize;
 var _MemoryManager = null;
+var _MemoryTable = null;
 // UI
 var _Console;
 var _OsShell;

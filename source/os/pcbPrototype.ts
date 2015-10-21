@@ -13,16 +13,12 @@ module TSOS {
              public Xreg: number=0,
              public Yreg: number=0,
              public Zflag: number=0,
-             public pid:number =0,
+             public pid:number = ++_PID,
              public instructionRegister:string ="",
 
              public base: number=0,
              public max: number =0,
              public location: any = null
-         )
-         {
-             this.pid = _PID;
-             _PID++;
-         }
+         ){}
      }
 }

@@ -50,15 +50,16 @@ var _StdIn;    // Same "to null or not to null" issue as above.
 var _StdOut;
 
 //CPU Things
-var _PID:number = 0;
-var _ProgramList = [];
+var _PID:number = -1;
 var _ProgramSize = 256;
 var _CurrPCB:any = null;
 var _Program = 1;
+var _ProgramEXE:number = null;
 
 var _Memory:any = null;
 var _MemorySize = _ProgramSize;
-var _MemoryManager: any =null;
+var _MemoryManager: any = null;
+var _MemoryTable:any = null;
 
 // UI
 var _Console: TSOS.Console;

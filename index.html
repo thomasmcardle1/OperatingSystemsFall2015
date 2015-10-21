@@ -15,6 +15,9 @@
    <script type="text/javascript" src="distrib/host/control.js"></script>
    <script type="text/javascript" src="distrib/host/devices.js"></script>
    <script type="text/javascript" src="distrib/host/cpu.js"></script>
+    <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
+    <script type="text/javascript" src="distrib/host/memory.js"></script>
+    <script type="text/javascript" src="distrib/os/pcbPrototype.js"></script>
 
    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
@@ -103,6 +106,7 @@
             Status Section
         </label>
     </div>
+
     <div id="statusBar">
         <textarea id="statusBox1"
                 tabindex="0"
@@ -118,6 +122,40 @@
                   draggable="false"
                 >
         </textarea>
+    </div>
+    <div>
+        <label id="cpuElements"> CPU Elements </label>
+        <div>
+            <table style="font-family: Arial; font-size: larger; background: greenyellow">
+                <thead>
+                    <tr>
+                        <th> PC  </th>
+                        <th> ACC </th>
+                        <th> X Reg  </th>
+                        <th> Y Reg  </th>
+                        <th> Z Flag </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="cpuElementPC"></td>
+                        <td id="cpuElementACC"></td>
+                        <td id="cpuElementXReg"></td>
+                        <td id="cpuElementYReg"></td>
+                        <td id="cpuElementZFlag"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div>
+        <label id="Memory"> Memory </label>
+        <div style="overflow-y: scroll; background: greenyellow; height: 300px; width: 330px">
+            <table id="memTable" style="font-family: Arial; font-size: larger">
+        </table>
+        </div>
     </div>
 </div>
 
