@@ -9,6 +9,7 @@ var TSOS;
         MemoryManager.prototype.init = function () {
         };
         MemoryManager.prototype.loadProgram = function (code) {
+            _Memory.clearMem();
             this.baseRegister = 0;
             this.limitRegister = 255;
             for (var i = 0; i < code.length; i++) {
@@ -19,15 +20,15 @@ var TSOS;
         MemoryManager.prototype.getMemAtLocation = function (location) {
             return _Memory.getMemAtLocation(location);
         };
-        MemoryManager.prototype.updateMemoryAtLocation = function (loc, code) {
-            var currentTableRow = 0;
+        MemoryManager.prototype.updateMemoryAtLocation = function (memLoc, code) {
             var hexCode = code.toString(16);
             var currBlock = _Memory.getMemory();
             if (hexCode.length < 2) {
                 hexCode = "0" + hexCode;
             }
-            currBlock[loc] = hexCode;
-            TSOS.Control.updateMemTable(Math.floor(loc / 8) + currentTableRow, loc % 8, hexCode);
+            currBlock[memLoc] = hexCode;
+            var currentTableRow = Math.floor(memLoc / 8);
+            TSOS.Control.updateMemTable(currentTableRow, memLoc % 8, hexCode);
         };
         return MemoryManager;
     })();

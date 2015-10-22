@@ -30,8 +30,9 @@ module TSOS {
             return this.memoryArray[memLocation];
         }
         public clearMem(): void {
-            this.initialize(256);
             Control.resetMemoryTable();
+            this.memoryArray = null;
+            this.initialize(256);
         }
 
     }

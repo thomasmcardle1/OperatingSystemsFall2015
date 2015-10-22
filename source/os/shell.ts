@@ -446,6 +446,7 @@ module TSOS {
                 _StdOut.putText(_MemoryManager.loadProgram(newInputString));
                 _StdOut.advanceLine();
                 console.log(_CurrPCB.pid);
+                console.log(_Memory.getMemory());
             }
         }
 
@@ -465,8 +466,6 @@ module TSOS {
 
         public shellClearMem(args){
             _Memory.clearMem();
-            Control.resetMemoryTable();
-            _StdOut.advance();
         }
 
         public shellBSODMsg(args){

@@ -119,7 +119,7 @@ module TSOS {
                     break;
             }
             this.PC++;
-            Control.generateMemoryTable();
+            Control.createMemoryTable();
         }
 
         /*private getNextByte(): Number{

@@ -117,7 +117,7 @@ var TSOS;
                     break;
             }
             this.PC++;
-            TSOS.Control.generateMemoryTable();
+            TSOS.Control.createMemoryTable();
         };
         /*private getNextByte(): Number{
             var nextByteHex = _MemoryManager.getMe

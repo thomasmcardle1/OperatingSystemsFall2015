@@ -22,8 +22,9 @@ var TSOS;
             return this.memoryArray[memLocation];
         };
         Memory.prototype.clearMem = function () {
-            this.initialize(256);
             TSOS.Control.resetMemoryTable();
+            this.memoryArray = null;
+            this.initialize(256);
         };
         return Memory;
     })();

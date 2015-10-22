@@ -392,6 +392,7 @@ var TSOS;
                 _StdOut.putText(_MemoryManager.loadProgram(newInputString));
                 _StdOut.advanceLine();
                 console.log(_CurrPCB.pid);
+                console.log(_Memory.getMemory());
             }
         };
         Shell.prototype.shellRun = function (args) {
@@ -411,8 +412,6 @@ var TSOS;
         };
         Shell.prototype.shellClearMem = function (args) {
             _Memory.clearMem();
-            TSOS.Control.resetMemoryTable();
-            _StdOut.advance();
         };
         Shell.prototype.shellBSODMsg = function (args) {
             _Kernel.krnTrapError("BSOD");
