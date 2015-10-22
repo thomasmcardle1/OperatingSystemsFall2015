@@ -145,7 +145,7 @@ module TSOS {
         public storeAccInMem(){
             var nxt2 = this.getNextTwoBytes();
             //var loc = this.hexToDec(_MemoryManager.getMemAtLocation(this.PC+1)); //this.getNextByte();
-            var hexNum = this.convertToHex(this.Acc);
+            var hexNum = (this.Acc);
             console.log("location: " + nxt2  + ", hexNum:" + hexNum);
             _MemoryManager.updateMemoryAtLocation(nxt2, hexNum);
             console.log("Acc updated: " + this.Acc);
@@ -241,12 +241,14 @@ module TSOS {
                 var charString = "";
                 var char = "";
                 var character = _MemoryManager.getMemAtLocation(this.Yreg);
-                console.log("character: " + character);
+                console.log("Hex character: " + character);
                 var characterCode = 0;
                 while(character != "00"){
                     var decNum = this.hexToDec(character);
+                    console.log("character:" + character);
                     //characterCode = parseInt(character);
                     char = String.fromCharCode(decNum);
+                    console.log(char);
                     charString += char;
                     this.Yreg++;
                     character = _MemoryManager.getMemAtLocation(this.Yreg);
