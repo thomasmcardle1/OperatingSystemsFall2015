@@ -43,6 +43,8 @@ var _ProgramSize = 256;
 var _CurrPCB = null;
 var _Program = 1;
 var _ProgramEXE = null;
+var _SingleStep = false;
+99;
 var _Memory = null;
 var _MemorySize = _ProgramSize;
 var _MemoryManager = null;

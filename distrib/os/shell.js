@@ -3,6 +3,7 @@
 ///<reference path="shellCommand.ts" />
 ///<reference path="userCommand.ts" />
 ///<reference path="memoryManager.ts" />
+///<reference path="../host/memory.ts" />
 /* ------------
    Shell.ts
 
@@ -67,6 +68,8 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<ID> - runs the program with the given ID.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSODMsg, "bsod", "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
@@ -388,17 +391,28 @@ var TSOS;
                 _StdOut.advanceLine();
                 _StdOut.putText(_MemoryManager.loadProgram(newInputString));
                 _StdOut.advanceLine();
+                console.log(_CurrPCB.pid);
             }
         };
         Shell.prototype.shellRun = function (args) {
-            if (_CurrPCB.pid == args) {
-                //run program
-                _CPU.isExecuting = true;
+            if (args.length <= 0) {
+                _StdOut.putText("Please Enter PID with Run <string>");
             }
             else {
-                //check for valid id
-                _StdOut.putText("Invalid program id");
+                if (_CurrPCB.pid == args[0]) {
+                    //run program
+                    _CPU.isExecuting = true;
+                }
+                else {
+                    //check for valid id
+                    _StdOut.putText("Invalid program id");
+                }
             }
+        };
+        Shell.prototype.shellClearMem = function (args) {
+            _Memory.clearMem();
+            TSOS.Control.resetMemoryTable();
+            _StdOut.advance();
         };
         Shell.prototype.shellBSODMsg = function (args) {
             _Kernel.krnTrapError("BSOD");

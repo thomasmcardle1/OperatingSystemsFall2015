@@ -34,7 +34,7 @@
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment this line below to enable GLaDOS testing -->
-    <!-- <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script> -->
+    <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
 
 </head>
 
@@ -68,6 +68,22 @@
              value="Reset"
              tabindex="2"
              onclick="TSOS.Control.hostBtnReset_click(this);">
+
+       <input type="button"
+              id = "singleStepOnOff"
+              name="brnsingleStepOnOff"
+              class="normal_button"
+              value="Single Step"
+              tabindex="3"
+              onclick="TSOS.Control.hostBtnSingleStep_click(this);">
+
+       <input type="button"
+              id = "singleStepNext"
+              name="brnSingleStepNext"
+              class="normal_button"
+              value="Next Step"
+              tabindex="4"
+              onclick="TSOS.Control.hostBtnSingleStepNext_click(this);">
    </div>
 
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
@@ -102,11 +118,35 @@
       </label>
    </div>
     <div>
+        <label id="cpuElements"> CPU Elements </label>
+        <div>
+            <table style="font-family: Arial; font-size: larger; background: greenyellow">
+                <thead>
+                <tr>
+                    <th> PC  </th>
+                    <th> ACC </th>
+                    <th> X Reg  </th>
+                    <th> Y Reg  </th>
+                    <th> Z Flag </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="cpuElementPC"></td>
+                    <td id="cpuElementACC"></td>
+                    <td id="cpuElementXReg"></td>
+                    <td id="cpuElementYReg"></td>
+                    <td id="cpuElementZFlag"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div>
         <label >
             Status Section
         </label>
     </div>
-
     <div id="statusBar">
         <textarea id="statusBox1"
                 tabindex="0"
@@ -122,31 +162,6 @@
                   draggable="false"
                 >
         </textarea>
-    </div>
-    <div>
-        <label id="cpuElements"> CPU Elements </label>
-        <div>
-            <table style="font-family: Arial; font-size: larger; background: greenyellow">
-                <thead>
-                    <tr>
-                        <th> PC  </th>
-                        <th> ACC </th>
-                        <th> X Reg  </th>
-                        <th> Y Reg  </th>
-                        <th> Z Flag </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td id="cpuElementPC"></td>
-                        <td id="cpuElementACC"></td>
-                        <td id="cpuElementXReg"></td>
-                        <td id="cpuElementYReg"></td>
-                        <td id="cpuElementZFlag"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
     <br>
     <br>

@@ -56,6 +56,7 @@ var _CurrPCB:any = null;
 var _Program = 1;
 var _ProgramEXE:number = null;
 
+var _SingleStep: boolean = false;99
 var _Memory:any = null;
 var _MemorySize = _ProgramSize;
 var _MemoryManager: any = null;

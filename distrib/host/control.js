@@ -15,7 +15,8 @@
      in both the host and client environments.
 
      This (and other host/simulation scripts) is the only place that we should see "web" code, such as
-     DOM manipulation and event handling, and so on.  (Index.html is -- obviously -- the only place for markup.)
+     DOM manipulation and event handling, and so on.  (Index.html is -- obviously -- th
+     e only place for markup.)
 
      This code references page numbers in the text book:
      Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
@@ -87,6 +88,7 @@ var TSOS;
             _Memory = new TSOS.Memory(256);
             _MemoryManager = new TSOS.MemoryManager();
             this.generateMemoryTable();
+            //(<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 00 00 A9 00 8D 4B 00 A9 00 8D 4B 00 A2 03 EC 4B 00 D0 07 A2 01 EC 00 00 D0 05 A2 00 EC 00 00 D0 26 A0 4C A2 02 FF AC 4B 00 A2 01 FF A9 01 6D 4B 00 8D 4B 00 A2 02 EC 4B 00 D0 05 A0 55 A2 02 FF A2 01 EC 00 00 D0 C5 00 00 63 6F 75 6E 74 69 6E 67 00 68 65 6C 6C 6F 20 77 6F 72 6C 64 00";
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -96,6 +98,19 @@ var TSOS;
             // Stop the interval that's simulating our clock pulse.
             clearInterval(_hardwareClockID);
             // TODO: Is there anything else we need to do here?
+        };
+        Control.hostBtnSingleStep_click = function (btn) {
+            if (_SingleStep) {
+                _SingleStep = false;
+                _OsShell.shellStatus("OFF");
+            }
+            else {
+                _SingleStep = true;
+                _OsShell.shellStatus("ON");
+            }
+        };
+        Control.hostBtnSingleStepNext_click = function (btn) {
+            _CPU.isExecuting = true;
         };
         Control.hostBtnReset_click = function (btn) {
             // The easiest and most thorough way to do this is to reload (not refresh) the document.
@@ -123,6 +138,17 @@ var TSOS;
                     var td = document.createElement("td");
                     td.innerHTML = "00";
                     tr.appendChild(td);
+                }
+            }
+        };
+        Control.resetMemoryTable = function () {
+            var zero = "00";
+            var counter = 0;
+            for (var i = 0; i < 32; i++) {
+                for (var j = 0; j < 8; j++) {
+                    console.log(counter);
+                    document.getElementById(counter.toString()).innerHTML = "00";
+                    counter++;
                 }
             }
         };

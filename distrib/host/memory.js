@@ -1,11 +1,12 @@
 ///<reference path="../globals.ts" />
+///<reference path="control.ts" />
 var TSOS;
 (function (TSOS) {
     var Memory = (function () {
         function Memory(size) {
-            this.memoryBlockSize = 256;
-            this.memoryBlockSize = size;
-            this.initialize(this.memoryBlockSize);
+            this.totalMem = 256;
+            this.totalMem = size;
+            this.initialize(this.totalMem);
         }
         Memory.prototype.initialize = function (size) {
             this.memoryArray = [size];
@@ -14,10 +15,16 @@ var TSOS;
                 this.memoryArray[i] = zero;
             }
         };
-        Memory.prototype.getMemoryBlock = function () {
+        Memory.prototype.getMemory = function () {
             return this.memoryArray;
         };
-        Memory.prototype.clearMem = function () { };
+        Memory.prototype.getMemAtLocation = function (memLocation) {
+            return this.memoryArray[memLocation];
+        };
+        Memory.prototype.clearMem = function () {
+            this.initialize(256);
+            TSOS.Control.resetMemoryTable();
+        };
         return Memory;
     })();
     TSOS.Memory = Memory;

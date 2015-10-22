@@ -3,7 +3,7 @@
 ///<reference path="shellCommand.ts" />
 ///<reference path="userCommand.ts" />
 ///<reference path="memoryManager.ts" />
-
+///<reference path="../host/memory.ts" />
 /* ------------
    Shell.ts
 
@@ -118,10 +118,16 @@ module TSOS {
                 "<ID> - runs the program with the given ID.");
             this.commandList[this.commandList.length] = sc;
 
-            sc = new ShellCommand(this.shellBSODMsg,
-                "bsod",
-                "- Calls Kernel Trap Error Message.");
+            sc = new ShellCommand(this.shellClearMem,
+                "clearmem",
+                " -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellBSODMsg,
+            "bsod",
+            "- Calls Kernel Trap Error Message.");
+            this.commandList[this.commandList.length] = sc;
+
 
             this.putPrompt();
         }
@@ -439,23 +445,28 @@ module TSOS {
                 _StdOut.advanceLine();
                 _StdOut.putText(_MemoryManager.loadProgram(newInputString));
                 _StdOut.advanceLine();
+                console.log(_CurrPCB.pid);
             }
         }
 
         public shellRun(args){
-            if (_CurrPCB.pid == args){
-                //run program
-                _CPU.isExecuting = true;
-              /*  _StdOut.putText("1");
-                _StdOut.advanceLine();
-                _StdOut.putText("2");
-                _StdOut.advanceLine();
-                _StdOut.putText("DONE");
-                _StdOut.advanceLine();*/
-            }else {
-                //check for valid id
-                _StdOut.putText("Invalid program id");
+            if(args.length <= 0){
+                _StdOut.putText("Please Enter PID with Run <string>")
+            }else{
+                if (_CurrPCB.pid == args[0]){
+                    //run program
+                    _CPU.isExecuting = true;
+                }else {
+                    //check for valid id
+                    _StdOut.putText("Invalid program id");
+                }
             }
+        }
+
+        public shellClearMem(args){
+            _Memory.clearMem();
+            Control.resetMemoryTable();
+            _StdOut.advance();
         }
 
         public shellBSODMsg(args){

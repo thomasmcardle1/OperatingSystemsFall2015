@@ -22,14 +22,7 @@ module TSOS {
         }
 
         public getMemAtLocation(location): any {
-            var currMem = _Memory.getMemoryBlock();
-            var memAtLoc = currMem[location];
-            //console.log(memAtLoc);
-            return memAtLoc;
-        }
-
-        public getNextSpace(){
-
+            return _Memory.getMemAtLocation(location);
         }
 
 
@@ -37,25 +30,12 @@ module TSOS {
            var currentTableRow = 0;
            var hexCode = code.toString(16);
 
-           var currBlock = _Memory.getMemoryBlock();
-           if (hexCode.length < 2)
+           var currBlock = _Memory.getMemory();
+           if (hexCode.length < 2){
                hexCode= "0" + hexCode;
+           }
            currBlock[loc] = hexCode;
            Control.updateMemTable(Math.floor(loc / 8) + currentTableRow, loc % 8, hexCode);
        }
-
-        public getNextByte(){
-            var nxt = _MemoryManager.getMemAtLocation(_CurrPCB.PC +1);
-            return this.hexToDec(nxt);
-        }
-
-        public getNextTwoBytes(){
-            var nxt2 = (_MemoryManager.getMemAtLocation(_CurrPCB.PC+1)) + (_MemoryManager.getMemAtLocation(_CurrPCB.PC + 2));
-            return this.hexToDec(nxt2);
-        }
-
-        public hexToDec(hexNum): number{
-            return parseInt(hexNum,16);
-        }
     }
 }

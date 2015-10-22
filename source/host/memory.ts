@@ -1,4 +1,5 @@
 ///<reference path="../globals.ts" />
+///<reference path="control.ts" />
 
 
 module TSOS {
@@ -6,11 +7,11 @@ module TSOS {
     export class Memory {
 
         public memoryArray:string [] ;
-        public memoryBlockSize: number = 256;
+        public totalMem: number = 256;
 
         constructor(size:number) {
-            this.memoryBlockSize = size;
-            this.initialize(this.memoryBlockSize);
+            this.totalMem = size;
+            this.initialize(this.totalMem);
         }
 
         public initialize(size): void {
@@ -21,11 +22,17 @@ module TSOS {
             }
         }
 
-        public getMemoryBlock(){
+        public getMemory(){
             return this.memoryArray;
         }
 
-        public clearMem(): void {}
+        public getMemAtLocation(memLocation) : string{
+            return this.memoryArray[memLocation];
+        }
+        public clearMem(): void {
+            this.initialize(256);
+            Control.resetMemoryTable();
+        }
 
     }
 }
