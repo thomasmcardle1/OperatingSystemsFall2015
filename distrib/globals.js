@@ -43,12 +43,14 @@ var _ProgramSize = 256;
 var _CurrPCB = null;
 var _Program = 1;
 var _ProgramEXE = null;
+var _NumberOfPrograms = 3;
 var _SingleStep = false;
 99;
 var _Memory = null;
-var _MemorySize = _ProgramSize;
+var _MemorySize = 768;
 var _MemoryManager = null;
 var _MemoryTable = null;
+var _TableRow = 0;
 // UI
 var _Console;
 var _OsShell;

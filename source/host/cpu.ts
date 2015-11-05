@@ -48,13 +48,13 @@ module TSOS {
             if(_SingleStep){
                 this.isExecuting = false;
             }
-
             this.updateCPUMemoryThings();
             this.updateCPUMemoryThings();
         }
 
         public executeOPCode(code) {
             this.instruction = code.toUpperCase();
+            console.log("PC: " + this.PC);
             console.log(this.instruction);
             switch (this.instruction) {
                 case "A9":
@@ -119,7 +119,7 @@ module TSOS {
                     break;
             }
             this.PC++;
-            Control.createMemoryTable();
+            //Control.createMemoryTable();
         }
 
         /*private getNextByte(): Number{
@@ -128,7 +128,6 @@ module TSOS {
 
         public loadAccWithConstant(){
             this.Acc = this.getNextByte();
-            console.log("ACC: "  + this.Acc);
             //_AssembleyLanguage = "LDA #$" + _MemoryManager.getMemory(this.PC);
             this.PC = this.PC+1;
         }
@@ -136,7 +135,6 @@ module TSOS {
         public loadAccFromMem(){
             var loc = this.getNextTwoBytes();
             var decNum = this.hexToDec(_MemoryManager.getMemAtLocation(loc));
-            //console.log("loc: " + loc +"decNum" + decNum);
             this.Acc = decNum;
             //_AssembleyLanguage = "STA $" + _MemoryManager.getMemory(this.PC);
             this.PC = this.PC+2;
@@ -146,12 +144,10 @@ module TSOS {
             var nxt2 = this.getNextTwoBytes();
             //var loc = this.hexToDec(_MemoryManager.getMemAtLocation(this.PC+1)); //this.getNextByte();
             var hexNum = (this.Acc);
-            console.log("location: " + nxt2  + ", hexNum:" + hexNum);
             _MemoryManager.updateMemoryAtLocation(nxt2, hexNum);
-            console.log("Acc updated: " + this.Acc);
+            console.log("Update memory at loaction: " + nxt2 + " , " + hexNum);
             this.PC++;
             this.PC++;
-            console.log(this.PC);
         }
 
         public addWithCarry(){
@@ -167,7 +163,6 @@ module TSOS {
         public loadXFromMem(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
             this.Xreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
-            console.log("location:" + memLoc + " XReg: " + this.Xreg);
             this.PC++;
             this.PC++;
         }
@@ -179,10 +174,7 @@ module TSOS {
 
         public loadYFromMem(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
-            //this.hexToDec(_MemoryManager.getMemAtLocation(this.PC));
-            //console.log(memLoc);
             this.Yreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
-            console.log("location:" + memLoc + " YReg: " + this.Yreg);
             this.PC++;
             this.PC++;
         }
@@ -190,7 +182,6 @@ module TSOS {
         public compareXEqualTo(){
             var memLoc = this.getNextByte();
             var hexNum = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
-            console.log("Comparre to X -- Location: " + memLoc + " memVal: " + hexNum);
             if(hexNum == this.Xreg){
                 this.Zflag = 1;
             }else{
@@ -203,7 +194,6 @@ module TSOS {
         public BNE(){
             if(this.Zflag == 0){
                 var val = this.getNextByte();
-                console.log("BNE Val" + val);
                 this.PC++;
                 this.PC += val;
                 if(this.PC >= _ProgramSize){
@@ -222,33 +212,23 @@ module TSOS {
             var decNum = this.hexToDec(hexNumAtLocation);
             decNum++;
             _MemoryManager.updateMemoryAtLocation(memLoc, decNum);
-            console.log("location: " + memLoc + " dec  num: "+decNum);
+            console.log("Update memory at loaction: " + memLoc + " , " +decNum);
             this.PC++;
             this.PC++;
-        }
-
-        public convertToHex(num){
-            var hexNum = parseInt(num, 16);
-            return hexNum;
         }
 
         public SysCall(){
             //_KernelInterruptQueue.enqueue(new Interrupt(SYSCALL_INTERRUPT))
-            //console.log("x reg" + this.Xreg);
             if(this.Xreg == 1){
                 _StdOut.putText(this.hexToDec(this.Yreg).toString());
             }else if(this.Xreg == 2){
                 var charString = "";
                 var char = "";
                 var character = _MemoryManager.getMemAtLocation(this.Yreg);
-                console.log("Hex character: " + character);
                 var characterCode = 0;
                 while(character != "00"){
                     var decNum = this.hexToDec(character);
-                    console.log("character:" + character);
-                    //characterCode = parseInt(character);
                     char = String.fromCharCode(decNum);
-                    console.log(char);
                     charString += char;
                     this.Yreg++;
                     character = _MemoryManager.getMemAtLocation(this.Yreg);
@@ -259,7 +239,6 @@ module TSOS {
 
         public getNextByte(){
             var nxt = _MemoryManager.getMemAtLocation(this.PC +1);
-            //console.log("getNextByte Hex : " + nxt);
             return this.hexToDec(nxt);
         }
 
@@ -270,6 +249,10 @@ module TSOS {
             return this.hexToDec(combine);
         }
 
+        public convertToHex(num){
+            var hexNum = parseInt(num, 16);
+            return hexNum;
+        }
         public hexToDec(hexNum): number{
             return parseInt(hexNum,16);
         }

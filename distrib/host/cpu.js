@@ -53,6 +53,7 @@ var TSOS;
         };
         Cpu.prototype.executeOPCode = function (code) {
             this.instruction = code.toUpperCase();
+            console.log("PC: " + this.PC);
             console.log(this.instruction);
             switch (this.instruction) {
                 case "A9":
@@ -117,21 +118,19 @@ var TSOS;
                     break;
             }
             this.PC++;
-            TSOS.Control.createMemoryTable();
+            //Control.createMemoryTable();
         };
         /*private getNextByte(): Number{
             var nextByteHex = _MemoryManager.getMe
         }*/
         Cpu.prototype.loadAccWithConstant = function () {
             this.Acc = this.getNextByte();
-            console.log("ACC: " + this.Acc);
             //_AssembleyLanguage = "LDA #$" + _MemoryManager.getMemory(this.PC);
             this.PC = this.PC + 1;
         };
         Cpu.prototype.loadAccFromMem = function () {
             var loc = this.getNextTwoBytes();
             var decNum = this.hexToDec(_MemoryManager.getMemAtLocation(loc));
-            //console.log("loc: " + loc +"decNum" + decNum);
             this.Acc = decNum;
             //_AssembleyLanguage = "STA $" + _MemoryManager.getMemory(this.PC);
             this.PC = this.PC + 2;
@@ -140,12 +139,10 @@ var TSOS;
             var nxt2 = this.getNextTwoBytes();
             //var loc = this.hexToDec(_MemoryManager.getMemAtLocation(this.PC+1)); //this.getNextByte();
             var hexNum = (this.Acc);
-            console.log("location: " + nxt2 + ", hexNum:" + hexNum);
             _MemoryManager.updateMemoryAtLocation(nxt2, hexNum);
-            console.log("Acc updated: " + this.Acc);
+            console.log("Update memory at loaction: " + nxt2 + " , " + hexNum);
             this.PC++;
             this.PC++;
-            console.log(this.PC);
         };
         Cpu.prototype.addWithCarry = function () {
             this.Acc += this.convertToHex(_MemoryManager.getMemAtLocation(this.getNextTwoBytes()));
@@ -158,7 +155,6 @@ var TSOS;
         Cpu.prototype.loadXFromMem = function () {
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1 + this.PC));
             this.Xreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
-            console.log("location:" + memLoc + " XReg: " + this.Xreg);
             this.PC++;
             this.PC++;
         };
@@ -168,17 +164,13 @@ var TSOS;
         };
         Cpu.prototype.loadYFromMem = function () {
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1 + this.PC));
-            //this.hexToDec(_MemoryManager.getMemAtLocation(this.PC));
-            //console.log(memLoc);
             this.Yreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
-            console.log("location:" + memLoc + " YReg: " + this.Yreg);
             this.PC++;
             this.PC++;
         };
         Cpu.prototype.compareXEqualTo = function () {
             var memLoc = this.getNextByte();
             var hexNum = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
-            console.log("Comparre to X -- Location: " + memLoc + " memVal: " + hexNum);
             if (hexNum == this.Xreg) {
                 this.Zflag = 1;
             }
@@ -191,7 +183,6 @@ var TSOS;
         Cpu.prototype.BNE = function () {
             if (this.Zflag == 0) {
                 var val = this.getNextByte();
-                console.log("BNE Val" + val);
                 this.PC++;
                 this.PC += val;
                 if (this.PC >= _ProgramSize) {
@@ -209,17 +200,12 @@ var TSOS;
             var decNum = this.hexToDec(hexNumAtLocation);
             decNum++;
             _MemoryManager.updateMemoryAtLocation(memLoc, decNum);
-            console.log("location: " + memLoc + " dec  num: " + decNum);
+            console.log("Update memory at loaction: " + memLoc + " , " + decNum);
             this.PC++;
             this.PC++;
-        };
-        Cpu.prototype.convertToHex = function (num) {
-            var hexNum = parseInt(num, 16);
-            return hexNum;
         };
         Cpu.prototype.SysCall = function () {
             //_KernelInterruptQueue.enqueue(new Interrupt(SYSCALL_INTERRUPT))
-            //console.log("x reg" + this.Xreg);
             if (this.Xreg == 1) {
                 _StdOut.putText(this.hexToDec(this.Yreg).toString());
             }
@@ -227,14 +213,10 @@ var TSOS;
                 var charString = "";
                 var char = "";
                 var character = _MemoryManager.getMemAtLocation(this.Yreg);
-                console.log("Hex character: " + character);
                 var characterCode = 0;
                 while (character != "00") {
                     var decNum = this.hexToDec(character);
-                    console.log("character:" + character);
-                    //characterCode = parseInt(character);
                     char = String.fromCharCode(decNum);
-                    console.log(char);
                     charString += char;
                     this.Yreg++;
                     character = _MemoryManager.getMemAtLocation(this.Yreg);
@@ -244,7 +226,6 @@ var TSOS;
         };
         Cpu.prototype.getNextByte = function () {
             var nxt = _MemoryManager.getMemAtLocation(this.PC + 1);
-            //console.log("getNextByte Hex : " + nxt);
             return this.hexToDec(nxt);
         };
         Cpu.prototype.getNextTwoBytes = function () {
@@ -252,6 +233,10 @@ var TSOS;
             var nxt2 = _MemoryManager.getMemAtLocation(2 + this.PC);
             var combine = (nxt2 + nxt);
             return this.hexToDec(combine);
+        };
+        Cpu.prototype.convertToHex = function (num) {
+            var hexNum = parseInt(num, 16);
+            return hexNum;
         };
         Cpu.prototype.hexToDec = function (hexNum) {
             return parseInt(hexNum, 16);

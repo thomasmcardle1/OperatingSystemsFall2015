@@ -4,7 +4,7 @@ var TSOS;
 (function (TSOS) {
     var Memory = (function () {
         function Memory(size) {
-            this.totalMem = 256;
+            this.totalMem = _MemorySize;
             this.totalMem = size;
             this.initialize(this.totalMem);
         }
@@ -23,8 +23,9 @@ var TSOS;
         };
         Memory.prototype.clearMem = function () {
             TSOS.Control.resetMemoryTable();
+            _CPU.init();
             this.memoryArray = null;
-            this.initialize(256);
+            this.initialize(_MemorySize);
         };
         return Memory;
     })();

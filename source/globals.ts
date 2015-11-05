@@ -55,12 +55,14 @@ var _ProgramSize = 256;
 var _CurrPCB:any = null;
 var _Program = 1;
 var _ProgramEXE:number = null;
+var _NumberOfPrograms:number = 3;
 
 var _SingleStep: boolean = false;99
 var _Memory:any = null;
-var _MemorySize = _ProgramSize;
+var _MemorySize = 768;
 var _MemoryManager: any = null;
 var _MemoryTable:any = null;
+var _TableRow:number = 0;
 
 // UI
 var _Console: TSOS.Console;

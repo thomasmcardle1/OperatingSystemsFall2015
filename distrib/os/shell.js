@@ -385,6 +385,7 @@ var TSOS;
                 _StdOut.putText("Code is invalid. Please try again");
             }
             else {
+                console.log(_MemoryTable);
                 _CurrPCB = new TSOS.PCB();
                 var newInputString = inputString.replace(/\n/g, " ").split(" ");
                 _StdOut.putText("Code is valid!");

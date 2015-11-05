@@ -109,7 +109,7 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
-            //(<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 00 00 A9 00 8D 4B 00 A9 00 8D 4B 00 A2 03 EC 4B 00 D0 07 A2 01 EC 00 00 D0 05 A2 00 EC 00 00 D0 26 A0 4C A2 02 FF AC 4B 00 A2 01 FF A9 01 6D 4B 00 8D 4B 00 A2 02 EC 4B 00 D0 05 A0 55 A2 02 FF A2 01 EC 00 00 D0 C5 00 00 63 6F 75 6E 74 69 6E 67 00 68 65 6C 6C 6F 20 77 6F 72 6C 64 00";
+            (<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 00 00 A9 00 8D 4B 00 A9 00 8D 4B 00 A2 03 EC 4B 00 D0 07 A2 01 EC 00 00 D0 05 A2 00 EC 00 00 D0 26 A0 4C A2 02 FF AC 4B 00 A2 01 FF A9 01 6D 4B 00 8D 4B 00 A2 02 EC 4B 00 D0 05 A0 55 A2 02 FF A2 01 EC 00 00 D0 C5 00 00 63 6F 75 6E 74 69 6E 67 00 68 65 6C 6C 6F 20 77 6F 72 6C 64 00";
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -144,13 +144,14 @@ module TSOS {
             // page from its cache, which is not what we want.
         }
         public static updateMemTable(tableRow, tableCel, newCode): void {
-            _MemoryTable.rows[tableRow].cells[tableCel].innerHTML = newCode;
+            _MemoryTable.rows[tableRow].cells[tableCel+1].innerHTML = newCode;
         }
 
         public static createMemoryTable(): void {
             _MemoryTable = <HTMLTableElement>document.getElementById("memTable");
-            for (var j = 0; j < 32; j++) {
-                if (j === 31) {
+            console.log(_MemorySize/8);
+            for (var j = 0; j < (_MemorySize/8); j++) {
+               if (j === _MemorySize/8) {
                     var tr = document.createElement("tr");
                     tr.id = "botRow";
                     _MemoryTable.appendChild(tr);
@@ -158,21 +159,58 @@ module TSOS {
                     var tr = document.createElement("tr");
                     _MemoryTable.appendChild(tr);
                 }
-                for (var k = 0; k < 8; k++) {
+                for (var k = 0; k < 9; k++) {
                     var td = document.createElement("td");
-                    td.innerHTML = "00";
+                    td.innerHTML="00";
                     tr.appendChild(td);
+                    }
+                }
+
+            for(var i=0; i < (_MemorySize/8); i++){
+                for(var h =0; h < 9; h++){
+                    if(h ==0){
+                        var hexNum = _TableRow.toString(16);
+                        console.log("Table Row: "+ _TableRow + " HexNum: " + hexNum.toUpperCase());
+                        if(_TableRow ==0){
+                            _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
+                        }else{
+                            if(hexNum.length < 2){
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00"+hexNum.toUpperCase();
+                            }else if(hexNum.length < 3){
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0"+hexNum.toUpperCase();
+                            }else{
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x"+hexNum.toUpperCase();
+                            }
+                        }
+                        _TableRow+=8;
+                    }
                 }
             }
         }
 
         public static resetMemoryTable(): void{
-            var zero = "00";
-            var counter = 0;
-            for(var i=0; i<32; i++){
-                for(var j=0; j<8; j++){
-                    _MemoryTable.rows[i].cells[j].innerHTML= zero;
-                    counter++;
+            _TableRow =0;
+            for(var i=0; i < (_MemorySize/8); i++){
+                for(var h =0; h < 9; h++){
+                    if(h ==0){
+                        var hexNum = _TableRow.toString(16);
+                        console.log("Table Row: "+ _TableRow + " HexNum: " + hexNum.toUpperCase());
+                        if(_TableRow ==0){
+                            _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
+                        }else{
+                            if(hexNum.length < 2){
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00"+hexNum.toUpperCase();
+                            }else if(hexNum.length < 3){
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0"+hexNum.toUpperCase();
+                            }else{
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x"+hexNum.toUpperCase();
+                            }
+                        }
+                        _TableRow+=8;
+                    }
+                else{
+                        _MemoryTable.rows[i].cells[h].innerHTML = "00";
+                    }
                 }
             }
         }
