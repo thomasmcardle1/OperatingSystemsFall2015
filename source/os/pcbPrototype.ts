@@ -17,7 +17,7 @@ module TSOS {
              public instructionRegister:string ="",
 
              public base: number=0,
-             public max: number =0,
+             public limit: number =0,
              public location: any = null
          ){}
      }

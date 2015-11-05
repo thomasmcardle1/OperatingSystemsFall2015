@@ -5,7 +5,7 @@
 var TSOS;
 (function (TSOS) {
     var PCB = (function () {
-        function PCB(PC, Acc, Xreg, Yreg, Zflag, pid, instructionRegister, base, max, location) {
+        function PCB(PC, Acc, Xreg, Yreg, Zflag, pid, instructionRegister, base, limit, location) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
@@ -14,7 +14,7 @@ var TSOS;
             if (pid === void 0) { pid = ++_PID; }
             if (instructionRegister === void 0) { instructionRegister = ""; }
             if (base === void 0) { base = 0; }
-            if (max === void 0) { max = 0; }
+            if (limit === void 0) { limit = 0; }
             if (location === void 0) { location = null; }
             this.PC = PC;
             this.Acc = Acc;
@@ -24,7 +24,7 @@ var TSOS;
             this.pid = pid;
             this.instructionRegister = instructionRegister;
             this.base = base;
-            this.max = max;
+            this.limit = limit;
             this.location = location;
         }
         return PCB;
