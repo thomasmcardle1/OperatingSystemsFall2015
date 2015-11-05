@@ -12,14 +12,32 @@ module TSOS {
         public init(){
         }
 
-        public loadProgram(code) {
-            _Memory.clearMem();
-                this.baseRegister = 0;
-                this.limitRegister = 255;
+        public loadProgram(currBlock, code) {
+            if(currBlock ===0){
+                this.baseRegister =0;
+                this.limitRegister =255;
+            }else if(currBlock ===1){
+                this.baseRegister = 256;
+                this.limitRegister =511;
+            }else if(currBlock === 2){
+                this.baseRegister = 512;
+                this.limitRegister = 768;
+            }
+            console.log(this.baseRegister);
+
             for (var i = 0; i < code.length; i++) {
                 this.updateMemoryAtLocation(i, code[i]);
             }
-            return "PID " + _PID
+            return "pid " + _PID;
+        }
+
+        public findNextAvailMem(){
+            for(var i=0; i < _ProgramSize*_NumberOfPrograms; i+=256){
+                if(_Memory.memoryArray[i] == "00"){
+                    return i;
+                }
+                return null;
+            }
         }
 
         public getMemAtLocation(location): any {
@@ -28,6 +46,16 @@ module TSOS {
 
 
        public updateMemoryAtLocation(memLoc, code): void {
+           var startRow = 0;
+
+          /* if(currBlock ==0){
+               startRow =0;
+           }else if(currBlock == 1){
+               startRow = 32;
+           }else if(currBlock ==2){
+               startRow =64;
+           }*/
+
            var hexCode = code.toString(16);
 
            var currBlock = _Memory.getMemory();
@@ -35,7 +63,7 @@ module TSOS {
                hexCode= "0" + hexCode;
            }
            currBlock[memLoc] = hexCode;
-           var currentTableRow = Math.floor(memLoc/8);
+           var currentTableRow = ((Math.floor(memLoc/8)));
            Control.updateMemTable(currentTableRow, memLoc % 8, hexCode);
        }
     }

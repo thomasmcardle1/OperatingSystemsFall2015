@@ -439,15 +439,38 @@ module TSOS {
             if(valid == false){
                 _StdOut.putText("Code is invalid. Please try again");
             }else{
-                console.log(_MemoryTable);
-                _CurrPCB = new PCB();
                 var newInputString = inputString.replace( /\n/g, " " ).split( " " );
-                _StdOut.putText("Code is valid!");
                 _StdOut.advanceLine();
-                _StdOut.putText(_MemoryManager.loadProgram(newInputString));
-                _StdOut.advanceLine();
-                console.log(_CurrPCB.pid);
-                console.log(_Memory.getMemory());
+                var base = 0;
+                var limit =0;
+
+                if(_CurrMemBlock >= 2) {
+                    base = -1;
+                    limit = -1;
+                    _CurrMemBlock++;
+                }else if(_CurrMemBlock < 2){
+                    _CurrMemBlock++;
+                    base = _CurrMemBlock * 256;
+                    limit = (_CurrMemBlock* 256) + 255;
+                }
+
+                console.log("CurrMemBloc: " + _CurrMemBlock);
+
+                _CurrPCB = new PCB();
+                if(_CurrMemBlock <=2){
+                    _CurrPCB.base = base;
+                    _CurrPCB.limit = limit;
+                }
+
+                console.log("PCB: " + _CurrPCB.base + " "+ _CurrPCB.limit);
+                console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
+
+                if(_CurrMemBlock <= 2){
+                    _StdOut.putText(_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
+                    _StdOut.advanceLine();
+                }else{
+                    _StdOut.putText("Memory full");
+                }
             }
         }
 

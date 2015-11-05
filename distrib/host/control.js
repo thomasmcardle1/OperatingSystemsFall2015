@@ -124,7 +124,7 @@ var TSOS;
         };
         Control.createMemoryTable = function () {
             _MemoryTable = document.getElementById("memTable");
-            console.log(_MemorySize / 8);
+            var counter = 0;
             for (var j = 0; j < (_MemorySize / 8); j++) {
                 if (j === _MemorySize / 8) {
                     var tr = document.createElement("tr");
@@ -136,16 +136,25 @@ var TSOS;
                     _MemoryTable.appendChild(tr);
                 }
                 for (var k = 0; k < 9; k++) {
-                    var td = document.createElement("td");
-                    td.innerHTML = "00";
-                    tr.appendChild(td);
+                    if (k == 0) {
+                        var td = document.createElement("td");
+                        td.id = "hexLabel";
+                        td.innerHTML = "00";
+                        tr.appendChild(td);
+                    }
+                    else {
+                        var td = document.createElement("td");
+                        td.innerHTML = "00";
+                        td.id = counter.toString();
+                        tr.appendChild(td);
+                    }
+                    counter++;
                 }
             }
             for (var i = 0; i < (_MemorySize / 8); i++) {
                 for (var h = 0; h < 9; h++) {
                     if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: " + _TableRow + " HexNum: " + hexNum.toUpperCase());
                         if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
                         }
@@ -171,7 +180,6 @@ var TSOS;
                 for (var h = 0; h < 9; h++) {
                     if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: " + _TableRow + " HexNum: " + hexNum.toUpperCase());
                         if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
                         }

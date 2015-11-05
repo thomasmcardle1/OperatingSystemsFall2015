@@ -53,9 +53,7 @@ module TSOS {
             //Init Memory
             _Memory = new Memory(256);
             _MemoryManager = new MemoryManager();
-
             this.createMemoryTable();
-
 
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
@@ -149,9 +147,9 @@ module TSOS {
 
         public static createMemoryTable(): void {
             _MemoryTable = <HTMLTableElement>document.getElementById("memTable");
-            console.log(_MemorySize/8);
+            var counter:number =0;
             for (var j = 0; j < (_MemorySize/8); j++) {
-               if (j === _MemorySize/8) {
+                if (j === _MemorySize / 8) {
                     var tr = document.createElement("tr");
                     tr.id = "botRow";
                     _MemoryTable.appendChild(tr);
@@ -160,17 +158,25 @@ module TSOS {
                     _MemoryTable.appendChild(tr);
                 }
                 for (var k = 0; k < 9; k++) {
-                    var td = document.createElement("td");
-                    td.innerHTML="00";
-                    tr.appendChild(td);
+                    if (k == 0) {
+                        var td = document.createElement("td");
+                        td.id = "hexLabel";
+                        td.innerHTML = "00";
+                        tr.appendChild(td);
+                    } else {
+                        var td = document.createElement("td");
+                        td.innerHTML = "00";
+                        td.id = counter.toString();
+                        tr.appendChild(td);
                     }
+                    counter++;
                 }
+            }
 
             for(var i=0; i < (_MemorySize/8); i++){
                 for(var h =0; h < 9; h++){
                     if(h ==0){
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: "+ _TableRow + " HexNum: " + hexNum.toUpperCase());
                         if(_TableRow ==0){
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
                         }else{
@@ -194,7 +200,6 @@ module TSOS {
                 for(var h =0; h < 9; h++){
                     if(h ==0){
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: "+ _TableRow + " HexNum: " + hexNum.toUpperCase());
                         if(_TableRow ==0){
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
                         }else{

@@ -57,12 +57,13 @@ var _Program = 1;
 var _ProgramEXE:number = null;
 var _NumberOfPrograms:number = 3;
 
-var _SingleStep: boolean = false;99
+var _SingleStep: boolean = false;
 var _Memory:any = null;
 var _MemorySize = 768;
 var _MemoryManager: any = null;
 var _MemoryTable:any = null;
 var _TableRow:number = 0;
+var _CurrMemBlock: number = -1;
 
 // UI
 var _Console: TSOS.Console;

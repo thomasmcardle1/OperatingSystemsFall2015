@@ -53,7 +53,6 @@ var TSOS;
         };
         Cpu.prototype.executeOPCode = function (code) {
             this.instruction = code.toUpperCase();
-            console.log("PC: " + this.PC);
             console.log(this.instruction);
             switch (this.instruction) {
                 case "A9":
@@ -140,7 +139,6 @@ var TSOS;
             //var loc = this.hexToDec(_MemoryManager.getMemAtLocation(this.PC+1)); //this.getNextByte();
             var hexNum = (this.Acc);
             _MemoryManager.updateMemoryAtLocation(nxt2, hexNum);
-            console.log("Update memory at loaction: " + nxt2 + " , " + hexNum);
             this.PC++;
             this.PC++;
         };
@@ -200,7 +198,6 @@ var TSOS;
             var decNum = this.hexToDec(hexNumAtLocation);
             decNum++;
             _MemoryManager.updateMemoryAtLocation(memLoc, decNum);
-            console.log("Update memory at loaction: " + memLoc + " , " + decNum);
             this.PC++;
             this.PC++;
         };
