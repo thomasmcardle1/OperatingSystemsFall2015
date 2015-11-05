@@ -440,7 +440,6 @@ module TSOS {
                 _StdOut.putText("Code is invalid. Please try again");
             }else{
                 var newInputString = inputString.replace( /\n/g, " " ).split( " " );
-                _StdOut.advanceLine();
                 var base = 0;
                 var limit =0;
 
@@ -466,7 +465,10 @@ module TSOS {
                 console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
 
                 if(_CurrMemBlock <= 2){
-                    _StdOut.putText(_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
+                    var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
+                    _StdOut.putText(pid);
+                    _RunnablePIDs.push(_CurrPCB.pid);
+                    console.log(_RunnablePIDs);
                     _StdOut.advanceLine();
                 }else{
                     _StdOut.putText("Memory full");
@@ -475,10 +477,18 @@ module TSOS {
         }
 
         public shellRun(args){
+            var runningPID = args[0];
+            var validPID = false;
             if(args.length <= 0){
                 _StdOut.putText("Please Enter PID with Run <string>")
             }else{
-                if (_CurrPCB.pid == args[0]){
+                for(var i=0; i<_RunnablePIDs.length; i++){
+                    if(_RunnablePIDs[i] == runningPID){
+                        _RunningPID = runningPID;
+                        validPID = true;
+                    }
+                }
+                if (validPID = true){
                     //run program
                     _CPU.isExecuting = true;
                 }else {

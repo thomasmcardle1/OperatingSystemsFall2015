@@ -23,7 +23,7 @@ var TSOS;
             }
             console.log(this.baseRegister);
             for (var i = 0; i < code.length; i++) {
-                this.updateMemoryAtLocation(i, code[i]);
+                this.updateMemoryAtLocation(this.baseRegister, i, code[i]);
             }
             return "pid " + _PID;
         };
@@ -38,23 +38,26 @@ var TSOS;
         MemoryManager.prototype.getMemAtLocation = function (location) {
             return _Memory.getMemAtLocation(location);
         };
-        MemoryManager.prototype.updateMemoryAtLocation = function (memLoc, code) {
+        MemoryManager.prototype.updateMemoryAtLocation = function (baseRegister, memLoc, code) {
             var startRow = 0;
-            /* if(currBlock ==0){
-                 startRow =0;
-             }else if(currBlock == 1){
-                 startRow = 32;
-             }else if(currBlock ==2){
-                 startRow =64;
-             }*/
+            if (baseRegister == 0) {
+                startRow = 0;
+            }
+            else if (baseRegister == 256) {
+                startRow = 32;
+            }
+            else if (baseRegister == 512) {
+                startRow = 64;
+            }
             var hexCode = code.toString(16);
             var currBlock = _Memory.getMemory();
             if (hexCode.length < 2) {
                 hexCode = "0" + hexCode;
             }
             currBlock[memLoc] = hexCode;
-            var currentTableRow = ((Math.floor(memLoc / 8)));
+            var currentTableRow = ((Math.floor(memLoc / 8)) + startRow);
             TSOS.Control.updateMemTable(currentTableRow, memLoc % 8, hexCode);
+            console.log(currentTableRow, memLoc % 8, hexCode);
         };
         return MemoryManager;
     })();

@@ -64,6 +64,9 @@ var _MemoryManager: any = null;
 var _MemoryTable:any = null;
 var _TableRow:number = 0;
 var _CurrMemBlock: number = -1;
+var _RunnablePIDs: any[] = [];
+var _RunningPID: any = null;
+
 
 // UI
 var _Console: TSOS.Console;

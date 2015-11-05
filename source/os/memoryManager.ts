@@ -26,7 +26,7 @@ module TSOS {
             console.log(this.baseRegister);
 
             for (var i = 0; i < code.length; i++) {
-                this.updateMemoryAtLocation(i, code[i]);
+                this.updateMemoryAtLocation(this.baseRegister, i, code[i]);
             }
             return "pid " + _PID;
         }
@@ -45,16 +45,16 @@ module TSOS {
         }
 
 
-       public updateMemoryAtLocation(memLoc, code): void {
+       public updateMemoryAtLocation(baseRegister, memLoc, code): void {
            var startRow = 0;
 
-          /* if(currBlock ==0){
+          if(baseRegister==0){
                startRow =0;
-           }else if(currBlock == 1){
+           }else if(baseRegister== 256){
                startRow = 32;
-           }else if(currBlock ==2){
+           }else if(baseRegister == 512){
                startRow =64;
-           }*/
+           }
 
            var hexCode = code.toString(16);
 
@@ -63,8 +63,9 @@ module TSOS {
                hexCode= "0" + hexCode;
            }
            currBlock[memLoc] = hexCode;
-           var currentTableRow = ((Math.floor(memLoc/8)));
+           var currentTableRow = ((Math.floor(memLoc/8))+startRow);
            Control.updateMemTable(currentTableRow, memLoc % 8, hexCode);
+           console.log(currentTableRow, memLoc%8, hexCode);
        }
     }
 }

@@ -51,6 +51,8 @@ var _MemoryManager = null;
 var _MemoryTable = null;
 var _TableRow = 0;
 var _CurrMemBlock = -1;
+var _RunnablePIDs = [];
+var _RunningPID = null;
 // UI
 var _Console;
 var _OsShell;
