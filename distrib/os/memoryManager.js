@@ -54,10 +54,13 @@ var TSOS;
             if (hexCode.length < 2) {
                 hexCode = "0" + hexCode;
             }
-            currBlock[memLoc] = hexCode;
+            var c = (memLoc + baseRegister);
+            currBlock[c] = hexCode;
+            console.log("MEMLOC: " + memLoc);
             var currentTableRow = ((Math.floor(memLoc / 8)) + startRow);
             TSOS.Control.updateMemTable(currentTableRow, memLoc % 8, hexCode);
             console.log(currentTableRow, memLoc % 8, hexCode);
+            console.log(currBlock);
         };
         return MemoryManager;
     })();

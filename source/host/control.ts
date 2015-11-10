@@ -51,7 +51,7 @@ module TSOS {
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
 
             //Init Memory
-            _Memory = new Memory(256);
+            _Memory = new Memory(_MemorySize);
             _MemoryManager = new MemoryManager();
             this.createMemoryTable();
 

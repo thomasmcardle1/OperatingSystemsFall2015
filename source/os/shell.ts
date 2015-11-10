@@ -456,6 +456,7 @@ module TSOS {
                 console.log("CurrMemBloc: " + _CurrMemBlock);
 
                 _CurrPCB = new PCB();
+
                 if(_CurrMemBlock <=2){
                     _CurrPCB.base = base;
                     _CurrPCB.limit = limit;
@@ -473,8 +474,10 @@ module TSOS {
                 }else{
                     _StdOut.putText("Memory full");
                 }
+                _ResidentList.push(_CurrPCB);
             }
         }
+
 
         public shellRun(args){
             var runningPID = args[0];
@@ -482,14 +485,20 @@ module TSOS {
             if(args.length <= 0){
                 _StdOut.putText("Please Enter PID with Run <string>")
             }else{
-                for(var i=0; i<_RunnablePIDs.length; i++){
-                    if(_RunnablePIDs[i] == runningPID){
-                        _RunningPID = runningPID;
+                for(var i=0; i<_ResidentList.length; i++){
+                    if(runningPID == _ResidentList[i].pid){
+                        console.log(_ResidentList[i]);
+                        _CurrPCB = _ResidentList[i];
                         validPID = true;
                     }
                 }
                 if (validPID = true){
                     //run program
+                    console.log("CURR PID: " + _CurrPCB.pid);
+                    console.log(_CurrPCB.base);
+                    _CPU.PC = _CurrPCB.base;
+                    console.log(_CPU);
+                    console.log(_Memory.memoryArray);
                     _CPU.isExecuting = true;
                 }else {
                     //check for valid id

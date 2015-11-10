@@ -40,6 +40,8 @@ var _StdOut;
 //CPU Things
 var _PID = -1;
 var _ProgramSize = 256;
+var _ResidentList = [];
+var _ReadyQueue = [];
 var _CurrPCB = null;
 var _Program = 1;
 var _ProgramEXE = null;

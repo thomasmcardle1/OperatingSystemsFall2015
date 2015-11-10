@@ -43,12 +43,12 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
+            //console.log("MEM AT LOC: " + _MemoryManager.getMemAtLocation(this.PC));
             this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
 
             if(_SingleStep){
                 this.isExecuting = false;
             }
-            this.updateCPUMemoryThings();
             this.updateCPUMemoryThings();
         }
 
@@ -133,6 +133,10 @@ module TSOS {
 
         public loadAccFromMem(){
             var loc = this.getNextTwoBytes();
+            if(_CurrPCB.base > 0){
+                loc += _CurrPCB.base -1;
+            }
+            console.log("Location:" +  loc);
             var decNum = this.hexToDec(_MemoryManager.getMemAtLocation(loc));
             this.Acc = decNum;
             //_AssembleyLanguage = "STA $" + _MemoryManager.getMemory(this.PC);
@@ -141,37 +145,56 @@ module TSOS {
 
         public storeAccInMem(){
             var nxt2 = this.getNextTwoBytes();
-            //var loc = this.hexToDec(_MemoryManager.getMemAtLocation(this.PC+1)); //this.getNextByte();
+            if(_CurrPCB.base > 0){
+                nxt2 += _CurrPCB.base+1;
+            }
+            console.log("Location:" +  nxt2);
             var hexNum = (this.Acc);
-            _MemoryManager.updateMemoryAtLocation(nxt2, hexNum);
+            console.log(_CurrPCB.base + " " + nxt2 + " " + hexNum);
+            _MemoryManager.updateMemoryAtLocation(_CurrPCB.base, nxt2, hexNum);
+            console.log("Mem @ 256: "+_MemoryManager.getMemAtLocation(256));
             this.PC++;
             this.PC++;
         }
 
         public addWithCarry(){
-            this.Acc += this.convertToHex(_MemoryManager.getMemAtLocation(this.getNextTwoBytes()));
+            var memLoc = this.getNextTwoBytes();
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base-1;
+            }
+            this.Acc += this.convertToHex(_MemoryManager.getMemAtLocation(memLoc));
             this.PC = this.PC+ 2;
         }
 
         public loadXWithConstant(){
+            console.log("next byte "+this.getNextByte());
             this.Xreg = this.getNextByte();
             this.PC++;
         }
 
         public loadXFromMem(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base-1;
+            }
+            console.log("Load X Mem location:" +  memLoc);
             this.Xreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
             this.PC++;
             this.PC++;
         }
 
         public loadYWithConstant(){
+            console.log("Load Y: " + this.getNextByte());
             this.Yreg = this.getNextByte();
             this.PC++;
         }
 
         public loadYFromMem(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base;
+            }
+            console.log("Load Y From Mem Location:" +  memLoc);
             this.Yreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
             this.PC++;
             this.PC++;
@@ -179,7 +202,13 @@ module TSOS {
 
         public compareXEqualTo(){
             var memLoc = this.getNextByte();
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base;
+            }
+            console.log("Comapre X Equal To Mem Location:" +  memLoc);
+            console.log("Hex At Location 0 :" + _MemoryManager.getMemAtLocation(0));
             var hexNum = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
+            console.log("hexNum " + hexNum);
             if(hexNum == this.Xreg){
                 this.Zflag = 1;
             }else{
@@ -192,24 +221,34 @@ module TSOS {
         public BNE(){
             if(this.Zflag == 0){
                 var val = this.getNextByte();
+                if(_CurrPCB.base > 0){
+                    val += _CurrPCB.base;
+                }
                 this.PC++;
                 this.PC += val;
-                if(this.PC >= _ProgramSize){
-                    this.PC = this.PC -  _ProgramSize;
+                var combined = (_ProgramSize+_CurrPCB.base);
+                if(this.PC >= combined){
+                    this.PC = this.PC - _ProgramSize;
+                     //this.PC += val;
                 }
             }else{
                 this.PC++;
             }
+            console.log("This.PC: " + this.PC);
         }
 
         public noOp(){}
 
         public incrementValOfByte(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base-1;
+            }
+            console.log("Increment Val Of Byte Location:" +  memLoc);
             var hexNumAtLocation = _MemoryManager.getMemAtLocation(memLoc);
             var decNum = this.hexToDec(hexNumAtLocation);
             decNum++;
-            _MemoryManager.updateMemoryAtLocation(memLoc, decNum);
+            _MemoryManager.updateMemoryAtLocation(_CurrPCB.base, memLoc, decNum);
             this.PC++;
             this.PC++;
         }

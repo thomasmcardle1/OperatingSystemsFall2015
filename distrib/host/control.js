@@ -44,7 +44,7 @@ var TSOS;
             // Use the TypeScript cast to HTMLInputElement
             document.getElementById("btnStartOS").focus();
             //Init Memory
-            _Memory = new TSOS.Memory(256);
+            _Memory = new TSOS.Memory(_MemorySize);
             _MemoryManager = new TSOS.MemoryManager();
             this.createMemoryTable();
             // Check for our testing and enrichment core, which

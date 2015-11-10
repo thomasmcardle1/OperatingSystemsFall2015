@@ -6,7 +6,7 @@ module TSOS {
 
     export class Memory {
 
-        public memoryArray:string [] ;
+        public memoryArray:string [];
         public totalMem: number = _MemorySize;
 
         constructor(size:number) {
