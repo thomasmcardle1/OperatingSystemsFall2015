@@ -130,7 +130,7 @@ var TSOS;
         Cpu.prototype.loadAccFromMem = function () {
             var loc = this.getNextTwoBytes();
             if (_CurrPCB.base > 0) {
-                loc += _CurrPCB.base - 1;
+                loc += _CurrPCB.base;
             }
             console.log("Location:" + loc);
             var decNum = this.hexToDec(_MemoryManager.getMemAtLocation(loc));
@@ -140,9 +140,6 @@ var TSOS;
         };
         Cpu.prototype.storeAccInMem = function () {
             var nxt2 = this.getNextTwoBytes();
-            if (_CurrPCB.base > 0) {
-                nxt2 += _CurrPCB.base + 1;
-            }
             console.log("Location:" + nxt2);
             var hexNum = (this.Acc);
             console.log(_CurrPCB.base + " " + nxt2 + " " + hexNum);
@@ -154,8 +151,9 @@ var TSOS;
         Cpu.prototype.addWithCarry = function () {
             var memLoc = this.getNextTwoBytes();
             if (_CurrPCB.base > 0) {
-                memLoc += _CurrPCB.base - 1;
+                memLoc += _CurrPCB.base;
             }
+            console.log(memLoc);
             this.Acc += this.convertToHex(_MemoryManager.getMemAtLocation(memLoc));
             this.PC = this.PC + 2;
         };
@@ -177,6 +175,7 @@ var TSOS;
         Cpu.prototype.loadYWithConstant = function () {
             console.log("Load Y: " + this.getNextByte());
             this.Yreg = this.getNextByte();
+            console.log("YReg :" + this.Yreg);
             this.PC++;
         };
         Cpu.prototype.loadYFromMem = function () {
@@ -195,7 +194,7 @@ var TSOS;
                 memLoc += _CurrPCB.base;
             }
             console.log("Comapre X Equal To Mem Location:" + memLoc);
-            console.log("Hex At Location 0 :" + _MemoryManager.getMemAtLocation(0));
+            console.log("Hex At Location MemLoc :" + _MemoryManager.getMemAtLocation(memLoc));
             var hexNum = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
             console.log("hexNum " + hexNum);
             if (hexNum == this.Xreg) {
@@ -215,8 +214,14 @@ var TSOS;
                 }
                 this.PC++;
                 this.PC += val;
+                var outofbounds = (_ProgramSize + _CurrPCB.base + 256);
                 var combined = (_ProgramSize + _CurrPCB.base);
-                if (this.PC >= combined) {
+                console.log(this.PC);
+                if (this.PC > outofbounds) {
+                    var newPC = this.PC - combined;
+                    this.PC = newPC;
+                }
+                else if (this.PC >= combined) {
                     this.PC = this.PC - _ProgramSize;
                 }
             }
@@ -229,7 +234,7 @@ var TSOS;
         Cpu.prototype.incrementValOfByte = function () {
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1 + this.PC));
             if (_CurrPCB.base > 0) {
-                memLoc += _CurrPCB.base - 1;
+                memLoc += _CurrPCB.base;
             }
             console.log("Increment Val Of Byte Location:" + memLoc);
             var hexNumAtLocation = _MemoryManager.getMemAtLocation(memLoc);
@@ -247,14 +252,23 @@ var TSOS;
             else if (this.Xreg == 2) {
                 var charString = "";
                 var char = "";
-                var character = _MemoryManager.getMemAtLocation(this.Yreg);
+                var loc = this.Yreg;
+                if (_CurrPCB.base > 0) {
+                    loc += _CurrPCB.base;
+                }
+                console.log("SYSCALL : " + loc);
+                var character = _MemoryManager.getMemAtLocation(loc);
                 var characterCode = 0;
                 while (character != "00") {
                     var decNum = this.hexToDec(character);
                     char = String.fromCharCode(decNum);
                     charString += char;
                     this.Yreg++;
-                    character = _MemoryManager.getMemAtLocation(this.Yreg);
+                    var loc2 = this.Yreg;
+                    if (_CurrPCB.base > 0) {
+                        loc2 += _CurrPCB.base;
+                    }
+                    character = _MemoryManager.getMemAtLocation(loc2);
                 }
                 _StdOut.putText(charString);
             }

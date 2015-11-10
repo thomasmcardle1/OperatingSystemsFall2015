@@ -57,19 +57,20 @@ module TSOS {
            }
 
            var hexCode = code.toString(16);
+           console.log("HEX CODE UPDATE MEM "+hexCode);
 
            var currBlock = _Memory.getMemory();
            if (hexCode.length < 2){
                hexCode= "0" + hexCode;
            }
-           var c = (memLoc+baseRegister);
-           currBlock[c]= hexCode;
+           var newMemLoc = (memLoc+baseRegister);
+           currBlock[newMemLoc]= hexCode;
 
-           console.log("MEMLOC: " + memLoc);
+           //console.log("MEMLOC: " + newMemLoc);
            var currentTableRow = ((Math.floor(memLoc/8))+startRow);
+           //console.log(currentTableRow, memLoc%8, hexCode);
            Control.updateMemTable(currentTableRow, memLoc % 8, hexCode);
-           console.log(currentTableRow, memLoc%8, hexCode);
-           console.log(currBlock);
+           //console.log(currBlock);
        }
     }
 }
