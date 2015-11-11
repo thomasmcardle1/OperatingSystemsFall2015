@@ -16,6 +16,7 @@ module TSOS {
                      public instructionRegister:string = "",
                      public base:number = (_CurrMemBlock*256),
                      public limit:number = ((_CurrMemBlock*256)+255),
+                     public processState: string = "",
                      public location:any = null) {
          }
 

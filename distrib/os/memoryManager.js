@@ -21,7 +21,7 @@ var TSOS;
                 this.baseRegister = 512;
                 this.limitRegister = 768;
             }
-            console.log(this.baseRegister);
+            //console.log(this.baseRegister);
             for (var i = 0; i < code.length; i++) {
                 this.updateMemoryAtLocation(this.baseRegister, i, code[i]);
             }
@@ -50,7 +50,7 @@ var TSOS;
                 startRow = 64;
             }
             var hexCode = code.toString(16);
-            console.log("HEX CODE UPDATE MEM " + hexCode);
+            //console.log("HEX CODE UPDATE MEM "+hexCode);
             var currBlock = _Memory.getMemory();
             if (hexCode.length < 2) {
                 hexCode = "0" + hexCode;

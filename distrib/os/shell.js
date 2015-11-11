@@ -67,7 +67,11 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", "Shows the PID's of Current Programs in Memory");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<ID> - runs the program with the given ID.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - runs all the program in the ready queue");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
@@ -419,6 +423,12 @@ var TSOS;
                 _ResidentList.push(_CurrPCB);
             }
         };
+        Shell.prototype.shellPS = function (args) {
+            _StdOut.putText("PIDs of Programs in memory: ");
+            for (var i = 0; i < _RunnablePIDs.length; i++) {
+                _StdOut.putText(_RunnablePIDs[i] + " ");
+            }
+        };
         Shell.prototype.shellRun = function (args) {
             var runningPID = args[0];
             var validPID = false;
@@ -447,6 +457,21 @@ var TSOS;
                     _StdOut.putText("Invalid program id");
                 }
             }
+        };
+        Shell.prototype.shellRunAll = function (args) {
+            _StdOut.putText("RUNNING ALL");
+            _StdOut.advanceLine();
+            _ReadyQueue = [];
+            for (var i = 0; i < _ResidentList.length; i++) {
+                _ReadyQueue.push(_ResidentList[i]);
+                if (i > 0) {
+                    console.log("ResidentQueue");
+                    console.log(_ReadyQueue[i]);
+                    _ReadyQueue[i].processState = "Waiting";
+                }
+            }
+            _CurrPCB = _ReadyQueue[0];
+            _CPU.isExecuting = true;
         };
         Shell.prototype.shellClearMem = function (args) {
             _Memory.clearMem();

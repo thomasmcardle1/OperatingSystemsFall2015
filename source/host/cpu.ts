@@ -118,12 +118,7 @@ module TSOS {
                     break;
             }
             this.PC++;
-            //Control.createMemoryTable();
         }
-
-        /*private getNextByte(): Number{
-            var nextByteHex = _MemoryManager.getMe
-        }*/
 
         public loadAccWithConstant(){
             this.Acc = this.getNextByte();
@@ -136,7 +131,7 @@ module TSOS {
             if(_CurrPCB.base > 0){
                 loc += _CurrPCB.base;
             }
-            console.log("Location:" +  loc);
+            //console.log("Location:" +  loc);
             var decNum = this.hexToDec(_MemoryManager.getMemAtLocation(loc));
             this.Acc = decNum;
             //_AssembleyLanguage = "STA $" + _MemoryManager.getMemory(this.PC);
@@ -145,11 +140,11 @@ module TSOS {
 
         public storeAccInMem(){
             var nxt2 = this.getNextTwoBytes();
-            console.log("Location:" +  nxt2);
+            //console.log("Location:" +  nxt2);
             var hexNum = (this.Acc);
-            console.log(_CurrPCB.base + " " + nxt2 + " " + hexNum);
+            //console.log(_CurrPCB.base + " " + nxt2 + " " + hexNum);
             _MemoryManager.updateMemoryAtLocation(_CurrPCB.base, nxt2, hexNum);
-            console.log("Mem @ 256: "+_MemoryManager.getMemAtLocation(256));
+            //console.log("Mem @ 256: "+_MemoryManager.getMemAtLocation(256));
             this.PC++;
             this.PC++;
         }
@@ -159,13 +154,13 @@ module TSOS {
             if(_CurrPCB.base > 0){
                 memLoc += _CurrPCB.base;
             }
-            console.log(memLoc);
+            //console.log(memLoc);
             this.Acc += this.convertToHex(_MemoryManager.getMemAtLocation(memLoc));
             this.PC = this.PC+ 2;
         }
 
         public loadXWithConstant(){
-            console.log("next byte "+this.getNextByte());
+            //console.log("next byte "+this.getNextByte());
             this.Xreg = this.getNextByte();
             this.PC++;
         }
@@ -174,16 +169,16 @@ module TSOS {
             if(_CurrPCB.base >0){
                 memLoc += _CurrPCB.base-1;
             }
-            console.log("Load X Mem location:" +  memLoc);
+            //console.log("Load X Mem location:" +  memLoc);
             this.Xreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
             this.PC++;
             this.PC++;
         }
 
         public loadYWithConstant(){
-            console.log("Load Y: " + this.getNextByte());
+            //console.log("Load Y: " + this.getNextByte());
             this.Yreg = this.getNextByte();
-            console.log("YReg :" + this.Yreg);
+            //console.log("YReg :" + this.Yreg);
             this.PC++;
         }
 
@@ -192,7 +187,7 @@ module TSOS {
             if(_CurrPCB.base >0){
                 memLoc += _CurrPCB.base;
             }
-            console.log("Load Y From Mem Location:" +  memLoc);
+            //console.log("Load Y From Mem Location:" +  memLoc);
             this.Yreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
             this.PC++;
             this.PC++;
@@ -203,10 +198,10 @@ module TSOS {
             if(_CurrPCB.base >0){
                 memLoc += _CurrPCB.base;
             }
-            console.log("Comapre X Equal To Mem Location:" +  memLoc);
-            console.log("Hex At Location MemLoc :" + _MemoryManager.getMemAtLocation(memLoc));
+            //console.log("Comapre X Equal To Mem Location:" +  memLoc);
+            //console.log("Hex At Location MemLoc :" + _MemoryManager.getMemAtLocation(memLoc));
             var hexNum = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
-            console.log("hexNum " + hexNum);
+            //console.log("hexNum " + hexNum);
             if(hexNum == this.Xreg){
                 this.Zflag = 1;
             }else{
@@ -226,7 +221,7 @@ module TSOS {
                 this.PC += val;
                 var outofbounds = (_ProgramSize+_CurrPCB.base+256);
                 var combined = (_ProgramSize+_CurrPCB.base);
-                console.log(this.PC);
+                //console.log(this.PC);
                 if(this.PC > outofbounds){
                     var newPC = this.PC - combined;
                     this.PC = newPC;
@@ -237,7 +232,7 @@ module TSOS {
             }else{
                 this.PC++;
             }
-            console.log("This.PC: " + this.PC);
+            //console.log("This.PC: " + this.PC);
         }
 
         public noOp(){}
@@ -247,7 +242,7 @@ module TSOS {
             if(_CurrPCB.base >0){
                 memLoc += _CurrPCB.base;
             }
-            console.log("Increment Val Of Byte Location:" +  memLoc);
+            //console.log("Increment Val Of Byte Location:" +  memLoc);
             var hexNumAtLocation = _MemoryManager.getMemAtLocation(memLoc);
             var decNum = this.hexToDec(hexNumAtLocation);
             decNum++;
@@ -267,7 +262,7 @@ module TSOS {
                 if(_CurrPCB.base > 0){
                     loc += _CurrPCB.base;
                 }
-                console.log("SYSCALL : " + loc);
+                //console.log("SYSCALL : " + loc);
                 var character = _MemoryManager.getMemAtLocation(loc);
                 var characterCode = 0;
                 while(character != "00"){
@@ -312,12 +307,20 @@ module TSOS {
             _Console.putText(">")
         }
 
-        private updateCPUMemoryThings(){
+        public updateCPUMemoryThings(){
             document.getElementById("cpuElementPC").innerHTML = this.PC.toString();
             document.getElementById("cpuElementACC").innerHTML = this.Acc.toString();
             document.getElementById("cpuElementXReg").innerHTML = this.Xreg.toString();
             document.getElementById("cpuElementYReg").innerHTML = this.Yreg.toString();
             document.getElementById("cpuElementZFlag").innerHTML = this.Zflag.toString();
+        }
+
+        public resetCPUMemoryThings(){
+            document.getElementById("cpuElementPC").innerHTML = "0";
+            document.getElementById("cpuElementACC").innerHTML = "0";
+            document.getElementById("cpuElementXReg").innerHTML = "0";
+            document.getElementById("cpuElementYReg").innerHTML = "0";
+            document.getElementById("cpuElementZFlag").innerHTML = "0";
         }
     }
 }

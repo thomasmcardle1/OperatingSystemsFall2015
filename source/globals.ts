@@ -52,22 +52,30 @@ var _StdOut;
 //CPU Things
 var _PID:number = -1;
 var _ProgramSize = 256;
-var _ResidentList:any [] = [];
-var _ReadyQueue:any = [];
 var _CurrPCB:any = null;
 var _Program = 1;
 var _ProgramEXE:number = null;
 var _NumberOfPrograms:number = 3;
 
+//Memory Things
+var _ResidentList:any [] = [];
+var _ReadyQueue:any = [];
+
 var _SingleStep: boolean = false;
 var _Memory:any = null;
 var _MemorySize = 768;
+var _MemBlock:number = 256;
 var _MemoryManager: any = null;
 var _MemoryTable:any = null;
 var _TableRow:number = 0;
 var _CurrMemBlock: number = -1;
 var _RunnablePIDs: any[] = [];
 var _RunningPID: any = null;
+
+//CPU SCHEDULER
+var _Scheduler: TSOS.CPUScheduler;
+var _QUANTUM: number = 6;
+var _CycleCounter: number = 0;
 
 // UI
 var _Console: TSOS.Console;
