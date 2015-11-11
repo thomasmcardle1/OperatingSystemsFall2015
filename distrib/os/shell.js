@@ -392,6 +392,7 @@ var TSOS;
                 var newInputString = inputString.replace(/\n/g, " ").split(" ");
                 var base = 0;
                 var limit = 0;
+                console.log("CurrMemBloc: " + _CurrMemBlock);
                 if (_CurrMemBlock >= 2) {
                     base = -1;
                     limit = -1;
@@ -402,7 +403,6 @@ var TSOS;
                     base = _CurrMemBlock * 256;
                     limit = (_CurrMemBlock * 256) + 255;
                 }
-                console.log("CurrMemBloc: " + _CurrMemBlock);
                 _CurrPCB = new TSOS.PCB();
                 if (_CurrMemBlock <= 2) {
                     _CurrPCB.base = base;
@@ -422,6 +422,7 @@ var TSOS;
                 }
                 _ResidentList.push(_CurrPCB);
             }
+            console.log(_ResidentList);
         };
         Shell.prototype.shellPS = function (args) {
             _StdOut.putText("PIDs of Programs in memory: ");
@@ -430,6 +431,7 @@ var TSOS;
             }
         };
         Shell.prototype.shellRun = function (args) {
+            console.log(_ResidentList);
             var runningPID = args[0];
             var validPID = false;
             if (args.length <= 0) {
@@ -460,17 +462,18 @@ var TSOS;
         };
         Shell.prototype.shellRunAll = function (args) {
             _StdOut.putText("RUNNING ALL");
-            _StdOut.advanceLine();
             _ReadyQueue = [];
+            console.log(_ResidentList);
             for (var i = 0; i < _ResidentList.length; i++) {
+                console.log(_ResidentList[i]);
                 _ReadyQueue.push(_ResidentList[i]);
                 if (i > 0) {
-                    console.log("ResidentQueue");
-                    console.log(_ReadyQueue[i]);
                     _ReadyQueue[i].processState = "Waiting";
                 }
             }
             _CurrPCB = _ReadyQueue[0];
+            console.log("currentPCB");
+            console.log(_CurrPCB);
             _CPU.isExecuting = true;
         };
         Shell.prototype.shellClearMem = function (args) {

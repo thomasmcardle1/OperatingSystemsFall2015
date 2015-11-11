@@ -1,19 +1,19 @@
 ///<reference path="../globals.ts" />
 
 /* ------------
-     CPU.ts
+ CPU.ts
 
-     Requires global.ts.
+ Requires global.ts.
 
-     Routines for the host CPU simulation, NOT for the OS itself.
-     In this manner, it's A LITTLE BIT like a hypervisor,
-     in that the Document environment inside a browser is the "bare metal" (so to speak) for which we write code
-     that hosts our client OS. But that analogy only goes so far, and the lines are blurred, because we are using
-     TypeScript/JavaScript in both the host and client environments.
+ Routines for the host CPU simulation, NOT for the OS itself.
+ In this manner, it's A LITTLE BIT like a hypervisor,
+ in that the Document environment inside a browser is the "bare metal" (so to speak) for which we write code
+ that hosts our client OS. But that analogy only goes so far, and the lines are blurred, because we are using
+ TypeScript/JavaScript in both the host and client environments.
 
-     This code references page numbers in the text book:
-     Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
-     ------------ */
+ This code references page numbers in the text book:
+ Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
+ ------------ */
 
 module TSOS {
 
@@ -44,7 +44,9 @@ module TSOS {
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
             //console.log("MEM AT LOC: " + _MemoryManager.getMemAtLocation(this.PC));
-            this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
+            if(this.isExecuting){
+                this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
+            }
 
             if(_SingleStep){
                 this.isExecuting = false;
@@ -227,7 +229,7 @@ module TSOS {
                     this.PC = newPC;
                 }else if(this.PC >= combined ){
                     this.PC = this.PC - _ProgramSize;
-                     //this.PC += val;
+                    //this.PC += val;
                 }
             }else{
                 this.PC++;

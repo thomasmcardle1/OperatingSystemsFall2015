@@ -79,12 +79,16 @@ var TSOS;
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
-            else if (_CPU.isExecuting) {
-                _CPU.cycle();
+            if (_CPU.isExecuting) {
+                this.handleClockPulse();
             }
             else {
                 this.krnTrace("Idle");
             }
+        };
+        Kernel.prototype.handleClockPulse = function () {
+            _Scheduler.determineContextSwitch();
+            _CPU.cycle();
         };
         //
         // Interrupt Handling
