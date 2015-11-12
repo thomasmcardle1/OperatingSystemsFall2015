@@ -19,11 +19,6 @@ module TSOS {
                      public processState: string = "",
                      public location:any = null) {
          }
-
-         /*
-          public printPCBContents(): void{
-          console.log(this.pid + " ," + this.PC + " ," + " ," + this.Acc + " ," + this.Xreg + " ," + this.Yreg + " ," + this.Zflag + " ," + this.instructionRegister );
-          }*/
      }
 
 }

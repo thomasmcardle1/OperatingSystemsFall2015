@@ -44,11 +44,11 @@ var TSOS;
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            //console.log("MEM AT LOC: " + _MemoryManager.getMemAtLocation(this.PC));
+            ////console.log("MEM AT LOC: " + _MemoryManager.getMemAtLocation(this.PC));
             if (this.isExecuting) {
-                console.log("Curr PC:" + _CPU.PC);
-                console.log("Curr base:" + _CurrPCB.base);
-                console.log("Is Executing: " + this.PC + " PC_1: " + (this.PC - 1));
+                //console.log("Curr PC:" + _CPU.PC);
+                //console.log("Curr base:" + _CurrPCB.base);
+                //console.log("Is Executing: " + this.PC + " PC_1: " +(this.PC-1));
                 this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
                 TSOS.Control.updateReadyQueueTable();
             }
@@ -59,7 +59,7 @@ var TSOS;
         };
         Cpu.prototype.executeOPCode = function (code) {
             this.instruction = code.toUpperCase();
-            console.log("instrucion " + this.instruction);
+            //console.log("instrucion " + this.instruction);
             switch (this.instruction) {
                 case "A9":
                     //Load the accumulator with a constant
@@ -215,12 +215,12 @@ var TSOS;
         Cpu.prototype.BNE = function () {
             if (this.Zflag == 0) {
                 var val = this.getNextByte();
-                console.log("Val before added with PC: " + val);
+                //console.log("Val before added with PC: " + val);
                 /*    if(_CurrPCB.base > 0){
                  val += _CurrPCB.base;
                  }
 
-                 console.log("Val " + val);*/
+                 //console.log("Val " + val);*/
                 this.PC += val;
                 this.PC++;
                 var combined = (_ProgramSize + _CurrPCB.base);
@@ -231,7 +231,7 @@ var TSOS;
             else {
                 this.PC++;
             }
-            console.log("PC After BNE: " + this.PC);
+            //console.log("PC After BNE: " + this.PC);
         };
         Cpu.prototype.noOp = function () { };
         Cpu.prototype.incrementValOfByte = function () {
@@ -239,7 +239,7 @@ var TSOS;
             if (_CurrPCB.base > 0) {
                 memLoc += _CurrPCB.base;
             }
-            //console.log("Increment Val Of Byte Location:" +  memLoc);
+            ////console.log("Increment Val Of Byte Location:" +  memLoc);
             var hexNumAtLocation = _MemoryManager.getMemAtLocation(memLoc);
             var decNum = this.hexToDec(hexNumAtLocation);
             decNum++;
@@ -259,7 +259,7 @@ var TSOS;
                 if (_CurrPCB.base > 0) {
                     loc += _CurrPCB.base;
                 }
-                //console.log("SYSCALL : " + loc);
+                ////console.log("SYSCALL : " + loc);
                 var character = _MemoryManager.getMemAtLocation(loc);
                 var characterCode = 0;
                 while (character != "00") {

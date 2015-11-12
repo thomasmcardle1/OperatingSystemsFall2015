@@ -87,7 +87,6 @@ module TSOS {
             var date = new Date();
             var currentDateAndTime = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
             (<HTMLInputElement>document.getElementById("statusBox1")).value = currentDateAndTime;
-
             if (_KernelInterruptQueue.getSize() > 0) {
                 // Process the first interrupt on the interrupt queue.
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.

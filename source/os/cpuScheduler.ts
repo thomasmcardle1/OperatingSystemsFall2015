@@ -7,7 +7,7 @@ module TSOS {
 
         public determineContextSwitch(): void {
             if(_CycleCounter >= _QUANTUM && _ReadyQueue.length > 0){
-                console.log(_CycleCounter);
+                //console.log(_CycleCounter);
                 this.roundRobinContextSwitch();
                 _CycleCounter = 0;
             }
@@ -17,16 +17,16 @@ module TSOS {
 
         public roundRobinContextSwitch(): void {
             if (_ReadyQueue.length > 1) {
-                console.log(_CurrPCB);
+                //console.log(_CurrPCB);
                 if(_CurrPCB.processState == "Terminated"){
                     var term = _ReadyQueue.shift();
-                    console.log(term.pid + " HAS BEEN " + term.processState);
+                    //console.log(term.pid + " HAS BEEN " + term.processState);
                     _StdOut.putText(" PID [" + term.pid +"] terminated ");
 
                     _CycleCounter = 0;
 
                     _CurrPCB = _ReadyQueue[0];
-                    console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
+                    //console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
 
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
@@ -35,14 +35,14 @@ module TSOS {
                 }else{
                     var pcbToBePushed = _CurrPCB;
                     _ReadyQueue[0].processState = "Waiting";
-                    console.log("PCB TO BE PUSHED " + pcbToBePushed.base + " " + pcbToBePushed.limit + " " + pcbToBePushed.PC);
+                    ////console.log("PCB TO BE PUSHED " + pcbToBePushed.base + " " + pcbToBePushed.limit + " " + pcbToBePushed.PC);
                     _ReadyQueue.push(pcbToBePushed);
 
-                    console.log(_CurrPCB);
+                    ////console.log(_CurrPCB);
                     _ReadyQueue.shift();
 
                     _CurrPCB = _ReadyQueue[0];
-                    console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
+                    ////console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
 
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
@@ -55,8 +55,8 @@ module TSOS {
                 _CPU.Yreg = _ReadyQueue[0].Yreg;
                 _CPU.Zflag = _ReadyQueue[0].Zflag;
 
-                console.log(_CPU);
-                console.log(_CurrPCB);
+                //console.log(_CPU);
+                //conole.log(_CurrPCB);
 
                 for (var i = 0; i < _ReadyQueue.length; i++) {
                     if (_ReadyQueue[i].base === 0) {

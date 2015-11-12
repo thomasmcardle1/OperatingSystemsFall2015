@@ -77,6 +77,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellSetClockPulse, "setclock", "<number> -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKillProg, "kill", "<PID> - KIlls program running");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSODMsg, "bsod", "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
             this.putPrompt();
@@ -394,7 +396,7 @@ var TSOS;
                 var newInputString = inputString.replace(/\n/g, " ").split(" ");
                 var base = 0;
                 var limit = 0;
-                console.log("CurrMemBloc: " + _CurrMemBlock);
+                //console.log("CurrMemBloc: " + _CurrMemBlock);
                 if (_CurrMemBlock >= 2) {
                     base = -1;
                     limit = -1;
@@ -410,8 +412,8 @@ var TSOS;
                     _CurrPCB.base = base;
                     _CurrPCB.limit = limit;
                 }
-                console.log("PCB: " + _CurrPCB.base + " " + _CurrPCB.limit);
-                console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
+                //console.log("PCB: " + _CurrPCB.base + " "+ _CurrPCB.limit);
+                //console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
                 if (_CurrMemBlock <= 2) {
                     var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
                     _StdOut.putText(pid);
@@ -425,7 +427,7 @@ var TSOS;
                     _StdOut.putText("Memory full");
                 }
             }
-            console.log(_ResidentList);
+            //console.log(_ResidentList);
         };
         Shell.prototype.shellPS = function (args) {
             _StdOut.putText("PIDs of Programs in memory: ");
@@ -443,18 +445,18 @@ var TSOS;
             else {
                 for (var i = 0; i < _ResidentList.length; i++) {
                     if (runningPID == _ResidentList[i].pid) {
-                        console.log(_ResidentList[i]);
+                        //console.log(_ResidentList[i]);
                         _CurrPCB = _ResidentList[i];
                         validPID = true;
                     }
                 }
                 if (validPID = true) {
                     //run program
-                    console.log("CURR PID: " + _CurrPCB.pid);
-                    console.log(_CurrPCB.base);
+                    //console.log("CURR PID: " + _CurrPCB.pid);
+                    //console.log(_CurrPCB.base);
                     _CPU.PC = _CurrPCB.base;
-                    console.log(_CPU);
-                    console.log(_Memory.memoryArray);
+                    //console.log(_CPU);
+                    //console.log(_Memory.memoryArray);
                     _CPU.isExecuting = true;
                 }
                 else {
@@ -466,14 +468,14 @@ var TSOS;
         Shell.prototype.shellRunAll = function (args) {
             _StdOut.putText("RUNNING ALL");
             _ReadyQueue = [];
-            console.log(_ResidentList);
+            //console.log(_ResidentList);
             for (var i = 0; i < _ResidentList.length; i++) {
                 _ReadyQueue.push(_ResidentList[i]);
                 if (i > 0) {
                     _ReadyQueue[i].processState = "Waiting";
                 }
             }
-            console.log(_ReadyQueue);
+            //console.log(_ReadyQueue);
             _CurrPCB = _ReadyQueue[0];
             _CurrPCB.processState = "Running";
             _CPU.isExecuting = true;
@@ -487,6 +489,19 @@ var TSOS;
         Shell.prototype.shellSetClockPulse = function (args) {
             var num = args.shift();
             CPU_CLOCK_INTERVAL = num;
+        };
+        Shell.prototype.shellKillProg = function (args) {
+            var pid = args[0];
+            console.log(pid);
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                if (pid == _ReadyQueue[i].pid) {
+                    console.log(pid + "--------------------" + _ReadyQueue[i].pid + "--------------------");
+                    _ReadyQueue.splice(i, 1);
+                }
+                if (pid = _RunnablePIDs[i]) {
+                    _RunnablePIDs.splice(i, 1);
+                }
+            }
         };
         return Shell;
     })();
