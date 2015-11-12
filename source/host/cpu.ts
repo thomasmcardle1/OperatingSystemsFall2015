@@ -1,19 +1,19 @@
 ///<reference path="../globals.ts" />
 
 /* ------------
-     CPU.ts
+ CPU.ts
 
-     Requires global.ts.
+ Requires global.ts.
 
-     Routines for the host CPU simulation, NOT for the OS itself.
-     In this manner, it's A LITTLE BIT like a hypervisor,
-     in that the Document environment inside a browser is the "bare metal" (so to speak) for which we write code
-     that hosts our client OS. But that analogy only goes so far, and the lines are blurred, because we are using
-     TypeScript/JavaScript in both the host and client environments.
+ Routines for the host CPU simulation, NOT for the OS itself.
+ In this manner, it's A LITTLE BIT like a hypervisor,
+ in that the Document environment inside a browser is the "bare metal" (so to speak) for which we write code
+ that hosts our client OS. But that analogy only goes so far, and the lines are blurred, because we are using
+ TypeScript/JavaScript in both the host and client environments.
 
-     This code references page numbers in the text book:
-     Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
-     ------------ */
+ This code references page numbers in the text book:
+ Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
+ ------------ */
 
 module TSOS {
 
@@ -43,19 +43,24 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
-            this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
+            ////console.log("MEM AT LOC: " + _MemoryManager.getMemAtLocation(this.PC));
+            if(this.isExecuting){
+                //console.log("Curr PC:" + _CPU.PC);
+                //console.log("Curr base:" + _CurrPCB.base);
+                //console.log("Is Executing: " + this.PC + " PC_1: " +(this.PC-1));
+                this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
+                TSOS.Control.updateReadyQueueTable();
+            }
 
             if(_SingleStep){
                 this.isExecuting = false;
             }
             this.updateCPUMemoryThings();
-            this.updateCPUMemoryThings();
         }
 
         public executeOPCode(code) {
             this.instruction = code.toUpperCase();
-            console.log("PC: " + this.PC);
-            console.log(this.instruction);
+            //console.log("instrucion " + this.instruction);
             switch (this.instruction) {
                 case "A9":
                     //Load the accumulator with a constant
@@ -119,12 +124,12 @@ module TSOS {
                     break;
             }
             this.PC++;
-            //Control.createMemoryTable();
+            _CurrPCB.PC =  this.PC;
+            _CurrPCB.Acc = this.Acc;
+            _CurrPCB.Xreg = this.Xreg;
+            _CurrPCB.Yreg = this.Yreg ;
+            _CurrPCB.Zflag = this.Zflag;
         }
-
-        /*private getNextByte(): Number{
-            var nextByteHex = _MemoryManager.getMe
-        }*/
 
         public loadAccWithConstant(){
             this.Acc = this.getNextByte();
@@ -134,6 +139,9 @@ module TSOS {
 
         public loadAccFromMem(){
             var loc = this.getNextTwoBytes();
+            if(_CurrPCB.base > 0){
+                loc += _CurrPCB.base;
+            }
             var decNum = this.hexToDec(_MemoryManager.getMemAtLocation(loc));
             this.Acc = decNum;
             //_AssembleyLanguage = "STA $" + _MemoryManager.getMemory(this.PC);
@@ -142,38 +150,54 @@ module TSOS {
 
         public storeAccInMem(){
             var nxt2 = this.getNextTwoBytes();
-            //var loc = this.hexToDec(_MemoryManager.getMemAtLocation(this.PC+1)); //this.getNextByte();
+            //console.log("Location:" +  nxt2);
             var hexNum = (this.Acc);
-            _MemoryManager.updateMemoryAtLocation(nxt2, hexNum);
-            console.log("Update memory at loaction: " + nxt2 + " , " + hexNum);
+            //console.log(_CurrPCB.base + " " + nxt2 + " " + hexNum);
+            _MemoryManager.updateMemoryAtLocation(_CurrPCB.base, nxt2, hexNum);
+            //console.log("Mem @ 256: "+_MemoryManager.getMemAtLocation(256));
             this.PC++;
             this.PC++;
         }
 
         public addWithCarry(){
-            this.Acc += this.convertToHex(_MemoryManager.getMemAtLocation(this.getNextTwoBytes()));
+            var memLoc = this.getNextTwoBytes();
+            if(_CurrPCB.base > 0){
+                memLoc += _CurrPCB.base;
+            }
+            //console.log(memLoc);
+            this.Acc += this.convertToHex(_MemoryManager.getMemAtLocation(memLoc));
             this.PC = this.PC+ 2;
         }
 
         public loadXWithConstant(){
+            //console.log("next byte "+this.getNextByte());
             this.Xreg = this.getNextByte();
             this.PC++;
         }
-
         public loadXFromMem(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base;
+            }
+            //console.log("Load X Mem location:" +  memLoc);
             this.Xreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
             this.PC++;
             this.PC++;
         }
 
         public loadYWithConstant(){
+            //console.log("Load Y: " + this.getNextByte());
             this.Yreg = this.getNextByte();
+            //console.log("YReg :" + this.Yreg);
             this.PC++;
         }
 
         public loadYFromMem(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base;
+            }
+            //console.log("Load Y From Mem Location:" +  memLoc);
             this.Yreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
             this.PC++;
             this.PC++;
@@ -181,7 +205,13 @@ module TSOS {
 
         public compareXEqualTo(){
             var memLoc = this.getNextByte();
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base;
+            }
+            //console.log("Comapre X Equal To Mem Location:" +  memLoc);
+            //console.log("Hex At Location MemLoc :" + _MemoryManager.getMemAtLocation(memLoc));
             var hexNum = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
+            //console.log("hexNum " + hexNum);
             if(hexNum == this.Xreg){
                 this.Zflag = 1;
             }else{
@@ -194,25 +224,39 @@ module TSOS {
         public BNE(){
             if(this.Zflag == 0){
                 var val = this.getNextByte();
-                this.PC++;
+                //console.log("Val before added with PC: " + val);
+
+                /*    if(_CurrPCB.base > 0){
+                 val += _CurrPCB.base;
+                 }
+
+                 //console.log("Val " + val);*/
                 this.PC += val;
-                if(this.PC >= _ProgramSize){
-                    this.PC = this.PC -  _ProgramSize;
+                this.PC++;
+
+                var combined = (_ProgramSize+_CurrPCB.base);
+                if(this.PC >= combined){
+                    this.PC -=_ProgramSize;
                 }
+
             }else{
                 this.PC++;
             }
+            //console.log("PC After BNE: " + this.PC);
         }
 
         public noOp(){}
 
         public incrementValOfByte(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
+            if(_CurrPCB.base >0){
+                memLoc += _CurrPCB.base;
+            }
+            ////console.log("Increment Val Of Byte Location:" +  memLoc);
             var hexNumAtLocation = _MemoryManager.getMemAtLocation(memLoc);
             var decNum = this.hexToDec(hexNumAtLocation);
             decNum++;
-            _MemoryManager.updateMemoryAtLocation(memLoc, decNum);
-            console.log("Update memory at loaction: " + memLoc + " , " +decNum);
+            _MemoryManager.updateMemoryAtLocation(_CurrPCB.base, memLoc, decNum);
             this.PC++;
             this.PC++;
         }
@@ -224,14 +268,23 @@ module TSOS {
             }else if(this.Xreg == 2){
                 var charString = "";
                 var char = "";
-                var character = _MemoryManager.getMemAtLocation(this.Yreg);
+                var loc = this.Yreg;
+                if(_CurrPCB.base > 0){
+                    loc += _CurrPCB.base;
+                }
+                ////console.log("SYSCALL : " + loc);
+                var character = _MemoryManager.getMemAtLocation(loc);
                 var characterCode = 0;
                 while(character != "00"){
                     var decNum = this.hexToDec(character);
                     char = String.fromCharCode(decNum);
                     charString += char;
                     this.Yreg++;
-                    character = _MemoryManager.getMemAtLocation(this.Yreg);
+                    var loc2 = this.Yreg;
+                    if(_CurrPCB.base > 0){
+                        loc2 += _CurrPCB.base;
+                    }
+                    character = _MemoryManager.getMemAtLocation(loc2);
                 }
                 _StdOut.putText(charString);
             }
@@ -257,19 +310,37 @@ module TSOS {
             return parseInt(hexNum,16);
         }
 
-
-        public breakOp(){
-            this.isExecuting = false;
-            _Console.advanceLine();
-            _Console.putText(">")
+        public breakOp() {
+            if (_ReadyQueue.length > 1) {
+                this.programFinished();
+            }else{
+                _StdOut.putText(" -- PID [" + _CurrPCB.pid +"] Has Terminated -- ");
+                _StdOut.advanceLine();
+                _StdOut.putText(">");
+                this.isExecuting = false;
+            }
         }
 
-        private updateCPUMemoryThings(){
+        private programFinished(){
+            this.updateCPUMemoryThings();
+            _ReadyQueue[0].processState = "Terminated";
+            _Scheduler.roundRobinContextSwitch();
+        }
+
+        public updateCPUMemoryThings(){
             document.getElementById("cpuElementPC").innerHTML = this.PC.toString();
             document.getElementById("cpuElementACC").innerHTML = this.Acc.toString();
             document.getElementById("cpuElementXReg").innerHTML = this.Xreg.toString();
             document.getElementById("cpuElementYReg").innerHTML = this.Yreg.toString();
             document.getElementById("cpuElementZFlag").innerHTML = this.Zflag.toString();
+        }
+
+        public resetCPUMemoryThings(){
+            document.getElementById("cpuElementPC").innerHTML = "0";
+            document.getElementById("cpuElementACC").innerHTML = "0";
+            document.getElementById("cpuElementXReg").innerHTML = "0";
+            document.getElementById("cpuElementYReg").innerHTML = "0";
+            document.getElementById("cpuElementZFlag").innerHTML = "0";
         }
     }
 }

@@ -6,7 +6,7 @@ module TSOS {
 
     export class Memory {
 
-        public memoryArray:string [] ;
+        public memoryArray:string [];
         public totalMem: number = _MemorySize;
 
         constructor(size:number) {
@@ -33,6 +33,10 @@ module TSOS {
             Control.resetMemoryTable();
             _CPU.init();
             this.memoryArray = null;
+            _CurrMemBlock =-1;
+            _ResidentList = [];
+            _ReadyQueue = [];
+            _RunnablePIDs = [];
             this.initialize(_MemorySize);
         }
 

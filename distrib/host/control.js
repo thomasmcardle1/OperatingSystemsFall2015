@@ -44,9 +44,10 @@ var TSOS;
             // Use the TypeScript cast to HTMLInputElement
             document.getElementById("btnStartOS").focus();
             //Init Memory
-            _Memory = new TSOS.Memory(256);
+            _Memory = new TSOS.Memory(_MemorySize);
             _MemoryManager = new TSOS.MemoryManager();
             this.createMemoryTable();
+            _Scheduler = new TSOS.CPUScheduler();
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
             if (typeof Glados === "function") {
@@ -88,7 +89,7 @@ var TSOS;
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
-            document.getElementById("taProgramInput").value = "A9 00 8D 00 00 A9 00 8D 4B 00 A9 00 8D 4B 00 A2 03 EC 4B 00 D0 07 A2 01 EC 00 00 D0 05 A2 00 EC 00 00 D0 26 A0 4C A2 02 FF AC 4B 00 A2 01 FF A9 01 6D 4B 00 8D 4B 00 A2 02 EC 4B 00 D0 05 A0 55 A2 02 FF A2 01 EC 00 00 D0 C5 00 00 63 6F 75 6E 74 69 6E 67 00 68 65 6C 6C 6F 20 77 6F 72 6C 64 00";
+            document.getElementById("taProgramInput").value = "A9 00 8D 7B 00 A9 00 8D 7B 00 A9 00 8D 7C 00 A9 00 8D 7C 00 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 39 A0 7D A2 02 FF AC 7B 00 A2 01 FF AD 7B 00 8D 7A 00 A9 01 6D 7A 00 8D 7B 00 A9 03 AE 7B 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 01 EC 7A 00 D0 05 A9 01 8D 7C 00 A9 00 AE 7C 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 AC A0 7F A2 02 FF 00 00 00 00 61 00 61 64 6F 6E 65 00";
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -124,7 +125,7 @@ var TSOS;
         };
         Control.createMemoryTable = function () {
             _MemoryTable = document.getElementById("memTable");
-            console.log(_MemorySize / 8);
+            var counter = 0;
             for (var j = 0; j < (_MemorySize / 8); j++) {
                 if (j === _MemorySize / 8) {
                     var tr = document.createElement("tr");
@@ -136,16 +137,25 @@ var TSOS;
                     _MemoryTable.appendChild(tr);
                 }
                 for (var k = 0; k < 9; k++) {
-                    var td = document.createElement("td");
-                    td.innerHTML = "00";
-                    tr.appendChild(td);
+                    if (k == 0) {
+                        var td = document.createElement("td");
+                        td.id = "hexLabel";
+                        td.innerHTML = "00";
+                        tr.appendChild(td);
+                    }
+                    else {
+                        var td = document.createElement("td");
+                        td.innerHTML = "00";
+                        td.id = counter.toString();
+                        tr.appendChild(td);
+                    }
+                    counter++;
                 }
             }
             for (var i = 0; i < (_MemorySize / 8); i++) {
                 for (var h = 0; h < 9; h++) {
                     if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: " + _TableRow + " HexNum: " + hexNum.toUpperCase());
                         if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
                         }
@@ -171,7 +181,6 @@ var TSOS;
                 for (var h = 0; h < 9; h++) {
                     if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: " + _TableRow + " HexNum: " + hexNum.toUpperCase());
                         if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
                         }
@@ -193,6 +202,29 @@ var TSOS;
                     }
                 }
             }
+        };
+        Control.updateReadyQueueTable = function () {
+            var output = "<thead style='font-weight:bold'>";
+            output += "<th>PID</th>";
+            output += "<th>PC</th>";
+            output += "<th>ACC</th>";
+            output += "<th>X- Reg</th>";
+            output += "<th>Y - Reg</th>";
+            output += "<th>Z - Flag</th>";
+            output += "<th>State</th>";
+            output += "</thead>";
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                output += "<tr>";
+                output += "<td> " + _ReadyQueue[i].pid + "</td>";
+                output += "<td> " + _ReadyQueue[i].PC + "</td>";
+                output += "<td> " + _ReadyQueue[i].Acc + "</td>";
+                output += "<td> " + _ReadyQueue[i].Xreg + "</td>";
+                output += "<td> " + _ReadyQueue[i].Yreg + "</td>";
+                output += "<td> " + _ReadyQueue[i].Zflag + "</td>";
+                output += "<td> " + _ReadyQueue[i].processState + "</td>";
+                output += "</tr>";
+            }
+            document.getElementById("ReadyQueueDisplayTable").innerHTML = output;
         };
         return Control;
     })();

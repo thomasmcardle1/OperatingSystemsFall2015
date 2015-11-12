@@ -30,7 +30,7 @@ module TSOS {
 
     export class Control {
 
-        public static hostInit(): void {
+        public static hostInit():void {
             // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
 
             // Get a global reference to the canvas.  TODO: Should we move this stuff into a Display Device Driver?
@@ -44,18 +44,18 @@ module TSOS {
 
             // Clear the log text box.
             // Use the TypeScript cast to HTMLInputElement
-            (<HTMLInputElement> document.getElementById("taHostLog")).value="";
+            (<HTMLInputElement> document.getElementById("taHostLog")).value = "";
 
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
 
             //Init Memory
-            _Memory = new Memory(256);
+            _Memory = new Memory(_MemorySize);
             _MemoryManager = new MemoryManager();
-
             this.createMemoryTable();
 
+            _Scheduler = new TSOS.CPUScheduler();
 
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
@@ -67,15 +67,15 @@ module TSOS {
             }
         }
 
-        public static hostLog(msg: string, source: string = "?"): void {
+        public static hostLog(msg:string, source:string = "?"):void {
             // Note the OS CLOCK.
-            var clock: number = _OSclock;
+            var clock:number = _OSclock;
 
             // Note the REAL clock in milliseconds since January 1, 1970.
-            var now: number = new Date().getTime();
+            var now:number = new Date().getTime();
 
             // Build the log string.
-            var str: string = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now  + " })"  + "\n";
+            var str:string = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + " })" + "\n";
 
             // Update the log console.
             var taLog = <HTMLInputElement> document.getElementById("taHostLog");
@@ -88,7 +88,7 @@ module TSOS {
         //
         // Host Events
         //
-        public static hostBtnStartOS_click(btn): void {
+        public static hostBtnStartOS_click(btn):void {
             // Disable the (passed-in) start button...
             btn.disabled = true;
 
@@ -109,10 +109,10 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
-            (<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 00 00 A9 00 8D 4B 00 A9 00 8D 4B 00 A2 03 EC 4B 00 D0 07 A2 01 EC 00 00 D0 05 A2 00 EC 00 00 D0 26 A0 4C A2 02 FF AC 4B 00 A2 01 FF A9 01 6D 4B 00 8D 4B 00 A2 02 EC 4B 00 D0 05 A0 55 A2 02 FF A2 01 EC 00 00 D0 C5 00 00 63 6F 75 6E 74 69 6E 67 00 68 65 6C 6C 6F 20 77 6F 72 6C 64 00";
+            (<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 7B 00 A9 00 8D 7B 00 A9 00 8D 7C 00 A9 00 8D 7C 00 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 39 A0 7D A2 02 FF AC 7B 00 A2 01 FF AD 7B 00 8D 7A 00 A9 01 6D 7A 00 8D 7B 00 A9 03 AE 7B 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 01 EC 7A 00 D0 05 A9 01 8D 7C 00 A9 00 AE 7C 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 AC A0 7F A2 02 FF 00 00 00 00 61 00 61 64 6F 6E 65 00";
         }
 
-        public static hostBtnHaltOS_click(btn): void {
+        public static hostBtnHaltOS_click(btn):void {
             Control.hostLog("Emergency halt", "host");
             Control.hostLog("Attempting Kernel shutdown.", "host");
             // Call the OS shutdown routine.
@@ -122,36 +122,37 @@ module TSOS {
             // TODO: Is there anything else we need to do here?
         }
 
-        public static hostBtnSingleStep_click(btn): void{
-            if(_SingleStep){
+        public static hostBtnSingleStep_click(btn):void {
+            if (_SingleStep) {
                 _SingleStep = false;
                 _OsShell.shellStatus("OFF");
-            }else{
+            } else {
                 _SingleStep = true;
                 _OsShell.shellStatus("ON");
             }
         }
 
-        public static hostBtnSingleStepNext_click(btn):void{
+        public static hostBtnSingleStepNext_click(btn):void {
             _CPU.isExecuting = true;
         }
 
-        public static hostBtnReset_click(btn): void {
+        public static hostBtnReset_click(btn):void {
             // The easiest and most thorough way to do this is to reload (not refresh) the document.
             location.reload(true);
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
-        public static updateMemTable(tableRow, tableCel, newCode): void {
-            _MemoryTable.rows[tableRow].cells[tableCel+1].innerHTML = newCode;
+
+        public static updateMemTable(tableRow, tableCel, newCode):void {
+            _MemoryTable.rows[tableRow].cells[tableCel + 1].innerHTML = newCode;
         }
 
-        public static createMemoryTable(): void {
+        public static createMemoryTable():void {
             _MemoryTable = <HTMLTableElement>document.getElementById("memTable");
-            console.log(_MemorySize/8);
-            for (var j = 0; j < (_MemorySize/8); j++) {
-               if (j === _MemorySize/8) {
+            var counter:number = 0;
+            for (var j = 0; j < (_MemorySize / 8); j++) {
+                if (j === _MemorySize / 8) {
                     var tr = document.createElement("tr");
                     tr.id = "botRow";
                     _MemoryTable.appendChild(tr);
@@ -160,59 +161,90 @@ module TSOS {
                     _MemoryTable.appendChild(tr);
                 }
                 for (var k = 0; k < 9; k++) {
-                    var td = document.createElement("td");
-                    td.innerHTML="00";
-                    tr.appendChild(td);
+                    if (k == 0) {
+                        var td = document.createElement("td");
+                        td.id = "hexLabel";
+                        td.innerHTML = "00";
+                        tr.appendChild(td);
+                    } else {
+                        var td = document.createElement("td");
+                        td.innerHTML = "00";
+                        td.id = counter.toString();
+                        tr.appendChild(td);
                     }
+                    counter++;
                 }
+            }
 
-            for(var i=0; i < (_MemorySize/8); i++){
-                for(var h =0; h < 9; h++){
-                    if(h ==0){
+            for (var i = 0; i < (_MemorySize / 8); i++) {
+                for (var h = 0; h < 9; h++) {
+                    if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: "+ _TableRow + " HexNum: " + hexNum.toUpperCase());
-                        if(_TableRow ==0){
+                        if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
-                        }else{
-                            if(hexNum.length < 2){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00"+hexNum.toUpperCase();
-                            }else if(hexNum.length < 3){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0"+hexNum.toUpperCase();
-                            }else{
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x"+hexNum.toUpperCase();
+                        } else {
+                            if (hexNum.length < 2) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00" + hexNum.toUpperCase();
+                            } else if (hexNum.length < 3) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0" + hexNum.toUpperCase();
+                            } else {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x" + hexNum.toUpperCase();
                             }
                         }
-                        _TableRow+=8;
+                        _TableRow += 8;
                     }
                 }
             }
         }
 
-        public static resetMemoryTable(): void{
-            _TableRow =0;
-            for(var i=0; i < (_MemorySize/8); i++){
-                for(var h =0; h < 9; h++){
-                    if(h ==0){
+        public static resetMemoryTable():void {
+            _TableRow = 0;
+            for (var i = 0; i < (_MemorySize / 8); i++) {
+                for (var h = 0; h < 9; h++) {
+                    if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        console.log("Table Row: "+ _TableRow + " HexNum: " + hexNum.toUpperCase());
-                        if(_TableRow ==0){
+                        if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
-                        }else{
-                            if(hexNum.length < 2){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00"+hexNum.toUpperCase();
-                            }else if(hexNum.length < 3){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0"+hexNum.toUpperCase();
-                            }else{
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x"+hexNum.toUpperCase();
+                        } else {
+                            if (hexNum.length < 2) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00" + hexNum.toUpperCase();
+                            } else if (hexNum.length < 3) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0" + hexNum.toUpperCase();
+                            } else {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x" + hexNum.toUpperCase();
                             }
                         }
-                        _TableRow+=8;
+                        _TableRow += 8;
                     }
-                else{
+                    else {
                         _MemoryTable.rows[i].cells[h].innerHTML = "00";
                     }
                 }
             }
+        }
+
+        public static updateReadyQueueTable() {
+            var output="<thead style='font-weight:bold'>";
+            output += "<th>PID</th>";
+            output += "<th>PC</th>";
+            output += "<th>ACC</th>";
+            output += "<th>X- Reg</th>";
+            output += "<th>Y - Reg</th>";
+            output += "<th>Z - Flag</th>";
+            output += "<th>State</th>";
+            output += "</thead>";
+            for (var i=0; i<_ReadyQueue.length; i++){
+                output += "<tr>";
+                output += "<td> "+_ReadyQueue[i].pid+"</td>";
+                output += "<td> "+ _ReadyQueue[i].PC+"</td>";
+                output += "<td> "+_ReadyQueue[i].Acc+"</td>";
+                output += "<td> "+_ReadyQueue[i].Xreg+"</td>";
+                output += "<td> "+_ReadyQueue[i].Yreg+"</td>";
+                output += "<td> "+_ReadyQueue[i].Zflag+"</td>";
+                output += "<td> "+_ReadyQueue[i].processState+"</td>";
+                output += "</tr>";
+            }
+            document.getElementById("ReadyQueueDisplayTable").innerHTML = output;
         }
     }
 }

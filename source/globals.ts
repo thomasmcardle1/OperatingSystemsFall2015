@@ -14,7 +14,7 @@
 const APP_NAME: string    = "TOMS OS";   // 'cause Bob and I were at a loss for a better name.
 const APP_VERSION: string = "17.38";   // What did you expect?
 
-const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
+var CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
@@ -57,12 +57,25 @@ var _Program = 1;
 var _ProgramEXE:number = null;
 var _NumberOfPrograms:number = 3;
 
-var _SingleStep: boolean = false;99
+//Memory Things
+var _ResidentList:any [] = [];
+var _ReadyQueue:any[] = [];
+
+var _SingleStep: boolean = false;
 var _Memory:any = null;
 var _MemorySize = 768;
+var _MemBlock:number = 256;
 var _MemoryManager: any = null;
 var _MemoryTable:any = null;
 var _TableRow:number = 0;
+var _CurrMemBlock: number = -1;
+var _RunnablePIDs: any[] = [];
+var _RunningPID: any = null;
+
+//CPU SCHEDULER
+var _Scheduler: TSOS.CPUScheduler;
+var _QUANTUM: number = 6;
+var _CycleCounter: number = 0;
 
 // UI
 var _Console: TSOS.Console;

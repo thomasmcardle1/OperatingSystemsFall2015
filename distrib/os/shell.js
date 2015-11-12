@@ -67,9 +67,17 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", "Shows the PID's of Current Programs in Memory");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<ID> - runs the program with the given ID.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - runs all the program in the ready queue");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " -Clears Memory and resets Memory Table");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellSetClockPulse, "setclock", "<number> -Clears Memory and resets Memory Table");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKillProg, "kill", "<PID> - KIlls program running");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSODMsg, "bsod", "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
@@ -385,24 +393,70 @@ var TSOS;
                 _StdOut.putText("Code is invalid. Please try again");
             }
             else {
-                console.log(_MemoryTable);
-                _CurrPCB = new TSOS.PCB();
                 var newInputString = inputString.replace(/\n/g, " ").split(" ");
-                _StdOut.putText("Code is valid!");
-                _StdOut.advanceLine();
-                _StdOut.putText(_MemoryManager.loadProgram(newInputString));
-                _StdOut.advanceLine();
-                console.log(_CurrPCB.pid);
-                console.log(_Memory.getMemory());
+                var base = 0;
+                var limit = 0;
+                //console.log("CurrMemBloc: " + _CurrMemBlock);
+                if (_CurrMemBlock >= 2) {
+                    base = -1;
+                    limit = -1;
+                    _CurrMemBlock++;
+                }
+                else if (_CurrMemBlock < 2) {
+                    _CurrMemBlock++;
+                    base = _CurrMemBlock * 256;
+                    limit = (_CurrMemBlock * 256) + 255;
+                }
+                _CurrPCB = new TSOS.PCB();
+                if (_CurrMemBlock <= 2) {
+                    _CurrPCB.base = base;
+                    _CurrPCB.limit = limit;
+                }
+                //console.log("PCB: " + _CurrPCB.base + " "+ _CurrPCB.limit);
+                //console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
+                if (_CurrMemBlock <= 2) {
+                    var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
+                    _StdOut.putText(pid);
+                    _CurrPCB.PC = base;
+                    _RunnablePIDs.push(_CurrPCB.pid);
+                    console.log(_RunnablePIDs);
+                    _StdOut.advanceLine();
+                    _ResidentList.push(_CurrPCB);
+                }
+                else {
+                    _StdOut.putText("Memory full");
+                }
+            }
+            //console.log(_ResidentList);
+        };
+        Shell.prototype.shellPS = function (args) {
+            _StdOut.putText("PIDs of Programs in memory: ");
+            for (var i = 0; i < _RunnablePIDs.length; i++) {
+                _StdOut.putText(_RunnablePIDs[i] + " ");
             }
         };
         Shell.prototype.shellRun = function (args) {
+            console.log(_ResidentList);
+            var runningPID = args[0];
+            var validPID = false;
             if (args.length <= 0) {
                 _StdOut.putText("Please Enter PID with Run <string>");
             }
             else {
-                if (_CurrPCB.pid == args[0]) {
+                for (var i = 0; i < _ResidentList.length; i++) {
+                    if (runningPID == _ResidentList[i].pid) {
+                        //console.log(_ResidentList[i]);
+                        _CurrPCB = _ResidentList[i];
+                        validPID = true;
+                    }
+                }
+                if (validPID = true) {
                     //run program
+                    //console.log("CURR PID: " + _CurrPCB.pid);
+                    //console.log(_CurrPCB.base);
+                    _CPU.PC = _CurrPCB.base;
+                    //console.log(_CPU);
+                    //console.log(_Memory.memoryArray);
                     _CPU.isExecuting = true;
                 }
                 else {
@@ -411,11 +465,48 @@ var TSOS;
                 }
             }
         };
+        Shell.prototype.shellRunAll = function (args) {
+            _StdOut.putText("RUNNING ALL");
+            _ReadyQueue = [];
+            //console.log(_ResidentList);
+            for (var i = 0; i < _ResidentList.length; i++) {
+                _ReadyQueue.push(_ResidentList[i]);
+                if (i > 0) {
+                    _ReadyQueue[i].processState = "Waiting";
+                }
+            }
+            //console.log(_ReadyQueue);
+            _CurrPCB = _ReadyQueue[0];
+            _CurrPCB.processState = "Running";
+            _CPU.isExecuting = true;
+        };
         Shell.prototype.shellClearMem = function (args) {
             _Memory.clearMem();
         };
         Shell.prototype.shellBSODMsg = function (args) {
             _Kernel.krnTrapError("BSOD");
+        };
+        Shell.prototype.shellSetClockPulse = function (args) {
+            var num = args.shift();
+            CPU_CLOCK_INTERVAL = num;
+        };
+        Shell.prototype.shellKillProg = function (args) {
+            var pid = args[0];
+            console.log(pid);
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                if (pid == _ReadyQueue[i].pid) {
+                    console.log(pid + "--------------------" + _ReadyQueue[i].pid + "--------------------");
+                    _ReadyQueue.splice(i, 1);
+                }
+                console.log(_RunnablePIDs);
+            }
+            for (var i = 0; i < _RunnablePIDs.length; i++) {
+                var int = _RunnablePIDs[i];
+                if (pid == int) {
+                    console.log(pid + "--------------------" + int + "--------------------");
+                    _RunnablePIDs.splice(i, 1);
+                }
+            }
         };
         return Shell;
     })();

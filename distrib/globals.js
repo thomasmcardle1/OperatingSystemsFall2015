@@ -44,13 +44,23 @@ var _CurrPCB = null;
 var _Program = 1;
 var _ProgramEXE = null;
 var _NumberOfPrograms = 3;
+//Memory Things
+var _ResidentList = [];
+var _ReadyQueue = [];
 var _SingleStep = false;
-99;
 var _Memory = null;
 var _MemorySize = 768;
+var _MemBlock = 256;
 var _MemoryManager = null;
 var _MemoryTable = null;
 var _TableRow = 0;
+var _CurrMemBlock = -1;
+var _RunnablePIDs = [];
+var _RunningPID = null;
+//CPU SCHEDULER
+var _Scheduler;
+var _QUANTUM = 6;
+var _CycleCounter = 0;
 // UI
 var _Console;
 var _OsShell;
