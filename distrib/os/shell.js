@@ -498,7 +498,12 @@ var TSOS;
                     console.log(pid + "--------------------" + _ReadyQueue[i].pid + "--------------------");
                     _ReadyQueue.splice(i, 1);
                 }
-                if (pid = _RunnablePIDs[i]) {
+                console.log(_RunnablePIDs);
+            }
+            for (var i = 0; i < _RunnablePIDs.length; i++) {
+                var int = _RunnablePIDs[i];
+                if (pid == int) {
+                    console.log(pid + "--------------------" + int + "--------------------");
                     _RunnablePIDs.splice(i, 1);
                 }
             }
