@@ -6,22 +6,22 @@ var TSOS;
         }
         CPUScheduler.prototype.determineContextSwitch = function () {
             if (_CycleCounter >= _QUANTUM && _ReadyQueue.length > 0) {
+                console.log(_CycleCounter);
                 this.roundRobinContextSwitch();
                 _CycleCounter = 0;
             }
             _CycleCounter++;
-            console.log(_CycleCounter);
             _CPU.cycle();
         };
         CPUScheduler.prototype.roundRobinContextSwitch = function () {
-            console.log(_ReadyQueue);
             _ReadyQueue[0].processState = "Waiting";
-            var pcbToBeMoved = _CurrPCB;
-            console.log("curr base " + _CurrPCB.base);
-            _ReadyQueue.push(pcbToBeMoved);
+            var pcbToBePushed = _CurrPCB;
+            console.log("PCB TO BE PUSHED " + pcbToBePushed.base + " " + pcbToBePushed.limit + " " + pcbToBePushed.PC);
+            _ReadyQueue.push(pcbToBePushed);
+            console.log(_CurrPCB);
             _ReadyQueue.shift();
-            console.log(_ReadyQueue);
             _CurrPCB = _ReadyQueue[0];
+            console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
             _RunningPID = parseInt(_ReadyQueue[0].pid);
             _ReadyQueue[0].processState = "Running";
             _CPU.PC = _CurrPCB.PC;
@@ -29,9 +29,7 @@ var TSOS;
             _CPU.Xreg = _CurrPCB.Xreg;
             _CPU.Yreg = _CurrPCB.Yreg;
             _CPU.Zflag = _CurrPCB.Zflag;
-            _CurrMemBlock = 0;
-            _CurrPCB.base = 0;
-            _CurrPCB.limit = 255;
+            console.log(_CPU);
             for (var i = 0; i < _ReadyQueue.length; i++) {
                 if (_ReadyQueue[i].base === 0) {
                     var pidAtFirstLocation = _ReadyQueue[i].pid;

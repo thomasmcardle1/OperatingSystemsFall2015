@@ -75,6 +75,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellSetClockPulse, "setclock", "<number> -Clears Memory and resets Memory Table");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSODMsg, "bsod", "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
             this.putPrompt();
@@ -413,14 +415,15 @@ var TSOS;
                 if (_CurrMemBlock <= 2) {
                     var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
                     _StdOut.putText(pid);
+                    _CurrPCB.PC = base;
                     _RunnablePIDs.push(_CurrPCB.pid);
                     console.log(_RunnablePIDs);
                     _StdOut.advanceLine();
+                    _ResidentList.push(_CurrPCB);
                 }
                 else {
                     _StdOut.putText("Memory full");
                 }
-                _ResidentList.push(_CurrPCB);
             }
             console.log(_ResidentList);
         };
@@ -465,15 +468,14 @@ var TSOS;
             _ReadyQueue = [];
             console.log(_ResidentList);
             for (var i = 0; i < _ResidentList.length; i++) {
-                console.log(_ResidentList[i]);
                 _ReadyQueue.push(_ResidentList[i]);
                 if (i > 0) {
                     _ReadyQueue[i].processState = "Waiting";
                 }
             }
+            console.log(_ReadyQueue);
             _CurrPCB = _ReadyQueue[0];
-            console.log("currentPCB");
-            console.log(_CurrPCB);
+            _CurrPCB.processState = "Running";
             _CPU.isExecuting = true;
         };
         Shell.prototype.shellClearMem = function (args) {
@@ -481,6 +483,10 @@ var TSOS;
         };
         Shell.prototype.shellBSODMsg = function (args) {
             _Kernel.krnTrapError("BSOD");
+        };
+        Shell.prototype.shellSetClockPulse = function (args) {
+            var num = args.shift();
+            CPU_CLOCK_INTERVAL = num;
         };
         return Shell;
     })();

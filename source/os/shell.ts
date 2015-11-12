@@ -133,6 +133,12 @@ module TSOS {
                 " -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellSetClockPulse,
+                "setclock",
+                "<number> -Clears Memory and resets Memory Table");
+            this.commandList[this.commandList.length] = sc;
+
+
             sc = new ShellCommand(this.shellBSODMsg,
             "bsod",
             "- Calls Kernel Trap Error Message.");
@@ -477,13 +483,14 @@ module TSOS {
                 if(_CurrMemBlock <= 2){
                     var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
                     _StdOut.putText(pid);
+                    _CurrPCB.PC = base;
                     _RunnablePIDs.push(_CurrPCB.pid);
                     console.log(_RunnablePIDs);
                     _StdOut.advanceLine();
+                    _ResidentList.push(_CurrPCB);
                 }else{
                     _StdOut.putText("Memory full");
                 }
-                _ResidentList.push(_CurrPCB);
             }
             console.log(_ResidentList);
         }
@@ -530,15 +537,14 @@ module TSOS {
             console.log(_ResidentList);
 
             for(var i=0; i < _ResidentList.length; i++){
-                console.log(_ResidentList[i]);
                 _ReadyQueue.push(_ResidentList[i]);
                 if(i>0){
                     _ReadyQueue[i].processState = "Waiting";
                 }
             }
+            console.log(_ReadyQueue);
             _CurrPCB = _ReadyQueue[0];
-            console.log("currentPCB");
-            console.log(_CurrPCB);
+            _CurrPCB.processState = "Running";
             _CPU.isExecuting = true;
         }
 
@@ -548,6 +554,11 @@ module TSOS {
 
         public shellBSODMsg(args){
             _Kernel.krnTrapError("BSOD");
+        }
+
+        public shellSetClockPulse(args){
+            var num = args.shift();
+            CPU_CLOCK_INTERVAL = num;
         }
     }
 }

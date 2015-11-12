@@ -46,6 +46,8 @@ module TSOS {
             //console.log("MEM AT LOC: " + _MemoryManager.getMemAtLocation(this.PC));
             if(this.isExecuting){
                 this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
+                console.log("Curr PC:" + _CurrPCB.PC);
+                console.log("Curr base:" + _CurrPCB.base);
             }
 
             if(_SingleStep){
@@ -120,6 +122,11 @@ module TSOS {
                     break;
             }
             this.PC++;
+            _CurrPCB.PC =  this.PC;
+            _CurrPCB.Acc = this.Acc;
+            _CurrPCB.Xreg = this.Xreg;
+            _CurrPCB.Yreg = this.Yreg ;
+            _CurrPCB.Zflag = this.Zflag;
         }
 
         public loadAccWithConstant(){
@@ -133,7 +140,6 @@ module TSOS {
             if(_CurrPCB.base > 0){
                 loc += _CurrPCB.base;
             }
-            //console.log("Location:" +  loc);
             var decNum = this.hexToDec(_MemoryManager.getMemAtLocation(loc));
             this.Acc = decNum;
             //_AssembleyLanguage = "STA $" + _MemoryManager.getMemory(this.PC);
@@ -169,7 +175,7 @@ module TSOS {
         public loadXFromMem(){
             var memLoc = this.hexToDec(_MemoryManager.getMemAtLocation(1+this.PC));
             if(_CurrPCB.base >0){
-                memLoc += _CurrPCB.base-1;
+                memLoc += _CurrPCB.base;
             }
             //console.log("Load X Mem location:" +  memLoc);
             this.Xreg = this.hexToDec(_MemoryManager.getMemAtLocation(memLoc));
@@ -216,14 +222,14 @@ module TSOS {
         public BNE(){
             if(this.Zflag == 0){
                 var val = this.getNextByte();
-                if(_CurrPCB.base > 0){
+               if(_CurrPCB.base > 0){
                     val += _CurrPCB.base;
                 }
                 this.PC++;
-                this.PC += val;
+                this.PC = this.PC + val;
                 var outofbounds = (_ProgramSize+_CurrPCB.base+256);
                 var combined = (_ProgramSize+_CurrPCB.base);
-                //console.log(this.PC);
+                //console.log(this.PC + " outofbounds:" + outofbounds + " combined: " + combined);
                 if(this.PC > outofbounds){
                     var newPC = this.PC - combined;
                     this.PC = newPC;
@@ -306,8 +312,10 @@ module TSOS {
         public breakOp(){
             this.isExecuting = false;
             _Console.advanceLine();
-            _Console.putText(">")
+            _Console.putText(">");
         }
+
+
 
         public updateCPUMemoryThings(){
             document.getElementById("cpuElementPC").innerHTML = this.PC.toString();

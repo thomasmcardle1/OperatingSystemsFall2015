@@ -203,6 +203,9 @@ var TSOS;
                 }
             }
         };
+        Control.updateRQDisplay = function () {
+            var output = "";
+        };
         return Control;
     })();
     TSOS.Control = Control;

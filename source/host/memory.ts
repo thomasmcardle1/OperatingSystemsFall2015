@@ -33,6 +33,10 @@ module TSOS {
             Control.resetMemoryTable();
             _CPU.init();
             this.memoryArray = null;
+            _CurrMemBlock =-1;
+            _ResidentList = [];
+            _ReadyQueue = [];
+            _RunnablePIDs = [];
             this.initialize(_MemorySize);
         }
 

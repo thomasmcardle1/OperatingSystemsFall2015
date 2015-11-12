@@ -30,7 +30,7 @@ module TSOS {
 
     export class Control {
 
-        public static hostInit(): void {
+        public static hostInit():void {
             // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
 
             // Get a global reference to the canvas.  TODO: Should we move this stuff into a Display Device Driver?
@@ -44,7 +44,7 @@ module TSOS {
 
             // Clear the log text box.
             // Use the TypeScript cast to HTMLInputElement
-            (<HTMLInputElement> document.getElementById("taHostLog")).value="";
+            (<HTMLInputElement> document.getElementById("taHostLog")).value = "";
 
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
@@ -67,15 +67,15 @@ module TSOS {
             }
         }
 
-        public static hostLog(msg: string, source: string = "?"): void {
+        public static hostLog(msg:string, source:string = "?"):void {
             // Note the OS CLOCK.
-            var clock: number = _OSclock;
+            var clock:number = _OSclock;
 
             // Note the REAL clock in milliseconds since January 1, 1970.
-            var now: number = new Date().getTime();
+            var now:number = new Date().getTime();
 
             // Build the log string.
-            var str: string = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now  + " })"  + "\n";
+            var str:string = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + " })" + "\n";
 
             // Update the log console.
             var taLog = <HTMLInputElement> document.getElementById("taHostLog");
@@ -88,7 +88,7 @@ module TSOS {
         //
         // Host Events
         //
-        public static hostBtnStartOS_click(btn): void {
+        public static hostBtnStartOS_click(btn):void {
             // Disable the (passed-in) start button...
             btn.disabled = true;
 
@@ -112,7 +112,7 @@ module TSOS {
             (<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 7B 00 A9 00 8D 7B 00 A9 00 8D 7C 00 A9 00 8D 7C 00 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 39 A0 7D A2 02 FF AC 7B 00 A2 01 FF AD 7B 00 8D 7A 00 A9 01 6D 7A 00 8D 7B 00 A9 06 AE 7B 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 01 EC 7A 00 D0 05 A9 01 8D 7C 00 A9 00 AE 7C 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 AC A0 7F A2 02 FF 00 00 00 00 62 00 62 64 6F 6E 65 00";
         }
 
-        public static hostBtnHaltOS_click(btn): void {
+        public static hostBtnHaltOS_click(btn):void {
             Control.hostLog("Emergency halt", "host");
             Control.hostLog("Attempting Kernel shutdown.", "host");
             // Call the OS shutdown routine.
@@ -122,35 +122,36 @@ module TSOS {
             // TODO: Is there anything else we need to do here?
         }
 
-        public static hostBtnSingleStep_click(btn): void{
-            if(_SingleStep){
+        public static hostBtnSingleStep_click(btn):void {
+            if (_SingleStep) {
                 _SingleStep = false;
                 _OsShell.shellStatus("OFF");
-            }else{
+            } else {
                 _SingleStep = true;
                 _OsShell.shellStatus("ON");
             }
         }
 
-        public static hostBtnSingleStepNext_click(btn):void{
+        public static hostBtnSingleStepNext_click(btn):void {
             _CPU.isExecuting = true;
         }
 
-        public static hostBtnReset_click(btn): void {
+        public static hostBtnReset_click(btn):void {
             // The easiest and most thorough way to do this is to reload (not refresh) the document.
             location.reload(true);
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
-        public static updateMemTable(tableRow, tableCel, newCode): void {
-            _MemoryTable.rows[tableRow].cells[tableCel+1].innerHTML = newCode;
+
+        public static updateMemTable(tableRow, tableCel, newCode):void {
+            _MemoryTable.rows[tableRow].cells[tableCel + 1].innerHTML = newCode;
         }
 
-        public static createMemoryTable(): void {
+        public static createMemoryTable():void {
             _MemoryTable = <HTMLTableElement>document.getElementById("memTable");
-            var counter:number =0;
-            for (var j = 0; j < (_MemorySize/8); j++) {
+            var counter:number = 0;
+            for (var j = 0; j < (_MemorySize / 8); j++) {
                 if (j === _MemorySize / 8) {
                     var tr = document.createElement("tr");
                     tr.id = "botRow";
@@ -175,84 +176,55 @@ module TSOS {
                 }
             }
 
-            for(var i=0; i < (_MemorySize/8); i++){
-                for(var h =0; h < 9; h++){
-                    if(h ==0){
+            for (var i = 0; i < (_MemorySize / 8); i++) {
+                for (var h = 0; h < 9; h++) {
+                    if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        if(_TableRow ==0){
+                        if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
-                        }else{
-                            if(hexNum.length < 2){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00"+hexNum.toUpperCase();
-                            }else if(hexNum.length < 3){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0"+hexNum.toUpperCase();
-                            }else{
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x"+hexNum.toUpperCase();
+                        } else {
+                            if (hexNum.length < 2) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00" + hexNum.toUpperCase();
+                            } else if (hexNum.length < 3) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0" + hexNum.toUpperCase();
+                            } else {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x" + hexNum.toUpperCase();
                             }
                         }
-                        _TableRow+=8;
+                        _TableRow += 8;
                     }
                 }
             }
         }
 
-        public static resetMemoryTable(): void{
-            _TableRow =0;
-            for(var i=0; i < (_MemorySize/8); i++){
-                for(var h =0; h < 9; h++){
-                    if(h ==0){
+        public static resetMemoryTable():void {
+            _TableRow = 0;
+            for (var i = 0; i < (_MemorySize / 8); i++) {
+                for (var h = 0; h < 9; h++) {
+                    if (h == 0) {
                         var hexNum = _TableRow.toString(16);
-                        if(_TableRow ==0){
+                        if (_TableRow == 0) {
                             _MemoryTable.rows[i].cells[h].innerHTML = "0x000";
-                        }else{
-                            if(hexNum.length < 2){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00"+hexNum.toUpperCase();
-                            }else if(hexNum.length < 3){
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0"+hexNum.toUpperCase();
-                            }else{
-                                _MemoryTable.rows[i].cells[h].innerHTML = "0x"+hexNum.toUpperCase();
+                        } else {
+                            if (hexNum.length < 2) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x00" + hexNum.toUpperCase();
+                            } else if (hexNum.length < 3) {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x0" + hexNum.toUpperCase();
+                            } else {
+                                _MemoryTable.rows[i].cells[h].innerHTML = "0x" + hexNum.toUpperCase();
                             }
                         }
-                        _TableRow+=8;
+                        _TableRow += 8;
                     }
-                else{
+                    else {
                         _MemoryTable.rows[i].cells[h].innerHTML = "00";
                     }
                 }
             }
         }
 
-        public static updateRQDisplay(){
-            var output="";
-            if (_ExecutingProgramPCB!==null){
-                output = "<tr>";
-                output += "<td> "+_ExecutingProgramPCB.pid+"</td>";
-                output += "<td> "+ _ExecutingProgramPCB.PC+"</td>";
-                output += "<td> "+_ExecutingProgramPCB.IR+"</td>";
-                output += "<td> "+_ExecutingProgramPCB.Acc+"</td>";
-                output += "<td> "+_ExecutingProgramPCB.Xreg+"</td>";
-                output += "<td> "+_ExecutingProgramPCB.Yreg+"</td>";
-                output += "<td> "+_ExecutingProgramPCB.Zflag+"</td>";
-                output += "<td> "+_ExecutingProgramPCB.priority+"</td>";
-                output += "<td> "+States[_ExecutingProgramPCB.state]+"</td>";
-                output += "<td> "+_ExecutingProgramPCB.location+"</td>";
-                output += "</tr>";
-            }
-            for (var i=0; i<_Scheduler.readyQueue.getSize(); i++){
-                output += "<tr>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).pid+"</td>";
-                output += "<td> "+ _Scheduler.readyQueue.get(i).PC+"</td>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).IR+"</td>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).Acc+"</td>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).Xreg+"</td>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).Yreg+"</td>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).Zflag+"</td>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).priority+"</td>";
-                output += "<td> "+States[_Scheduler.readyQueue.get(i).state]+"</td>";
-                output += "<td> "+_Scheduler.readyQueue.get(i).location+"</td>";
-                output += "</tr>";
-            }
-            document.getElementById("ReadyQueueDisplay").innerHTML = output;
+        public static updateRQDisplay() {
+            var output = "";
         }
     }
 }
