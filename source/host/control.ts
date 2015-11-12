@@ -109,7 +109,7 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
-            (<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 7B 00 A9 00 8D 7B 00 A9 00 8D 7C 00 A9 00 8D 7C 00 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 39 A0 7D A2 02 FF AC 7B 00 A2 01 FF AD 7B 00 8D 7A 00 A9 01 6D 7A 00 8D 7B 00 A9 06 AE 7B 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 01 EC 7A 00 D0 05 A9 01 8D 7C 00 A9 00 AE 7C 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 AC A0 7F A2 02 FF 00 00 00 00 62 00 62 64 6F 6E 65 00";
+            (<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 7B 00 A9 00 8D 7B 00 A9 00 8D 7C 00 A9 00 8D 7C 00 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 39 A0 7D A2 02 FF AC 7B 00 A2 01 FF AD 7B 00 8D 7A 00 A9 01 6D 7A 00 8D 7B 00 A9 03 AE 7B 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 01 EC 7A 00 D0 05 A9 01 8D 7C 00 A9 00 AE 7C 00 8D 7A 00 A9 00 EC 7A 00 D0 02 A9 01 8D 7A 00 A2 00 EC 7A 00 D0 AC A0 7F A2 02 FF 00 00 00 00 61 00 61 64 6F 6E 65 00";
         }
 
         public static hostBtnHaltOS_click(btn):void {
@@ -223,8 +223,28 @@ module TSOS {
             }
         }
 
-        public static updateRQDisplay() {
-            var output = "";
+        public static updateReadyQueueTable() {
+            var output="<thead style='font-weight:bold'>";
+            output += "<th>PID</th>";
+            output += "<th>PC</th>";
+            output += "<th>ACC</th>";
+            output += "<th>X- Reg</th>";
+            output += "<th>Y - Reg</th>";
+            output += "<th>Z - Flag</th>";
+            output += "<th>State</th>";
+            output += "</thead>";
+            for (var i=0; i<_ReadyQueue.length; i++){
+                output += "<tr>";
+                output += "<td> "+_ReadyQueue[i].pid+"</td>";
+                output += "<td> "+ _ReadyQueue[i].PC+"</td>";
+                output += "<td> "+_ReadyQueue[i].Acc+"</td>";
+                output += "<td> "+_ReadyQueue[i].Xreg+"</td>";
+                output += "<td> "+_ReadyQueue[i].Yreg+"</td>";
+                output += "<td> "+_ReadyQueue[i].Zflag+"</td>";
+                output += "<td> "+_ReadyQueue[i].processState+"</td>";
+                output += "</tr>";
+            }
+            document.getElementById("ReadyQueueDisplayTable").innerHTML = output;
         }
     }
 }

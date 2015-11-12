@@ -38,6 +38,13 @@ var TSOS;
         MemoryManager.prototype.getMemAtLocation = function (location) {
             return _Memory.getMemAtLocation(location);
         };
+        MemoryManager.prototype.clearMemSegment = function (base) {
+            var zero = "00";
+            for (var i = 0; i < 256; i++) {
+                _Memory.memoryArray[i + base] = 0;
+                _MemoryManager.updateMemoryAtLocation(base, (base + i), zero);
+            }
+        };
         MemoryManager.prototype.updateMemoryAtLocation = function (baseRegister, memLoc, code) {
             var startRow = 0;
             if (baseRegister == 0) {

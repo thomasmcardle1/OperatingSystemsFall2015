@@ -44,6 +44,14 @@ module TSOS {
             return _Memory.getMemAtLocation(location);
         }
 
+        public clearMemSegment(base){
+            var zero = "00";
+            for(var i=0; i<256; i++){
+                _Memory.memoryArray[i+base] = 0;
+                _MemoryManager.updateMemoryAtLocation(base, (base+i), zero);
+            }
+        }
+
 
        public updateMemoryAtLocation(baseRegister, memLoc, code): void {
            var startRow = 0;

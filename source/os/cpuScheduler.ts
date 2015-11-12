@@ -16,36 +16,55 @@ module TSOS {
         }
 
         public roundRobinContextSwitch(): void {
-            _ReadyQueue[0].processState = "Waiting";
-            var pcbToBePushed = _CurrPCB;
-            console.log("PCB TO BE PUSHED " + pcbToBePushed.base + " " + pcbToBePushed.limit + " " +pcbToBePushed.PC);
+            if (_ReadyQueue.length > 1) {
+                console.log(_CurrPCB);
+                if(_CurrPCB.processState == "Terminated"){
+                    var term = _ReadyQueue.shift();
+                    console.log(term.pid + " HAS BEEN " + term.processState);
+                    _StdOut.putText(" PID [" + term.pid +"] terminated ");
 
-            _ReadyQueue.push(pcbToBePushed);
+                    _CycleCounter = 0;
 
-            console.log(_CurrPCB);
-            _ReadyQueue.shift();
+                    _CurrPCB = _ReadyQueue[0];
+                    console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
 
-            _CurrPCB = _ReadyQueue[0];
-            console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
+                    _RunningPID = parseInt(_ReadyQueue[0].pid);
+                    _ReadyQueue[0].processState = "Running";
 
+                    _CPU.PC = _ReadyQueue[0].PC -1;
+                }else{
+                    var pcbToBePushed = _CurrPCB;
+                    _ReadyQueue[0].processState = "Waiting";
+                    console.log("PCB TO BE PUSHED " + pcbToBePushed.base + " " + pcbToBePushed.limit + " " + pcbToBePushed.PC);
+                    _ReadyQueue.push(pcbToBePushed);
 
-            _RunningPID = parseInt(_ReadyQueue[0].pid);
-            _ReadyQueue[0].processState = "Running";
+                    console.log(_CurrPCB);
+                    _ReadyQueue.shift();
 
-            _CPU.PC = _CurrPCB.PC;
-            _CPU.Acc = _CurrPCB.Acc;
-            _CPU.Xreg = _CurrPCB.Xreg;
-            _CPU.Yreg = _CurrPCB.Yreg;
-            _CPU.Zflag = _CurrPCB.Zflag;
+                    _CurrPCB = _ReadyQueue[0];
+                    console.log("NEW PCB " + _CurrPCB.base + " " + _CurrPCB.limit + " " + _CurrPCB.PC);
 
-            console.log(_CPU);
+                    _RunningPID = parseInt(_ReadyQueue[0].pid);
+                    _ReadyQueue[0].processState = "Running";
 
-            for (var i = 0; i < _ReadyQueue.length; i++) {
-                if (_ReadyQueue[i].base === 0) {
-                    var pidAtFirstLocation = _ReadyQueue[i].pid;
+                    _CPU.PC = _ReadyQueue[0].PC;
                 }
+
+                _CPU.Acc = _ReadyQueue[0].Acc;
+                _CPU.Xreg = _ReadyQueue[0].Xreg;
+                _CPU.Yreg = _ReadyQueue[0].Yreg;
+                _CPU.Zflag = _ReadyQueue[0].Zflag;
+
+                console.log(_CPU);
+                console.log(_CurrPCB);
+
+                for (var i = 0; i < _ReadyQueue.length; i++) {
+                    if (_ReadyQueue[i].base === 0) {
+                        var pidAtFirstLocation = _ReadyQueue[i].pid;
+                    }
+                }
+                _CurrMemBlock = _CurrPCB.baseRegister / 256;
             }
-            _CurrMemBlock = _CurrPCB.baseRegister / 256;
             _CPU.isExecuting = true;
         }
     }

@@ -45,9 +45,11 @@ module TSOS {
 
             //console.log("MEM AT LOC: " + _MemoryManager.getMemAtLocation(this.PC));
             if(this.isExecuting){
-                this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
-                console.log("Curr PC:" + _CurrPCB.PC);
+                console.log("Curr PC:" + _CPU.PC);
                 console.log("Curr base:" + _CurrPCB.base);
+                console.log("Is Executing: " + this.PC + " PC_1: " +(this.PC-1));
+                this.executeOPCode(_MemoryManager.getMemAtLocation(this.PC));
+                TSOS.Control.updateReadyQueueTable();
             }
 
             if(_SingleStep){
@@ -58,7 +60,7 @@ module TSOS {
 
         public executeOPCode(code) {
             this.instruction = code.toUpperCase();
-            console.log(this.instruction);
+            console.log("instrucion " + this.instruction);
             switch (this.instruction) {
                 case "A9":
                     //Load the accumulator with a constant
@@ -222,25 +224,25 @@ module TSOS {
         public BNE(){
             if(this.Zflag == 0){
                 var val = this.getNextByte();
-               if(_CurrPCB.base > 0){
-                    val += _CurrPCB.base;
-                }
+                console.log("Val before added with PC: " + val);
+
+                /*    if(_CurrPCB.base > 0){
+                 val += _CurrPCB.base;
+                 }
+
+                 console.log("Val " + val);*/
+                this.PC += val;
                 this.PC++;
-                this.PC = this.PC + val;
-                var outofbounds = (_ProgramSize+_CurrPCB.base+256);
+
                 var combined = (_ProgramSize+_CurrPCB.base);
-                //console.log(this.PC + " outofbounds:" + outofbounds + " combined: " + combined);
-                if(this.PC > outofbounds){
-                    var newPC = this.PC - combined;
-                    this.PC = newPC;
-                }else if(this.PC >= combined ){
-                    this.PC = this.PC - _ProgramSize;
-                    //this.PC += val;
+                if(this.PC >= combined){
+                    this.PC -=_ProgramSize;
                 }
+
             }else{
                 this.PC++;
             }
-            //console.log("This.PC: " + this.PC);
+            console.log("PC After BNE: " + this.PC);
         }
 
         public noOp(){}
@@ -308,14 +310,22 @@ module TSOS {
             return parseInt(hexNum,16);
         }
 
-
-        public breakOp(){
-            this.isExecuting = false;
-            _Console.advanceLine();
-            _Console.putText(">");
+        public breakOp() {
+            if (_ReadyQueue.length > 1) {
+                this.programFinished();
+            }else{
+                _StdOut.putText(" -- PID [" + _CurrPCB.pid +"] Has Terminated -- ");
+                _StdOut.advanceLine();
+                _StdOut.putText(">");
+                this.isExecuting = false;
+            }
         }
 
-
+        private programFinished(){
+            this.updateCPUMemoryThings();
+            _ReadyQueue[0].processState = "Terminated";
+            _Scheduler.roundRobinContextSwitch();
+        }
 
         public updateCPUMemoryThings(){
             document.getElementById("cpuElementPC").innerHTML = this.PC.toString();
