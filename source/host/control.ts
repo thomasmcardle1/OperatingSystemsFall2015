@@ -253,6 +253,7 @@ module TSOS {
         }
 
         public static createHardDriveTable():void {
+            sessionStorage.clear();
             _HardDriveTable = <HTMLTableElement>document.getElementById("hdTable");
             console.log(_HardDriveTable);
 

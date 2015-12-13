@@ -231,6 +231,7 @@ var TSOS;
             document.getElementById("ReadyQueueDisplayTable").innerHTML = output;
         };
         Control.createHardDriveTable = function () {
+            sessionStorage.clear();
             _HardDriveTable = document.getElementById("hdTable");
             console.log(_HardDriveTable);
         };

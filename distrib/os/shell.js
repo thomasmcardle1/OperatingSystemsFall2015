@@ -63,6 +63,12 @@ var TSOS;
             //Joke command
             sc = new TSOS.ShellCommand(this.shellPunchLine, "punchline", "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
+            //Create New File
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "- <filename> Creates New File");
+            this.commandList[this.commandList.length] = sc;
+            //Create New File
+            sc = new TSOS.ShellCommand(this.shellReadFile, "read", "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the Status.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
@@ -444,6 +450,37 @@ var TSOS;
             _StdOut.putText("PIDs of Programs in memory: ");
             for (var i = 0; i < _RunnablePIDs.length; i++) {
                 _StdOut.putText(_RunnablePIDs[i] + " ");
+            }
+        };
+        Shell.prototype.shellCreateFile = function (args) {
+            var filename = "";
+            if (args.length == 0 || args.length > 1) {
+                _StdOut.putText("Must enter a filename --- create <filename>");
+            }
+            else {
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Creating File...");
+                if (_FileSystem.createFile(filename)) {
+                    _StdOut.putText("Successfully Created: " + filename);
+                }
+                else {
+                    _StdOut.putText("Failed to Create File: " + filename);
+                }
+            }
+        };
+        Shell.prototype.shellReadFile = function (args) {
+            var filename = "";
+            if (args.length == 0 || args.length > 1) {
+                _StdOut.putText("Must enter a filename --- create <filename>");
+            }
+            else {
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Reading File...");
+                var fileData = _FileSystem.readFile(filename);
+                _StdOut.advanceLine();
+                _StdOut.putText(fileData);
             }
         };
         Shell.prototype.shellRun = function (args) {
