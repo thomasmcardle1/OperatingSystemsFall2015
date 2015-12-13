@@ -72,6 +72,10 @@ var _CurrMemBlock: number = -1;
 var _RunnablePIDs: any[] = [];
 var _RunningPID: any = null;
 
+//Hard Drive Things
+var _HardDriveTable:any= null;
+var _FileSystem:any= null;
+
 //CPU SCHEDULER
 var _Scheduler: TSOS.CPUScheduler;
 var _QUANTUM: number = 6;

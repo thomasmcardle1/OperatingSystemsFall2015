@@ -57,6 +57,9 @@ var _TableRow = 0;
 var _CurrMemBlock = -1;
 var _RunnablePIDs = [];
 var _RunningPID = null;
+//Hard Drive Things
+var _HardDriveTable = null;
+var _FileSystem = null;
 //CPU SCHEDULER
 var _Scheduler;
 var _QUANTUM = 6;

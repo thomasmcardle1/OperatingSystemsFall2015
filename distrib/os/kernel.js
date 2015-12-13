@@ -87,7 +87,7 @@ var TSOS;
             }
         };
         Kernel.prototype.handleClockPulse = function () {
-            _Scheduler.determineContextSwitch();
+            _Scheduler.roundRobinCycle();
             _CPU.cycle();
         };
         //

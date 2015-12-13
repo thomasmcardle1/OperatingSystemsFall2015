@@ -5,17 +5,17 @@ module TSOS {
         constructor() {
         }
 
-        public determineContextSwitch(): void {
+        public roundRobinCycle(): void {
             if(_CycleCounter >= _QUANTUM && _ReadyQueue.length > 0){
                 //console.log(_CycleCounter);
-                this.roundRobinContextSwitch();
+                this.roundRobin();
                 _CycleCounter = 0;
             }
             _CycleCounter++;
             _CPU.cycle();
         }
 
-        public roundRobinContextSwitch(): void {
+        public roundRobin(): void {
             if (_ReadyQueue.length > 1) {
                 //console.log(_CurrPCB);
                 if(_CurrPCB.processState == "Terminated"){

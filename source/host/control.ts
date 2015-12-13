@@ -53,7 +53,10 @@ module TSOS {
             //Init Memory
             _Memory = new Memory(_MemorySize);
             _MemoryManager = new MemoryManager();
+            _FileSystem = new fileSystemDeviceDriver();
+
             this.createMemoryTable();
+            this.createHardDriveTable();
 
             _Scheduler = new TSOS.CPUScheduler();
 
@@ -245,6 +248,12 @@ module TSOS {
                 output += "</tr>";
             }
             document.getElementById("ReadyQueueDisplayTable").innerHTML = output;
+        }
+
+        public static createHardDriveTable():void {
+            _HardDriveTable = <HTMLTableElement>document.getElementById("hdTable");
+            console.log(_HardDriveTable);
+
         }
     }
 }

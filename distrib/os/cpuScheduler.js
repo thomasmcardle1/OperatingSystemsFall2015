@@ -4,16 +4,16 @@ var TSOS;
     var CPUScheduler = (function () {
         function CPUScheduler() {
         }
-        CPUScheduler.prototype.determineContextSwitch = function () {
+        CPUScheduler.prototype.roundRobinCycle = function () {
             if (_CycleCounter >= _QUANTUM && _ReadyQueue.length > 0) {
                 //console.log(_CycleCounter);
-                this.roundRobinContextSwitch();
+                this.roundRobin();
                 _CycleCounter = 0;
             }
             _CycleCounter++;
             _CPU.cycle();
         };
-        CPUScheduler.prototype.roundRobinContextSwitch = function () {
+        CPUScheduler.prototype.roundRobin = function () {
             if (_ReadyQueue.length > 1) {
                 //console.log(_CurrPCB);
                 if (_CurrPCB.processState == "Terminated") {

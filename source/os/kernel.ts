@@ -101,7 +101,7 @@ module TSOS {
         }
 
         public handleClockPulse(): void {
-            _Scheduler.determineContextSwitch();
+            _Scheduler.roundRobinCycle();
             _CPU.cycle();
         }
 

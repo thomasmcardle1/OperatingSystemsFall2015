@@ -46,7 +46,9 @@ var TSOS;
             //Init Memory
             _Memory = new TSOS.Memory(_MemorySize);
             _MemoryManager = new TSOS.MemoryManager();
+            _FileSystem = new TSOS.fileSystemDeviceDriver();
             this.createMemoryTable();
+            this.createHardDriveTable();
             _Scheduler = new TSOS.CPUScheduler();
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
@@ -225,6 +227,10 @@ var TSOS;
                 output += "</tr>";
             }
             document.getElementById("ReadyQueueDisplayTable").innerHTML = output;
+        };
+        Control.createHardDriveTable = function () {
+            _HardDriveTable = document.getElementById("hdTable");
+            console.log(_HardDriveTable);
         };
         return Control;
     })();

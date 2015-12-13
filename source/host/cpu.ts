@@ -324,7 +324,7 @@ module TSOS {
         private programFinished(){
             this.updateCPUMemoryThings();
             _ReadyQueue[0].processState = "Terminated";
-            _Scheduler.roundRobinContextSwitch();
+            _Scheduler.roundRobin();
         }
 
         public updateCPUMemoryThings(){

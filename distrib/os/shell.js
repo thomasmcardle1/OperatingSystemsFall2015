@@ -79,6 +79,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKillProg, "kill", "<PID> - KIlls program running");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Format Disk");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSODMsg, "bsod", "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
             this.putPrompt();
@@ -489,6 +491,10 @@ var TSOS;
         Shell.prototype.shellSetClockPulse = function (args) {
             var num = args.shift();
             CPU_CLOCK_INTERVAL = num;
+        };
+        Shell.prototype.shellFormat = function () {
+            console.log(_FileSystem);
+            _FileSystem.initialize();
         };
         Shell.prototype.shellKillProg = function (args) {
             var pid = args[0];

@@ -143,6 +143,11 @@ module TSOS {
                 "<PID> - KIlls program running");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellFormat,
+                "format",
+                "- Format Disk");
+            this.commandList[this.commandList.length] = sc;
+
             sc = new ShellCommand(this.shellBSODMsg,
             "bsod",
             "- Calls Kernel Trap Error Message.");
@@ -565,6 +570,10 @@ module TSOS {
             CPU_CLOCK_INTERVAL = num;
         }
 
+        public shellFormat(){
+            console.log(_FileSystem);
+            _FileSystem.initialize();
+        }
         public shellKillProg(args){
             var pid = args[0];
             console.log(pid);
