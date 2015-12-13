@@ -10,6 +10,12 @@ var TSOS;
                 this.roundRobin();
                 _CycleCounter = 0;
             }
+            else if (_SchedType == "FCFS") {
+                this.FCFS();
+            }
+            else if (_SchedType == "Priority") {
+                this.Priority();
+            }
             _CycleCounter++;
             _CPU.cycle();
         };
@@ -54,6 +60,10 @@ var TSOS;
                 _CurrMemBlock = _CurrPCB.baseRegister / 256;
             }
             _CPU.isExecuting = true;
+        };
+        CPUScheduler.prototype.FCFS = function () {
+        };
+        CPUScheduler.prototype.Priority = function () {
         };
         return CPUScheduler;
     })();

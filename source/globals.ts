@@ -60,7 +60,7 @@ var _NumberOfPrograms:number = 3;
 //Memory Things
 var _ResidentList:any [] = [];
 var _ReadyQueue:any[] = [];
-
+var _Priority:number = 10;
 var _SingleStep: boolean = false;
 var _Memory:any = null;
 var _MemorySize = 768;
@@ -77,6 +77,7 @@ var _HardDriveTable:any= null;
 var _FileSystem:any= null;
 
 //CPU SCHEDULER
+var _SchedType:any = "RoundRobin";
 var _Scheduler: TSOS.CPUScheduler;
 var _QUANTUM: number = 6;
 var _CycleCounter: number = 0;

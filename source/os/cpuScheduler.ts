@@ -10,6 +10,10 @@ module TSOS {
                 //console.log(_CycleCounter);
                 this.roundRobin();
                 _CycleCounter = 0;
+            }else if(_SchedType == "FCFS"){
+                this.FCFS();
+            }else if(_SchedType == "Priority"){
+                this.Priority();
             }
             _CycleCounter++;
             _CPU.cycle();
@@ -66,6 +70,13 @@ module TSOS {
                 _CurrMemBlock = _CurrPCB.baseRegister / 256;
             }
             _CPU.isExecuting = true;
+        }
+
+        public FCFS(): void {
+
+        }
+
+        public Priority():void {
         }
     }
 }

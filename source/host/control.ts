@@ -245,6 +245,7 @@ module TSOS {
                 output += "<td> "+_ReadyQueue[i].Yreg+"</td>";
                 output += "<td> "+_ReadyQueue[i].Zflag+"</td>";
                 output += "<td> "+_ReadyQueue[i].processState+"</td>";
+                output += "<td> "+_ReadyQueue[i].priority+"</td>";
                 output += "</tr>";
             }
             document.getElementById("ReadyQueueDisplayTable").innerHTML = output;
