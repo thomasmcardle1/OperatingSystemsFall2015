@@ -214,6 +214,7 @@ var TSOS;
             output += "<th>Y - Reg</th>";
             output += "<th>Z - Flag</th>";
             output += "<th>State</th>";
+            output += "<th>Priority</th>";
             output += "</thead>";
             for (var i = 0; i < _ReadyQueue.length; i++) {
                 output += "<tr>";

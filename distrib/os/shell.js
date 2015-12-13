@@ -5,13 +5,13 @@
 ///<reference path="memoryManager.ts" />
 ///<reference path="../host/memory.ts" />
 /* ------------
-   Shell.ts
+ Shell.ts
 
-   The OS Shell - The "command line interface" (CLI) for the console.
+ The OS Shell - The "command line interface" (CLI) for the console.
 
-    Note: While fun and learning are the primary goals of all enrichment center activities,
-          serious injuries may occur when trying to write your own Operating System.
-   ------------ */
+ Note: While fun and learning are the primary goals of all enrichment center activities,
+ serious injuries may occur when trying to write your own Operating System.
+ ------------ */
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 var TSOS;
 (function (TSOS) {
@@ -72,6 +72,8 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<ID> - runs the program with the given ID.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - runs all the program in the ready queue");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellSetScheduleType, "setschedule", " - sets the scheduling type [roundrobin, fcfs, priority]");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
@@ -343,6 +345,12 @@ var TSOS;
             document.getElementById("statusBox2").value += "\n" + currentDateAndTime + " : " + string;
         };
         Shell.prototype.shellLoad = function (args) {
+            _Priority = _DefaultPriority;
+            console.log(args.length);
+            if (args.length >= 1) {
+                _Priority = args[0];
+            }
+            console.log(_Priority);
             var inputString = document.getElementById("taProgramInput").value;
             //console.log(inputString);
             var valid = true;
@@ -410,6 +418,7 @@ var TSOS;
                     limit = (_CurrMemBlock * 256) + 255;
                 }
                 _CurrPCB = new TSOS.PCB();
+                _CurrPCB.priority = _Priority;
                 if (_CurrMemBlock <= 2) {
                     _CurrPCB.base = base;
                     _CurrPCB.limit = limit;
@@ -429,7 +438,7 @@ var TSOS;
                     _StdOut.putText("Memory full");
                 }
             }
-            //console.log(_ResidentList);
+            console.log(_ResidentList);
         };
         Shell.prototype.shellPS = function (args) {
             _StdOut.putText("PIDs of Programs in memory: ");
@@ -470,6 +479,15 @@ var TSOS;
         Shell.prototype.shellRunAll = function (args) {
             _StdOut.putText("RUNNING ALL");
             _ReadyQueue = [];
+            console.log(_ResidentList);
+            //compare function with help from stackOverFlow//
+            _ResidentList.sort(function (a, b) {
+                return parseFloat(a.priority) - parseFloat(b.priority);
+            });
+            console.log(_ResidentList);
+            for (var i = 0; i < _ResidentList.length; i++) {
+                console.log(_ResidentList[i].priority);
+            }
             //console.log(_ResidentList);
             for (var i = 0; i < _ResidentList.length; i++) {
                 _ReadyQueue.push(_ResidentList[i]);
@@ -492,9 +510,18 @@ var TSOS;
             var num = args.shift();
             CPU_CLOCK_INTERVAL = num;
         };
-        Shell.prototype.shellFormat = function () {
+        Shell.prototype.shellFormat = function (args) {
             console.log(_FileSystem);
             _FileSystem.initialize();
+        };
+        Shell.prototype.shellSetScheduleType = function (args) {
+            if (args.length == 0) {
+                _StdOut.putText("Please Enter a Scheduling Type [roundrobin, priority, fcfs]");
+            }
+            else {
+                _SchedType = args[0];
+                console.log(_SchedType);
+            }
         };
         Shell.prototype.shellKillProg = function (args) {
             var pid = args[0];

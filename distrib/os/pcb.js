@@ -17,7 +17,7 @@ var TSOS;
             if (limit === void 0) { limit = ((_CurrMemBlock * 256) + 255); }
             if (processState === void 0) { processState = ""; }
             if (location === void 0) { location = null; }
-            if (priority === void 0) { priority = _Priority; }
+            if (priority === void 0) { priority = null; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;

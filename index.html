@@ -4,6 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="author"             content="Alan G. Labouseur" />
     <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
+    <!--<link rel="stylesheet" href="bootstrap.css" type="text/css"/>-->
+    <link rel="stylesheet" href="customStyles.css" type="text/css" />
+    <!--<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />-->
     <title>
         TSOS - a browser-based virtual Operating System in TypeScript
     </title>
@@ -134,7 +137,7 @@
         </div>
         <br>
         <div id= "ReadyQueue"class="col-md-7" >
-            <div style="font-weight:700">Ready Queue -- Round Robin </div>
+            <div style="font-weight:700"><label id="ReadyQueueLabel">Ready Queue -- Round Robin </label> </div>
             <small>
                 <div id="ReadyQueueDiv">
                     <table id = "ReadyQueueDisplayTable" class="table table-bordered">
@@ -146,6 +149,7 @@
                         <th>Y</th>
                         <th>Z</th>
                         <th>State</th>
+                        <th>Priority</th>
                         </thead>
                         <tbody id ="ReadyQueueDisplay">
                         <tr>
@@ -156,6 +160,7 @@
                             <td id="PCByRegDisplay"></td>
                             <td id="PCBzFlagDisplay"></td>
                             <td id="PCBprocessStateDisplay"></td>
+                            <td id="PCBpriority"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -200,7 +205,7 @@
         <div id="hdElms" style="float: left; margin-left: 100px">
             <label id="hdElements"> Hard Drive </label>
             <div style="height: 100px; overflow-y: scroll">
-                <table id="hdTable" style="font-family: Arial; font-size: larger; background: greenyellow">
+                <table id="hdTable" class="table table-bordered" style="font-family: Arial; font-size: larger; background: greenyellow">
                     <thead>
                     <tr>
                         <th> T S B  </th>

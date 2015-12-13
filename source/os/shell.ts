@@ -5,13 +5,13 @@
 ///<reference path="memoryManager.ts" />
 ///<reference path="../host/memory.ts" />
 /* ------------
-   Shell.ts
+ Shell.ts
 
-   The OS Shell - The "command line interface" (CLI) for the console.
+ The OS Shell - The "command line interface" (CLI) for the console.
 
-    Note: While fun and learning are the primary goals of all enrichment center activities,
-          serious injuries may occur when trying to write your own Operating System.
-   ------------ */
+ Note: While fun and learning are the primary goals of all enrichment center activities,
+ serious injuries may occur when trying to write your own Operating System.
+ ------------ */
 
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 
@@ -128,6 +128,12 @@ module TSOS {
                 " - runs all the program in the ready queue");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellSetScheduleType,
+                "setschedule",
+                " - sets the scheduling type [roundrobin, fcfs, priority]");
+            this.commandList[this.commandList.length] = sc;
+
+
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
                 " -Clears Memory and resets Memory Table");
@@ -149,8 +155,8 @@ module TSOS {
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellBSODMsg,
-            "bsod",
-            "- Calls Kernel Trap Error Message.");
+                "bsod",
+                "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
 
 
@@ -429,35 +435,41 @@ module TSOS {
             (<HTMLInputElement>document.getElementById("statusBox2")).value +=  "\n" + currentDateAndTime + " : " + string;
         }
 
-        public shellLoad(args) {
+        public shellLoad(args){
+            _Priority = _DefaultPriority;
+            console.log(args.length);
+            if(args.length >= 1){
+                _Priority = args[0];
+            }
+            console.log(_Priority);
             var inputString = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
             //console.log(inputString);
             var valid = true;
             var i =0;
             // While loop to loop through all of the characters of the string to validate each character is 0-9 and a-f or a space
-                while (inputString.length > i){
-                    if(inputString.charAt(i)  == "0"){
-                    }else if(inputString.charAt(i) == '1'){
-                    }else if(inputString.charAt(i) == '2'){
-                    }else if(inputString.charAt(i) == '3'){
-                    }else if(inputString.charAt(i) == '4'){
-                    }else if(inputString.charAt(i) == '5'){
-                    }else if(inputString.charAt(i) == '6'){
-                    }else if(inputString.charAt(i) == '7'){
-                    }else if(inputString.charAt(i) == '8'){
-                    }else if(inputString.charAt(i) == '9'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'A'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'B'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'C'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'D'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'E'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'F'){
-                    }else if(inputString.charAt(i) == ' '){
-                    }else {
-                        valid = false;
-                    }
-                    i++;
+            while (inputString.length > i){
+                if(inputString.charAt(i)  == "0"){
+                }else if(inputString.charAt(i) == '1'){
+                }else if(inputString.charAt(i) == '2'){
+                }else if(inputString.charAt(i) == '3'){
+                }else if(inputString.charAt(i) == '4'){
+                }else if(inputString.charAt(i) == '5'){
+                }else if(inputString.charAt(i) == '6'){
+                }else if(inputString.charAt(i) == '7'){
+                }else if(inputString.charAt(i) == '8'){
+                }else if(inputString.charAt(i) == '9'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'A'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'B'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'C'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'D'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'E'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'F'){
+                }else if(inputString.charAt(i) == ' '){
+                }else {
+                    valid = false;
                 }
+                i++;
+            }
             if(inputString.length <= 0){
                 valid = false;
             }
@@ -480,6 +492,7 @@ module TSOS {
                 }
 
                 _CurrPCB = new PCB();
+                _CurrPCB.priority = _Priority;
 
                 if(_CurrMemBlock <=2){
                     _CurrPCB.base = base;
@@ -501,7 +514,7 @@ module TSOS {
                     _StdOut.putText("Memory full");
                 }
             }
-            //console.log(_ResidentList);
+            console.log(_ResidentList);
         }
 
         public shellPS(args){
@@ -543,6 +556,17 @@ module TSOS {
         public shellRunAll(args){
             _StdOut.putText("RUNNING ALL");
             _ReadyQueue = [];
+            console.log(_ResidentList);
+
+            //compare function with help from stackOverFlow//
+            _ResidentList.sort(function (a,b){
+                return parseFloat(a.priority) - parseFloat(b.priority)
+            });
+            console.log(_ResidentList);
+
+            for(var i=0; i<_ResidentList.length; i++){
+                console.log(_ResidentList[i].priority);
+            }
             //console.log(_ResidentList);
 
             for(var i=0; i < _ResidentList.length; i++){
@@ -570,10 +594,20 @@ module TSOS {
             CPU_CLOCK_INTERVAL = num;
         }
 
-        public shellFormat(){
+        public shellFormat(args){
             console.log(_FileSystem);
             _FileSystem.initialize();
         }
+
+        public shellSetScheduleType(args){
+            if(args.length == 0){
+                _StdOut.putText("Please Enter a Scheduling Type [roundrobin, priority, fcfs]")
+            }else{
+                _SchedType = args[0];
+                console.log(_SchedType);
+            }
+        }
+
         public shellKillProg(args){
             var pid = args[0];
             console.log(pid);
@@ -582,7 +616,7 @@ module TSOS {
                     console.log(pid + "--------------------" + _ReadyQueue[i].pid + "--------------------" );
                     _ReadyQueue.splice(i, 1);
                 }
-               console.log(_RunnablePIDs);
+                console.log(_RunnablePIDs);
             }
             for(var i=0; i < _RunnablePIDs.length; i++){
                 var int = _RunnablePIDs[i];
