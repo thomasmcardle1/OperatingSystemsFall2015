@@ -5,7 +5,6 @@ var TSOS;
         function CPUScheduler() {
         }
         CPUScheduler.prototype.roundRobinCycle = function () {
-            console;
             if (_CycleCounter >= _QUANTUM && _ReadyQueue.length > 0 && _SchedType == "roundrobin") {
                 this.roundRobin();
                 _CycleCounter = 0;
@@ -54,6 +53,31 @@ var TSOS;
             _CPU.isExecuting = true;
         };
         CPUScheduler.prototype.FCFS = function () {
+            if (_ReadyQueue.length > 1) {
+                if (_CurrPCB.processState == "Terminated") {
+                    var term = _ReadyQueue.shift();
+                    _StdOut.putText(" PID [" + term.pid + "] terminated ");
+                    _CycleCounter = 0;
+                    _CurrPCB = _ReadyQueue[0];
+                    _RunningPID = parseInt(_ReadyQueue[0].pid);
+                    _ReadyQueue[0].processState = "Running";
+                    _CPU.PC = _ReadyQueue[0].PC - 1;
+                }
+                else {
+                    var pcbToBePushed = _CurrPCB;
+                    _ReadyQueue[0].processState = "Waiting";
+                    _CurrPCB = _ReadyQueue[0];
+                    _RunningPID = parseInt(_ReadyQueue[0].pid);
+                    _ReadyQueue[0].processState = "Running";
+                    _CPU.PC = _ReadyQueue[0].PC;
+                }
+                _CPU.Acc = _ReadyQueue[0].Acc;
+                _CPU.Xreg = _ReadyQueue[0].Xreg;
+                _CPU.Yreg = _ReadyQueue[0].Yreg;
+                _CPU.Zflag = _ReadyQueue[0].Zflag;
+                _CurrMemBlock = _CurrPCB.baseRegister / 256;
+            }
+            _CPU.isExecuting = true;
         };
         CPUScheduler.prototype.Priority = function () {
             console.log("Priority" + _ReadyQueue[0].priority);
@@ -80,10 +104,10 @@ var TSOS;
                 _CPU.Yreg = _ReadyQueue[0].Yreg;
                 _CPU.Zflag = _ReadyQueue[0].Zflag;
                 /*  for (var i = 0; i < _ReadyQueue.length; i++) {
-                      if (_ReadyQueue[i].base === 0) {
-                          var pidAtFirstLocation = _ReadyQueue[i].pid;
-                      }
-                  }*/
+                 if (_ReadyQueue[i].base === 0) {
+                 var pidAtFirstLocation = _ReadyQueue[i].pid;
+                 }
+                 }*/
                 _CurrMemBlock = _CurrPCB.baseRegister / 256;
             }
             _CPU.isExecuting = true;

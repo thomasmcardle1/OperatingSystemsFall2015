@@ -556,12 +556,22 @@ module TSOS {
         public shellRunAll(args){
             _StdOut.putText("RUNNING ALL");
             _ReadyQueue = [];
-            console.log(_ResidentList);
-
+            for(var i = 0; i<_ResidentList.length; i++){
+                console.log("" +_ResidentList[i]);
+            }
+            if(_SchedType == "fcfs"){
+                console.log("fcfs");
+                _ResidentList.sort(function (a,b){
+                    return parseFloat(a.pid) - parseFloat(b.pid)
+                });
+            }
             //compare function with help from stackOverFlow//
-            _ResidentList.sort(function (a,b){
-                return parseFloat(a.priority) - parseFloat(b.priority)
-            });
+            if(_SchedType == "priority"){
+                console.log("Sort _ReadyQueue");
+                _ResidentList.sort(function (a,b){
+                    return parseFloat(a.priority) - parseFloat(b.priority)
+                });
+            }
             console.log(_ResidentList);
 
             for(var i=0; i<_ResidentList.length; i++){
@@ -575,7 +585,8 @@ module TSOS {
                     _ReadyQueue[i].processState = "Waiting";
                 }
             }
-            //console.log(_ReadyQueue);
+
+            console.log(_ReadyQueue);
             _CurrPCB = _ReadyQueue[0];
             _CurrPCB.processState = "Running";
             _CPU.isExecuting = true;
