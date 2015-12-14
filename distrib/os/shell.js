@@ -69,10 +69,16 @@ var TSOS;
             //Create New File
             sc = new TSOS.ShellCommand(this.shellReadFile, "read", "- <filename> reads New File");
             this.commandList[this.commandList.length] = sc;
+            //Shows Current Status
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the Status.");
             this.commandList[this.commandList.length] = sc;
+            //Write to File
+            sc = new TSOS.ShellCommand(this.shellWriteFile, "write", "<filename> - writes data to a file based on filename.");
+            this.commandList[this.commandList.length] = sc;
+            //Loads program input into mem
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
+            //Shows avaiable PID's from resident queue
             sc = new TSOS.ShellCommand(this.shellPS, "ps", "Shows the PID's of Current Programs in Memory");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<ID> - runs the program with the given ID.");
@@ -472,7 +478,7 @@ var TSOS;
         Shell.prototype.shellReadFile = function (args) {
             var filename = "";
             if (args.length == 0 || args.length > 1) {
-                _StdOut.putText("Must enter a filename --- create <filename>");
+                _StdOut.putText("Must enter a filename --- read <filename>");
             }
             else {
                 filename = args[0];
@@ -482,6 +488,28 @@ var TSOS;
                 _StdOut.advanceLine();
                 _StdOut.putText(fileData);
             }
+        };
+        Shell.prototype.shellWriteFile = function (args) {
+            var filename = "";
+            if (args.length == 0) {
+                _StdOut.putText("Must enter a filename --- write <filename> <'file data'>");
+            }
+            else {
+                filename = args[0];
+                var whatToWrite;
+                var bool = false;
+                for (var i = 1; i < args.length; i++) {
+                    console.log(args[i]);
+                    whatToWrite += args[i].toString() + " ";
+                }
+            }
+            var splitStr = whatToWrite.split("'");
+            console.log(splitStr);
+            console.log(splitStr[1]);
+            whatToWrite = splitStr[1];
+            _StdOut.putText(" Writing to File...");
+            var fileData = _FileSystem.writeFile(filename, whatToWrite);
+            _StdOut.putText("Successful");
         };
         Shell.prototype.shellRun = function (args) {
             console.log(_ResidentList);

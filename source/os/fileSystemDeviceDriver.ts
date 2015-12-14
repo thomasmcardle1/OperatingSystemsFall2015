@@ -93,6 +93,8 @@ module TSOS {
                 sessionStorage.setItem(freeFileBlock, fileData);
                 bool = true;
             }
+
+            this.updateFileSystemTable();
             return bool;
 
         }
@@ -121,11 +123,106 @@ module TSOS {
                 }
 
             var fileLocation =sessionStorage.getItem(fileDirKey).substr(1,3);
-            console.log(fileLocation);
             var hexFileData = sessionStorage.getItem(fileLocation);
-            var stringFileData = this.HexToString(hexFileData);
-            console.log(stringFileData);
+            console.log(hexFileData);
+            var stringFileData;
+
+            if(hexFileData.substr(0,4) == "1---"){
+                console.log(hexFileData);
+                stringFileData = this.HexToString(hexFileData);
+                console.log(stringFileData);
+                return stringFileData;
+            }else{
+                var fileData= "";
+                var check = 1;
+                var nextFileLoc = fileLocation;
+                while(check != 0){
+                    var hexData = sessionStorage.getItem(nextFileLoc);
+                    var meta = hexData.substr(0,4);
+                    console.log(meta);
+                    if(meta != '1---'){
+                        var getString = hexData.substr(4,(hexData.length));
+                        fileData += this.HexToString(getString);
+                        console.log(fileData);
+                        nextFileLoc = hexData.substr(1,3);
+                        console.log(nextFileLoc);
+                    }else{
+                        console.log(nextFileLoc);
+                        var getString = hexData.substr(4,(hexData.length));
+                        console.log("getString: "+getString);
+                        fileData += this.HexToString(getString);
+                        console.log(fileData);
+                        stringFileData = fileData;
+                        check =0;
+                    }
+                }
+                stringFileData = fileData;
+            }
             return stringFileData;
+        }
+
+        public writeFile(fileName, fileData){
+            var hexFileName = this.stringToHex(fileName);
+            for(var i=hexFileName.length; i<(this.fileSize-4);i++){
+                hexFileName+="~";
+            }
+            var fileDirKey;
+            //Best Way to break out of nested loops according to stack overflow
+            loop1:
+                for(var x=0; x < this.tracks; x++){
+                    for(var y=0; y<this.sectors; y++){
+                        for(var z=0; z<this.blocks; z++){
+                            var key = this.keyGenerator(x,y,z);
+                            var data = sessionStorage.getItem(key);
+                            var meta = data.substr(4,64);
+                            console.log(meta);
+                            if(meta == hexFileName){
+                                fileDirKey = key;
+                                break loop1;
+                            }
+                        }
+                    }
+                }
+
+            var fileLocation = sessionStorage.getItem(fileDirKey).substr(1,3);
+            console.log(fileLocation);
+            var hexFileData = this.stringToHex(fileData);
+            console.log(hexFileData.length);
+            console.log(hexFileData);
+            if(hexFileData.length <= 60){
+                hexFileData = "1---"+hexFileData;
+                for(var i=hexFileData.length; i<this.fileSize;i++){
+                    hexFileData+="~";
+                }
+                sessionStorage.setItem(fileLocation, hexFileData);
+            }else {
+                while (hexFileData.length > 0) {
+                    var freeFileBlock;
+                    if(hexFileData.length<=60){
+                        freeFileBlock = this.findFreeFileBlock();
+                        hexFileData = "1---"+hexFileData;
+                        for(var i=hexFileData.length; i<this.fileSize;i++){
+                            hexFileData+="~";
+                        }
+                        sessionStorage.setItem(freeFileBlock, hexFileData);
+                        hexFileData = "";
+                    }else{
+                        var firstfreeFileBlock = this.findFreeFileBlock();
+                        var string = "1~~~";
+                        sessionStorage.setItem(firstfreeFileBlock,string);
+                        freeFileBlock = this.findFreeFileBlock();
+                        console.log(freeFileBlock);
+                        var subString = hexFileData.substr(0,60);
+                        var newData = "1" + freeFileBlock + subString;
+                        sessionStorage.setItem(firstfreeFileBlock, newData);
+                        console.log("Before SubString: " + newData);
+                        hexFileData = hexFileData.substr(60, (hexFileData.length));
+                        console.log("hex file: " + hexFileData);
+                        console.log(hexFileData.length);
+                    }
+                }
+            }
+            this.updateFileSystemTable();
         }
 
         public createTable(){
@@ -149,19 +246,37 @@ module TSOS {
             return (t+""+s+""+b);
         }
 
-        public stringToHex(string){
+        public stringToHex(loc){
             var hexString = "";
-            for(var i = 0; i < string.length; i++){
-                hexString += string.charCodeAt(i).toString(16);
+            for(var i = 0; i < loc.length; i++){
+                hexString += loc.charCodeAt(i).toString(16);
             }
             return hexString;
         }
+
         public HexToString(hexData){
             var string = "";
             for (var i = 0; i < hexData.length; i+=2){
                 string += String.fromCharCode(parseInt(hexData.substr(i, 2), 16));
             }
             return string;
+        }
+
+        public updateFileSystemTable(){
+            var table = " <thead><tr><th> T S B  </th><th> Meta   </th><th> Data  </th></tr>";
+            for(var x=0; x < this.tracks; x++){
+                for(var y=0; y<this.sectors; y++){
+                    for(var z=0; z<this.blocks; z++){
+                        var data = sessionStorage.getItem(this.keyGenerator(x,y,z));
+                        var meta = (data.substr(0,4));
+                        data = data.substr(4,60);
+                        var key = this.keyGenerator(x,y,z);
+                        table += "<tr><td>"+key+"</td><td>"+meta+"</td><td>"+data+"</td></tr>";
+                    }
+                }
+            }
+            _HardDriveTable.innerHTML = table;
+
         }
     }
 }
