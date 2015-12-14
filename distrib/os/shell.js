@@ -66,11 +66,14 @@ var TSOS;
             //Create New File
             sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "- <filename> Creates New File");
             this.commandList[this.commandList.length] = sc;
-            //Create New File
+            //Reads File
             sc = new TSOS.ShellCommand(this.shellReadFile, "read", "- <filename> reads New File");
             this.commandList[this.commandList.length] = sc;
             //Deletes Files
             sc = new TSOS.ShellCommand(this.shellDeleteFile, "delete", "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
+            //Shows Currrent Scheduling
+            sc = new TSOS.ShellCommand(this.shellShowScheduleType, "getschedule", "- displays current scheuling");
             this.commandList[this.commandList.length] = sc;
             //Shows Current Status
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the Status.");
@@ -620,6 +623,9 @@ var TSOS;
                 _SchedType = args[0];
                 console.log(_SchedType);
             }
+        };
+        Shell.prototype.shellShowScheduleType = function (args) {
+            _StdOut.putText("Current Scheduling Algorithm: " + _SchedType);
         };
         Shell.prototype.shellKillProg = function (args) {
             var pid = args[0];

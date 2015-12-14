@@ -109,7 +109,7 @@ module TSOS {
                 "- <filename> Creates New File");
             this.commandList[this.commandList.length] = sc;
 
-            //Create New File
+            //Reads File
             sc = new ShellCommand(this.shellReadFile,
                 "read",
                 "- <filename> reads New File");
@@ -119,6 +119,12 @@ module TSOS {
             sc = new ShellCommand(this.shellDeleteFile,
                 "delete",
                 "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
+
+             //Shows Currrent Scheduling
+            sc = new ShellCommand(this.shellShowScheduleType,
+                "getschedule",
+                "- displays current scheuling");
             this.commandList[this.commandList.length] = sc;
 
 
@@ -720,6 +726,10 @@ module TSOS {
                 _SchedType = args[0];
                 console.log(_SchedType);
             }
+        }
+
+        public shellShowScheduleType(args){
+            _StdOut.putText("Current Scheduling Algorithm: " + _SchedType);
         }
 
         public shellKillProg(args){
