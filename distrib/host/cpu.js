@@ -298,7 +298,7 @@ var TSOS;
                 this.programFinished();
             }
             else {
-                _StdOut.putText(" -- PID [" + _CurrPCB.pid + "] Has Terminated -- ");
+                //_StdOut.putText(" -- PID [" + _CurrPCB.pid +"] Has Terminated -- ");
                 _StdOut.advanceLine();
                 _StdOut.putText(">");
                 this.isExecuting = false;

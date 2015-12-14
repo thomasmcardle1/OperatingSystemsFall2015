@@ -314,7 +314,7 @@ module TSOS {
             if (_ReadyQueue.length > 1) {
                 this.programFinished();
             }else{
-                _StdOut.putText(" -- PID [" + _CurrPCB.pid +"] Has Terminated -- ");
+                //_StdOut.putText(" -- PID [" + _CurrPCB.pid +"] Has Terminated -- ");
                 _StdOut.advanceLine();
                 _StdOut.putText(">");
                 this.isExecuting = false;

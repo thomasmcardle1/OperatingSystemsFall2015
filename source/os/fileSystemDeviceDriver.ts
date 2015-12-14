@@ -23,6 +23,7 @@ module TSOS {
                     }
                 }
             }
+            _Formatted = true;
             this.createTable();
         }
 
@@ -89,7 +90,8 @@ module TSOS {
                 for(var x=fileData.length; x<this.fileSize; x++){
                     fileData += "~";
                 }
-                sessionStorage.setItem(freeDirBlock, data );
+                sessionStorage.setItem(freeDirBlock, data);
+                console.log("File Name: " + data);
                 sessionStorage.setItem(freeFileBlock, fileData);
                 bool = true;
             }
@@ -99,7 +101,7 @@ module TSOS {
 
         }
 
-        public readFile(fileName){
+        public readFile(fileName): string{
             var hexFile = this.stringToHex(fileName);
             for(var i=hexFile.length; i<(this.fileSize-4);i++){
                 hexFile+="~";

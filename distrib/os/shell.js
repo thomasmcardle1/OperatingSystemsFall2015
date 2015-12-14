@@ -450,13 +450,25 @@ var TSOS;
                     _RunnablePIDs.push(_CurrPCB.pid);
                     console.log(_RunnablePIDs);
                     _StdOut.advanceLine();
+                    _CurrPCB.location = "Memory";
                     _ResidentList.push(_CurrPCB);
                 }
+                else if (_CurrMemBlock > 2 || _Formatted == true) {
+                    _RunnablePIDs.push(_CurrPCB.pid);
+                    _StdOut.putText("pid:" + _PID + " loaded on disk as filename:" + _DefaultProgName + _PID);
+                    _StdOut.advanceLine();
+                    _CurrPCB.location = "FS";
+                    _ResidentList.push(_CurrPCB);
+                    var fileName = _DefaultProgName + _PID;
+                    _FileSystem.createFile(fileName);
+                    _FileSystem.writeFile(fileName, inputString);
+                }
                 else {
-                    _StdOut.putText("Memory full");
+                    _StdOut.putText("Memory full. Please Format Disk");
                 }
             }
             console.log(_ResidentList);
+            console.log(_Formatted);
         };
         Shell.prototype.shellPS = function (args) {
             _StdOut.putText("PIDs of Programs in memory: ");

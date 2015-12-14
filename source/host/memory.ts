@@ -29,6 +29,7 @@ module TSOS {
         public getMemAtLocation(memLocation) : string{
             return this.memoryArray[memLocation];
         }
+
         public clearMem(): void {
             Control.resetMemoryTable();
             _CPU.init();

@@ -23,6 +23,7 @@ var TSOS;
                     }
                 }
             }
+            _Formatted = true;
             this.createTable();
         };
         fileSystemDeviceDriver.prototype.findFreeDirBlock = function () {
@@ -86,6 +87,7 @@ var TSOS;
                     fileData += "~";
                 }
                 sessionStorage.setItem(freeDirBlock, data);
+                console.log("File Name: " + data);
                 sessionStorage.setItem(freeFileBlock, fileData);
                 bool = true;
             }

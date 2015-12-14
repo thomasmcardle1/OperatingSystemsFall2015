@@ -215,6 +215,7 @@ var TSOS;
             output += "<th>Z - Flag</th>";
             output += "<th>State</th>";
             output += "<th>Priority</th>";
+            output += "<th>Location</th>";
             output += "</thead>";
             for (var i = 0; i < _ReadyQueue.length; i++) {
                 output += "<tr>";
@@ -226,6 +227,7 @@ var TSOS;
                 output += "<td> " + _ReadyQueue[i].Zflag + "</td>";
                 output += "<td> " + _ReadyQueue[i].processState + "</td>";
                 output += "<td> " + _ReadyQueue[i].priority + "</td>";
+                output += "<td> " + _ReadyQueue[i].location + "</td>";
                 output += "</tr>";
             }
             document.getElementById("ReadyQueueDisplayTable").innerHTML = output;

@@ -76,6 +76,8 @@ var _RunningPID: any = null;
 //Hard Drive Things
 var _HardDriveTable:any= null;
 var _FileSystem:any= null;
+var _Formatted:boolean=false;
+var _DefaultProgName: string = "program";
 
 //CPU SCHEDULER
 var _SchedType:any = "roundrobin";

@@ -19,10 +19,11 @@ module TSOS {
         }
 
         public roundRobin(): void {
+
             if (_ReadyQueue.length > 1) {
                 if(_CurrPCB.processState == "Terminated"){
                     var term = _ReadyQueue.shift();
-                    _StdOut.putText(" PID [" + term.pid +"] terminated ");
+                    //_StdOut.putText(" PID [" + term.pid +"] terminated ");
                     _CycleCounter = 0;
                     _CurrPCB = _ReadyQueue[0];
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
@@ -34,6 +35,45 @@ module TSOS {
                     _ReadyQueue.push(pcbToBePushed);
                     _ReadyQueue.shift();
                     _CurrPCB = _ReadyQueue[0];
+                    if(_CurrPCB.location === "FS"){
+                        _CurrPCB.base = 0;
+                        _CurrPCB.limit = 255;
+
+                        var memDataToBeMoved = "";
+                        for(var i=0; i<255; i++){
+                            memDataToBeMoved += _Memory.getMemAtLocation(i);
+                        }
+                        console.log("Data To Be Swapped: " + memDataToBeMoved);
+
+                        for (var i = 0; i < _ReadyQueue.length; i++) {
+                            if (_ReadyQueue[i].base === 0) {
+                                var pid = _ReadyQueue[i].pid;
+                                _ReadyQueue[i].location = "FS";
+                            }
+                        }
+
+                        _CurrPCB.location = "memory";
+
+                        var programFromDisk = _FileSystem.readFile(_DefaultProgName+pid);
+                        console.log("Program On Disk: " + programFromDisk);
+
+                        for(var i=0; i < 255; i++){
+                            _MemoryManager.updateMemoryAtLocation(0,i,"00");
+                        }
+
+                        var code = programFromDisk.replace( /\n/g, " " ).split( " " );
+                        console.log(code);
+                        for(var i=0; i < code.length; i++){
+                            _MemoryManager.updateMemoryAtLocation(0,i,code[i]);
+                        }
+
+                        if(pidOfBase != "undefined"){
+                            _FileSystem.createFile("-")
+                        }
+
+                    }
+
+
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
                     _CPU.PC = _ReadyQueue[0].PC;
@@ -44,11 +84,7 @@ module TSOS {
                 _CPU.Yreg = _ReadyQueue[0].Yreg;
                 _CPU.Zflag = _ReadyQueue[0].Zflag;
 
-                for (var i = 0; i < _ReadyQueue.length; i++) {
-                    if (_ReadyQueue[i].base === 0) {
-                        var pidAtFirstLocation = _ReadyQueue[i].pid;
-                    }
-                }
+
                 _CurrMemBlock = _CurrPCB.baseRegister / 256;
             }
             _CPU.isExecuting = true;
