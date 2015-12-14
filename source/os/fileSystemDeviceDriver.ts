@@ -225,6 +225,65 @@ module TSOS {
             this.updateFileSystemTable();
         }
 
+        public deleteFile(fileName){
+            var blank="";
+            for(var i=0; i<this.fileSize;i++){
+                blank += "~";
+            }
+
+            var hexFile = this.stringToHex(fileName);
+            for(var i=hexFile.length; i<(this.fileSize-4);i++){
+                hexFile+="~";
+            }
+            var fileDirKey;
+            //Best Way to break out of nested loops according to stack overflow
+            loop1:
+                for(var x=0; x < this.tracks; x++){
+                    for(var y=0; y<this.sectors; y++){
+                        for(var z=0; z<this.blocks; z++){
+                            var key = this.keyGenerator(x,y,z);
+                            var data = sessionStorage.getItem(key);
+                            var meta = data.substr(4,64);
+                            console.log(meta);
+                            if(meta == hexFile){
+                                fileDirKey = key;
+                                break loop1;
+                            }
+                        }
+                    }
+                }
+
+
+            var fileLocation =sessionStorage.getItem(fileDirKey).substr(1,3);
+            var hexFileData = sessionStorage.getItem(fileLocation);
+            var stringFileData;
+
+            if(fileDirKey!=null){
+                sessionStorage.setItem(fileDirKey, blank);
+            }
+
+            if(hexFileData.substr(0,4) == "1---"){
+                console.log(hexFileData);
+                sessionStorage.setItem(fileLocation, blank);
+            }else{
+                var check = 1;
+                var nextFileLoc = fileLocation;
+                while(check != 0){
+                    var hexData = sessionStorage.getItem(nextFileLoc);
+                    var meta = hexData.substr(0,4);
+                    if(meta != '1---'){
+                        var getString = hexData.substr(4,(hexData.length));
+                        sessionStorage.setItem(nextFileLoc, blank);
+                        nextFileLoc = hexData.substr(1,3);
+                        console.log(nextFileLoc);
+                    }else{
+                        sessionStorage.setItem(nextFileLoc, blank);
+                        check =0;
+                    }
+                }
+            }
+        }
+
         public createTable(){
 
             var table = " <thead><tr><th> T S B  </th><th> Meta   </th><th> Data  </th></tr>";

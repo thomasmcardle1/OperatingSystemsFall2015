@@ -69,6 +69,9 @@ var TSOS;
             //Create New File
             sc = new TSOS.ShellCommand(this.shellReadFile, "read", "- <filename> reads New File");
             this.commandList[this.commandList.length] = sc;
+            //Deletes Files
+            sc = new TSOS.ShellCommand(this.shellDeleteFile, "delete", "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
             //Shows Current Status
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the Status.");
             this.commandList[this.commandList.length] = sc;
@@ -486,6 +489,11 @@ var TSOS;
                 _StdOut.putText(" Reading File...");
                 var fileData = _FileSystem.readFile(filename);
                 _StdOut.advanceLine();
+                while (fileData.length > 50) {
+                    _StdOut.putText(fileData.substr(0, 50));
+                    _StdOut.advanceLine();
+                    fileData = fileData.substr(50, (fileData.length));
+                }
                 _StdOut.putText(fileData);
             }
         };
@@ -510,6 +518,20 @@ var TSOS;
             _StdOut.putText(" Writing to File...");
             var fileData = _FileSystem.writeFile(filename, whatToWrite);
             _StdOut.putText("Successful");
+        };
+        Shell.prototype.shellDeleteFile = function (args) {
+            var filename = "";
+            if (args.length == 0 || args.length > 1) {
+                _StdOut.putText("Must enter a filename --- read <filename>");
+            }
+            else {
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Deleting File...");
+                var fileData = _FileSystem.deleteFile(filename);
+                _StdOut.advanceLine();
+                _StdOut.putText("File '" + filename + "' Deleted");
+            }
         };
         Shell.prototype.shellRun = function (args) {
             console.log(_ResidentList);
