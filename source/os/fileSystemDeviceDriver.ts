@@ -46,6 +46,7 @@ module TSOS {
                         }
                     }
                 }
+            console.log(freeKey);
             return freeKey;
         }
 
@@ -139,9 +140,13 @@ module TSOS {
                             var getString = hexData.substr(4, (hexData.length));
                             fileData += this.HexToString(getString);
                             nextFileLoc = hexData.substr(1, 3);
+                            console.log(nextFileLoc);
                         } else {
+                            console.log(nextFileLoc);
                             var getString = hexData.substr(4, (hexData.length));
+                            console.log("getString: " + getString);
                             fileData += this.HexToString(getString);
+                            console.log(fileData);
                             stringFileData = fileData;
                             check = 0;
                         }
@@ -175,41 +180,47 @@ module TSOS {
                         }
                     }
                 }
-
-            var fileLocation = sessionStorage.getItem(fileDirKey).substr(1,3);
-            console.log(fileLocation);
-            var hexFileData = this.stringToHex(fileData);
-            if(hexFileData.length <= 60){
-                hexFileData = "1---"+hexFileData;
-                for(var i=hexFileData.length; i<this.fileSize;i++){
-                    hexFileData+="~";
-                }
-                sessionStorage.setItem(fileLocation, hexFileData);
-            }else {
-                while (hexFileData.length > 0) {
-                    var freeFileBlock;
-                    if(hexFileData.length<=60){
-                        freeFileBlock = this.findFreeFileBlock();
-                        hexFileData = "1---"+hexFileData;
-                        for(var i=hexFileData.length; i<this.fileSize;i++){
-                            hexFileData+="~";
+            if(fileDirKey != null){
+                var fileLocation = sessionStorage.getItem(fileDirKey).substr(1,3);
+                console.log(fileLocation);
+                var hexFileData = this.stringToHex(fileData);
+                console.log(hexFileData.length);
+                console.log(hexFileData);
+                if(hexFileData.length <= 60){
+                    hexFileData = "1---"+hexFileData;
+                    for(var i=hexFileData.length; i<this.fileSize;i++){
+                        hexFileData+="~";
+                    }
+                    sessionStorage.setItem(fileLocation, hexFileData);
+                }else {
+                    while (hexFileData.length > 0) {
+                        var freeFileBlock;
+                        if(hexFileData.length<=60){
+                            freeFileBlock = this.findFreeFileBlock();
+                            hexFileData = "1---"+hexFileData;
+                            for(var i=hexFileData.length; i<this.fileSize;i++){
+                                hexFileData+="~";
+                            }
+                            sessionStorage.setItem(freeFileBlock, hexFileData);
+                            hexFileData = "";
+                        }else{
+                            var firstfreeFileBlock = this.findFreeFileBlock();
+                            var string = "1~~~";
+                            sessionStorage.setItem(firstfreeFileBlock,string);
+                            freeFileBlock = this.findFreeFileBlock();
+                            console.log(freeFileBlock);
+                            var subString = hexFileData.substr(0,60);
+                            var newData = "1" + freeFileBlock + subString;
+                            sessionStorage.setItem(firstfreeFileBlock, newData);
+                            console.log("Before SubString: " + newData);
+                            hexFileData = hexFileData.substr(60, (hexFileData.length));
+                            console.log("hex file: " + hexFileData);
+                            console.log(hexFileData.length);
                         }
-                        sessionStorage.setItem(freeFileBlock, hexFileData);
-                        hexFileData = "";
-                    }else{
-                        var firstfreeFileBlock = this.findFreeFileBlock();
-                        var string = "1~~~";
-                        sessionStorage.setItem(firstfreeFileBlock,string);
-                        freeFileBlock = this.findFreeFileBlock();
-                        console.log(freeFileBlock);
-                        var subString = hexFileData.substr(0,60);
-                        var newData = "1" + freeFileBlock + subString;
-                        sessionStorage.setItem(firstfreeFileBlock, newData);
-                        console.log("Before SubString: " + newData);
-                        hexFileData = hexFileData.substr(60, (hexFileData.length));
                     }
                 }
             }
+
             this.updateFileSystemTable();
         }
 
@@ -241,34 +252,36 @@ module TSOS {
                     }
                 }
 
+            if(fileDirKey != null){
+                var fileLocation =sessionStorage.getItem(fileDirKey).substr(1,3);
+                var hexFileData = sessionStorage.getItem(fileLocation);
+                var stringFileData;
 
-            var fileLocation =sessionStorage.getItem(fileDirKey).substr(1,3);
-            var hexFileData = sessionStorage.getItem(fileLocation);
-            var stringFileData;
-
-            if(fileDirKey!=null){
-                sessionStorage.setItem(fileDirKey, blank);
-            }
-
-            if(hexFileData.substr(0,4) == "1---"){
-                console.log(hexFileData);
-                sessionStorage.setItem(fileLocation, blank);
-            }else{
-                var check = 1;
-                var nextFileLoc = fileLocation;
-                while(check != 0){
-                    var hexData = sessionStorage.getItem(nextFileLoc);
-                    var meta = hexData.substr(0,4);
-                    if(meta != '1---'){
-                        var getString = hexData.substr(4,(hexData.length));
-                        sessionStorage.setItem(nextFileLoc, blank);
-                        nextFileLoc = hexData.substr(1,3);
-                    }else{
-                        sessionStorage.setItem(nextFileLoc, blank);
-                        check =0;
+                if(fileDirKey!=null) {
+                    sessionStorage.setItem(fileDirKey, blank);
+                }
+                if(hexFileData.substr(0,4) == "1---"){
+                    console.log(hexFileData);
+                    sessionStorage.setItem(fileLocation, blank);
+                }else{
+                    var check = 1;
+                    var nextFileLoc = fileLocation;
+                    while(check != 0){
+                        var hexData = sessionStorage.getItem(nextFileLoc);
+                        var meta = hexData.substr(0,4);
+                        if(meta != '1---'){
+                            var getString = hexData.substr(4,(hexData.length));
+                            sessionStorage.setItem(nextFileLoc, blank);
+                            nextFileLoc = hexData.substr(1,3);
+                            console.log(nextFileLoc);
+                        }else{
+                            sessionStorage.setItem(nextFileLoc, blank);
+                            check =0;
+                        }
                     }
                 }
             }
+
         }
 
         public createTable(){

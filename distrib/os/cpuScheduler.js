@@ -120,14 +120,10 @@ var TSOS;
             var pidToMove;
             for (var i = 0; i < _ReadyQueue.length; i++) {
                 if (_ReadyQueue[i].base === 0) {
-                    pidToMove = _ReadyQueue[i].pid;
-                    _ReadyQueue[i].location = "FS";
-                    if (_SwappingBase >= 512) {
-                        _SwappingBase = 0;
-                    }
-                    else {
-                        _SwappingBase += 256;
-                    }
+                    var pcb = _ReadyQueue[i];
+                    pidToMove = pcb.pid;
+                    pcb.location = "FS";
+                    console.log(_ReadyQueue[i].location);
                 }
             }
             _CurrPCB.location = "Memory";

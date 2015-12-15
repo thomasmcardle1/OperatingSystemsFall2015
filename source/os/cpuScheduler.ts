@@ -121,7 +121,6 @@ module TSOS {
         }
 
         private Swap() {
-
             var memDataToBeMoved = "";
             for (var i = 0; i < 255; i++) {
                 memDataToBeMoved += _Memory.getMemAtLocation(i);
@@ -132,13 +131,10 @@ module TSOS {
             var pidToMove;
             for (var i = 0; i < _ReadyQueue.length; i++) {
                 if (_ReadyQueue[i].base === 0) {
-                    pidToMove = _ReadyQueue[i].pid;
-                    _ReadyQueue[i].location = "FS";
-                    if(_SwappingBase >= 512){
-                        _SwappingBase = 0;
-                    }else{
-                        _SwappingBase += 256;
-                    }
+                    var pcb = _ReadyQueue[i];
+                    pidToMove = pcb.pid;
+                    pcb.location = "FS";
+                   console.log(_ReadyQueue[i].location);
                 }
             }
 
@@ -157,6 +153,7 @@ module TSOS {
             for (var i = 0; i < splitCode.length - 1; i++) {
                 _MemoryManager.updateMemoryAtLocation(0, i, splitCode[i]);
             }
+
 
             var filenameToBeMoved = ""+_DefaultProgName+pidToMove;
             if(_FileSystem.readFile(filenameToBeMoved) === "undefined"){
