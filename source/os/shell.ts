@@ -747,6 +747,8 @@ module TSOS {
         public shellFormat(args){
             console.log(_FileSystem);
             _FileSystem.initialize();
+            _StdOut.advanceLine();
+            _StdOut.putText("Format Successful")
         }
 
         public shellSetScheduleType(args){
