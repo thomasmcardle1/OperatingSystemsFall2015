@@ -60,7 +60,8 @@ var _NumberOfPrograms:number = 3;
 //Memory Things
 var _ResidentList:any [] = [];
 var _ReadyQueue:any[] = [];
-
+var _Priority:number = 10;
+var _DefaultPriority = 10;
 var _SingleStep: boolean = false;
 var _Memory:any = null;
 var _MemorySize = 768;
@@ -72,7 +73,16 @@ var _CurrMemBlock: number = -1;
 var _RunnablePIDs: any[] = [];
 var _RunningPID: any = null;
 
+//File System Things
+var _HardDriveTable:any= null;
+var _FileSystem:any= null;
+var _Formatted:boolean=false;
+var _DefaultProgName: string = "program";
+var _SwappingBase:any = 0;
+var _ListOfFileNames:any = [];
+
 //CPU SCHEDULER
+var _SchedType:any = "roundrobin";
 var _Scheduler: TSOS.CPUScheduler;
 var _QUANTUM: number = 6;
 var _CycleCounter: number = 0;

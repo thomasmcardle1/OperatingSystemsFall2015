@@ -4,13 +4,15 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="author"             content="Alan G. Labouseur" />
     <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
+    <!--<link rel="stylesheet" href="bootstrap.css" type="text/css"/>-->
+    <link rel="stylesheet" href="customStyles.css" type="text/css" />
+    <!--<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />-->
     <title>
         TSOS - a browser-based virtual Operating System in TypeScript
     </title>
 
     <!-- Globals CONSTANTS and _Variables. Must included be first. -->
     <script type="text/javascript" src="distrib/globals.js"></script>
-
     <!-- Host (Virtual Machine / Hardware Simulation) Routines -->
     <script type="text/javascript" src="distrib/host/control.js"></script>
     <script type="text/javascript" src="distrib/host/devices.js"></script>
@@ -31,11 +33,12 @@
     <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
     <script type="text/javascript" src="distrib/os/userCommand.js"></script>
     <script type="text/javascript" src="distrib/os/kernel.js"></script>
+    <script type="text/javascript" src="distrib/os/fileSystemDeviceDriver.js"></script>
 
     <!-- Other Routines -->
     <script type="text/javascript" src="distrib/utils.js"></script>
     <!-- Uncomment this line below to enable GLaDOS testing -->
-    <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
+    <!--<script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>-->
 
 </head>
 
@@ -134,7 +137,7 @@
         </div>
         <br>
         <div id= "ReadyQueue"class="col-md-7" >
-            <div style="font-weight:700">Ready Queue -- Round Robin </div>
+            <div style="font-weight:700"><label id="ReadyQueueLabel">Ready Queue -- Round Robin </label> </div>
             <small>
                 <div id="ReadyQueueDiv">
                     <table id = "ReadyQueueDisplayTable" class="table table-bordered">
@@ -146,6 +149,7 @@
                         <th>Y</th>
                         <th>Z</th>
                         <th>State</th>
+                        <th>Priority</th>
                         </thead>
                         <tbody id ="ReadyQueueDisplay">
                         <tr>
@@ -156,6 +160,7 @@
                             <td id="PCByRegDisplay"></td>
                             <td id="PCBzFlagDisplay"></td>
                             <td id="PCBprocessStateDisplay"></td>
+                            <td id="PCBpriority"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -173,26 +178,46 @@
                    rows="8"
                    cols="40"
                  ></textarea>
-            </div>
+        </div>
         <div id="cpuElms" style="float: left; margin-left: 100px">
             <label id="cpuElements"> CPU Elements </label>
-        <table style="font-family: Arial; font-size: larger; background: greenyellow">
+            <table style="font-family: Arial; font-size: larger; background: greenyellow">
+                <thead>
+                <tr>
+                    <th> PC  </th>
+                    <th> ACC </th>
+                    <th> X Reg  </th>
+                    <th> Y Reg  </th>
+                    <th> Z Flag </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="cpuElementPC"></td>
+                    <td id="cpuElementACC"></td>
+                    <td id="cpuElementXReg"></td>
+                    <td id="cpuElementYReg"></td>
+                    <td id="cpuElementZFlag"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="hdElms" style="float: left; margin-left: 100px">
+            <label id="hdElements"> Hard Drive </label>
+            <div style="height: 100px; overflow-y: scroll">
+                <table id="hdTable" class="table table-bordered" style="font-family: Arial; font-size: larger; background: greenyellow">
                     <thead>
                     <tr>
-                        <th> PC  </th>
-                        <th> ACC </th>
-                        <th> X Reg  </th>
-                        <th> Y Reg  </th>
-                        <th> Z Flag </th>
+                        <th> T S B  </th>
+                        <th> Meta   </th>
+                        <th> Data  </th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td id="cpuElementPC"></td>
-                        <td id="cpuElementACC"></td>
-                        <td id="cpuElementXReg"></td>
-                        <td id="cpuElementYReg"></td>
-                        <td id="cpuElementZFlag"></td>
+                        <td id="hdElementTSB"></td>
+                        <td id="hdElementMeta"></td>
+                        <td id="hdElementData"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -200,15 +225,16 @@
         </div>
     </div>
 </div>
+</div>
 
 
-    <p class="footerText" style="clear:both;">
-        <br>
-        Copyright &copy; 2008 - 2015 No Rights Reserved.
-        <br>
-        Reproduction is inhibited without the express written consent of
-        Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
-    </p>
+<p class="footerText" style="clear:both;">
+    <br>
+    Copyright &copy; 2008 - 2015 No Rights Reserved.
+    <br>
+    Reproduction is inhibited without the express written consent of
+    Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
+</p>
 
 </body>
 </html>

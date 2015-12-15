@@ -4,14 +4,15 @@
 ///<reference path="userCommand.ts" />
 ///<reference path="memoryManager.ts" />
 ///<reference path="../host/memory.ts" />
+///<reference path="fileSystemDeviceDriver.ts" />
 /* ------------
-   Shell.ts
+ Shell.ts
 
-   The OS Shell - The "command line interface" (CLI) for the console.
+ The OS Shell - The "command line interface" (CLI) for the console.
 
-    Note: While fun and learning are the primary goals of all enrichment center activities,
-          serious injuries may occur when trying to write your own Operating System.
-   ------------ */
+ Note: While fun and learning are the primary goals of all enrichment center activities,
+ serious injuries may occur when trying to write your own Operating System.
+ ------------ */
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 var TSOS;
 (function (TSOS) {
@@ -63,21 +64,46 @@ var TSOS;
             //Joke command
             sc = new TSOS.ShellCommand(this.shellPunchLine, "punchline", "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
+            //Lists All Files on FS
+            sc = new TSOS.ShellCommand(this.shellLS, "ls", "Lists All <filenames> of Files on File System");
+            this.commandList[this.commandList.length] = sc;
+            //Create New File
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "- <filename> Creates New File");
+            this.commandList[this.commandList.length] = sc;
+            //Reads File
+            sc = new TSOS.ShellCommand(this.shellReadFile, "read", "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
+            //Deletes Files
+            sc = new TSOS.ShellCommand(this.shellDeleteFile, "delete", "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
+            //Shows Currrent Scheduling
+            sc = new TSOS.ShellCommand(this.shellShowScheduleType, "getschedule", "- displays current scheuling");
+            this.commandList[this.commandList.length] = sc;
+            //Shows Current Status
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the Status.");
             this.commandList[this.commandList.length] = sc;
+            //Write to File
+            sc = new TSOS.ShellCommand(this.shellWriteFile, "write", "<filename> - writes data to a file based on filename.");
+            this.commandList[this.commandList.length] = sc;
+            //Loads program input into mem
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
+            //Shows avaiable PID's from resident queue
             sc = new TSOS.ShellCommand(this.shellPS, "ps", "Shows the PID's of Current Programs in Memory");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<ID> - runs the program with the given ID.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - runs all the program in the ready queue");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellSetScheduleType, "setschedule", " - sets the scheduling type [roundrobin, fcfs, priority]");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellSetClockPulse, "setclock", "<number> -Clears Memory and resets Memory Table");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKillProg, "kill", "<PID> - KIlls program running");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Format Disk");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSODMsg, "bsod", "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
@@ -341,6 +367,12 @@ var TSOS;
             document.getElementById("statusBox2").value += "\n" + currentDateAndTime + " : " + string;
         };
         Shell.prototype.shellLoad = function (args) {
+            _Priority = _DefaultPriority;
+            console.log(args.length);
+            if (args.length >= 1) {
+                _Priority = args[0];
+            }
+            console.log(_Priority);
             var inputString = document.getElementById("taProgramInput").value;
             //console.log(inputString);
             var valid = true;
@@ -408,12 +440,11 @@ var TSOS;
                     limit = (_CurrMemBlock * 256) + 255;
                 }
                 _CurrPCB = new TSOS.PCB();
+                _CurrPCB.priority = _Priority;
                 if (_CurrMemBlock <= 2) {
                     _CurrPCB.base = base;
                     _CurrPCB.limit = limit;
                 }
-                //console.log("PCB: " + _CurrPCB.base + " "+ _CurrPCB.limit);
-                //console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
                 if (_CurrMemBlock <= 2) {
                     var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
                     _StdOut.putText(pid);
@@ -421,18 +452,110 @@ var TSOS;
                     _RunnablePIDs.push(_CurrPCB.pid);
                     console.log(_RunnablePIDs);
                     _StdOut.advanceLine();
+                    _CurrPCB.location = "Memory";
                     _ResidentList.push(_CurrPCB);
                 }
+                else if (_CurrMemBlock > 2 && _Formatted == true) {
+                    _RunnablePIDs.push(_CurrPCB.pid);
+                    _StdOut.putText("pid:" + _PID + " loaded on disk as filename:" + _DefaultProgName + _PID);
+                    _StdOut.advanceLine();
+                    _CurrPCB.location = "FS";
+                    _CurrPCB.base = -1;
+                    _ResidentList.push(_CurrPCB);
+                    var fileName = _DefaultProgName + _PID;
+                    _FileSystem.createFile(fileName);
+                    inputString = _FileSystem.stringToHex(inputString);
+                    _FileSystem.writeFile(fileName, inputString);
+                }
                 else {
-                    _StdOut.putText("Memory full");
+                    _StdOut.putText("Memory full. Please Format Disk");
                 }
             }
-            //console.log(_ResidentList);
+            console.log(_ResidentList);
+            console.log(_Formatted);
         };
         Shell.prototype.shellPS = function (args) {
             _StdOut.putText("PIDs of Programs in memory: ");
             for (var i = 0; i < _RunnablePIDs.length; i++) {
                 _StdOut.putText(_RunnablePIDs[i] + " ");
+            }
+        };
+        Shell.prototype.shellCreateFile = function (args) {
+            var filename = "";
+            if (args.length == 0 || args.length > 1) {
+                _StdOut.putText("Must enter a filename --- create <filename>");
+            }
+            else {
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Creating File...");
+                if (_FileSystem.createFile(filename)) {
+                    _StdOut.putText("Successfully Created: " + filename);
+                }
+                else {
+                    _StdOut.putText("Failed to Create File: " + filename);
+                }
+            }
+        };
+        Shell.prototype.shellReadFile = function (args) {
+            var filename = "";
+            if (args.length == 0 || args.length > 1) {
+                _StdOut.putText("Must enter a filename --- read <filename>");
+            }
+            else {
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Reading File...");
+                var fileData = _FileSystem.readFile(filename);
+                _StdOut.advanceLine();
+                while (fileData.length > 50) {
+                    _StdOut.putText(fileData.substr(0, 50));
+                    _StdOut.advanceLine();
+                    fileData = fileData.substr(50, (fileData.length));
+                }
+                _StdOut.putText(fileData);
+            }
+        };
+        Shell.prototype.shellWriteFile = function (args) {
+            var filename = "";
+            if (args.length == 0) {
+                _StdOut.putText("Must enter a filename --- write <filename> <'file data'>");
+            }
+            else {
+                filename = args[0];
+                var whatToWrite;
+                var bool = false;
+                for (var i = 1; i < args.length; i++) {
+                    console.log(args[i]);
+                    whatToWrite += args[i].toString() + " ";
+                }
+            }
+            var splitStr = whatToWrite.split("'");
+            console.log(splitStr);
+            console.log(splitStr[1]);
+            whatToWrite = splitStr[1];
+            _StdOut.putText(" Writing to File...");
+            var fileData = _FileSystem.writeFile(filename, whatToWrite);
+            _StdOut.putText("Successful");
+        };
+        Shell.prototype.shellDeleteFile = function (args) {
+            var filename = "";
+            if (args.length == 0 || args.length > 1) {
+                _StdOut.putText("Must enter a filename --- read <filename>");
+            }
+            else {
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Deleting File...");
+                var fileData = _FileSystem.deleteFile(filename);
+                _StdOut.advanceLine();
+                _StdOut.putText("File '" + filename + "' Deleted");
+            }
+        };
+        Shell.prototype.shellLS = function () {
+            for (var i = 0; i < _ListOfFileNames.length; i++) {
+                _StdOut.putText(_ListOfFileNames[i]);
+                _StdOut.advanceLine();
             }
         };
         Shell.prototype.shellRun = function (args) {
@@ -451,6 +574,9 @@ var TSOS;
                     }
                 }
                 if (validPID = true) {
+                    if (_CurrPCB.location === "FS") {
+                        _Scheduler.SwapinToMem();
+                    }
                     //run program
                     //console.log("CURR PID: " + _CurrPCB.pid);
                     //console.log(_CurrPCB.base);
@@ -468,6 +594,26 @@ var TSOS;
         Shell.prototype.shellRunAll = function (args) {
             _StdOut.putText("RUNNING ALL");
             _ReadyQueue = [];
+            for (var i = 0; i < _ResidentList.length; i++) {
+                console.log("" + _ResidentList[i]);
+            }
+            if (_SchedType == "fcfs") {
+                console.log("fcfs");
+                _ResidentList.sort(function (a, b) {
+                    return parseFloat(a.pid) - parseFloat(b.pid);
+                });
+            }
+            //compare function with help from stackOverFlow//
+            if (_SchedType == "priority") {
+                console.log("Sort _ReadyQueue");
+                _ResidentList.sort(function (a, b) {
+                    return parseFloat(a.priority) - parseFloat(b.priority);
+                });
+            }
+            console.log(_ResidentList);
+            for (var i = 0; i < _ResidentList.length; i++) {
+                console.log(_ResidentList[i].priority);
+            }
             //console.log(_ResidentList);
             for (var i = 0; i < _ResidentList.length; i++) {
                 _ReadyQueue.push(_ResidentList[i]);
@@ -475,7 +621,7 @@ var TSOS;
                     _ReadyQueue[i].processState = "Waiting";
                 }
             }
-            //console.log(_ReadyQueue);
+            console.log(_ReadyQueue);
             _CurrPCB = _ReadyQueue[0];
             _CurrPCB.processState = "Running";
             _CPU.isExecuting = true;
@@ -489,6 +635,22 @@ var TSOS;
         Shell.prototype.shellSetClockPulse = function (args) {
             var num = args.shift();
             CPU_CLOCK_INTERVAL = num;
+        };
+        Shell.prototype.shellFormat = function (args) {
+            console.log(_FileSystem);
+            _FileSystem.initialize();
+        };
+        Shell.prototype.shellSetScheduleType = function (args) {
+            if (args.length == 0) {
+                _StdOut.putText("Please Enter a Scheduling Type [roundrobin, priority, fcfs]");
+            }
+            else {
+                _SchedType = args[0];
+                console.log(_SchedType);
+            }
+        };
+        Shell.prototype.shellShowScheduleType = function (args) {
+            _StdOut.putText("Current Scheduling Algorithm: " + _SchedType);
         };
         Shell.prototype.shellKillProg = function (args) {
             var pid = args[0];

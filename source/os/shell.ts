@@ -4,14 +4,15 @@
 ///<reference path="userCommand.ts" />
 ///<reference path="memoryManager.ts" />
 ///<reference path="../host/memory.ts" />
+///<reference path="fileSystemDeviceDriver.ts" />
 /* ------------
-   Shell.ts
+ Shell.ts
 
-   The OS Shell - The "command line interface" (CLI) for the console.
+ The OS Shell - The "command line interface" (CLI) for the console.
 
-    Note: While fun and learning are the primary goals of all enrichment center activities,
-          serious injuries may occur when trying to write your own Operating System.
-   ------------ */
+ Note: While fun and learning are the primary goals of all enrichment center activities,
+ serious injuries may occur when trying to write your own Operating System.
+ ------------ */
 
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 
@@ -103,20 +104,62 @@ module TSOS {
                 "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
 
+            //Lists All Files on FS
+            sc = new ShellCommand(this.shellLS,
+                "ls",
+                "Lists All <filenames> of Files on File System");
+            this.commandList[this.commandList.length] = sc;
+
+
+            //Create New File
+            sc = new ShellCommand(this.shellCreateFile,
+                "create",
+                "- <filename> Creates New File");
+            this.commandList[this.commandList.length] = sc;
+
+            //Reads File
+            sc = new ShellCommand(this.shellReadFile,
+                "read",
+                "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
+
+            //Deletes Files
+            sc = new ShellCommand(this.shellDeleteFile,
+                "delete",
+                "- <filename> reads New File");
+            this.commandList[this.commandList.length] = sc;
+
+             //Shows Currrent Scheduling
+            sc = new ShellCommand(this.shellShowScheduleType,
+                "getschedule",
+                "- displays current scheuling");
+            this.commandList[this.commandList.length] = sc;
+
+
+            //Shows Current Status
             sc = new ShellCommand(this.shellStatus,
                 "status",
                 "<string> - Sets the Status.");
             this.commandList[this.commandList.length] = sc;
 
+            //Write to File
+            sc = new ShellCommand(this.shellWriteFile,
+                "write",
+                "<filename> - writes data to a file based on filename.");
+            this.commandList[this.commandList.length] = sc;
+
+            //Loads program input into mem
             sc = new ShellCommand(this.shellLoad,
                 "load",
                 "<string> - loads the program.");
             this.commandList[this.commandList.length] = sc;
 
+            //Shows avaiable PID's from resident queue
             sc = new ShellCommand(this.shellPS,
                 "ps",
                 "Shows the PID's of Current Programs in Memory");
             this.commandList[this.commandList.length] = sc;
+
 
             sc = new ShellCommand(this.shellRun,
                 "run",
@@ -127,6 +170,12 @@ module TSOS {
                 "runall",
                 " - runs all the program in the ready queue");
             this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellSetScheduleType,
+                "setschedule",
+                " - sets the scheduling type [roundrobin, fcfs, priority]");
+            this.commandList[this.commandList.length] = sc;
+
 
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
@@ -143,9 +192,14 @@ module TSOS {
                 "<PID> - KIlls program running");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellFormat,
+                "format",
+                "- Format Disk");
+            this.commandList[this.commandList.length] = sc;
+
             sc = new ShellCommand(this.shellBSODMsg,
-            "bsod",
-            "- Calls Kernel Trap Error Message.");
+                "bsod",
+                "- Calls Kernel Trap Error Message.");
             this.commandList[this.commandList.length] = sc;
 
 
@@ -424,35 +478,42 @@ module TSOS {
             (<HTMLInputElement>document.getElementById("statusBox2")).value +=  "\n" + currentDateAndTime + " : " + string;
         }
 
-        public shellLoad(args) {
+        public shellLoad(args){
+            _Priority = _DefaultPriority;
+            console.log(args.length);
+            if(args.length >= 1){
+                _Priority = args[0];
+            }
+            console.log(_Priority);
             var inputString = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
             //console.log(inputString);
             var valid = true;
             var i =0;
             // While loop to loop through all of the characters of the string to validate each character is 0-9 and a-f or a space
-                while (inputString.length > i){
-                    if(inputString.charAt(i)  == "0"){
-                    }else if(inputString.charAt(i) == '1'){
-                    }else if(inputString.charAt(i) == '2'){
-                    }else if(inputString.charAt(i) == '3'){
-                    }else if(inputString.charAt(i) == '4'){
-                    }else if(inputString.charAt(i) == '5'){
-                    }else if(inputString.charAt(i) == '6'){
-                    }else if(inputString.charAt(i) == '7'){
-                    }else if(inputString.charAt(i) == '8'){
-                    }else if(inputString.charAt(i) == '9'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'A'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'B'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'C'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'D'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'E'){
-                    }else if(inputString.charAt(i).toLocaleUpperCase() == 'F'){
-                    }else if(inputString.charAt(i) == ' '){
-                    }else {
-                        valid = false;
-                    }
-                    i++;
+            while (inputString.length > i){
+                if(inputString.charAt(i)  == "0"){
+                }else if(inputString.charAt(i) == '1'){
+                }else if(inputString.charAt(i) == '2'){
+                }else if(inputString.charAt(i) == '3'){
+                }else if(inputString.charAt(i) == '4'){
+                }else if(inputString.charAt(i) == '5'){
+                }else if(inputString.charAt(i) == '6'){
+                }else if(inputString.charAt(i) == '7'){
+                }else if(inputString.charAt(i) == '8'){
+                }else if(inputString.charAt(i) == '9'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'A'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'B'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'C'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'D'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'E'){
+                }else if(inputString.charAt(i).toLocaleUpperCase() == 'F'){
+                }else if(inputString.charAt(i) == ' '){
+                }else {
+                    valid = false;
                 }
+                i++;
+            }
+
             if(inputString.length <= 0){
                 valid = false;
             }
@@ -475,14 +536,12 @@ module TSOS {
                 }
 
                 _CurrPCB = new PCB();
+                _CurrPCB.priority = _Priority;
 
                 if(_CurrMemBlock <=2){
                     _CurrPCB.base = base;
                     _CurrPCB.limit = limit;
                 }
-
-                //console.log("PCB: " + _CurrPCB.base + " "+ _CurrPCB.limit);
-                //console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
 
                 if(_CurrMemBlock <= 2){
                     var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
@@ -491,18 +550,113 @@ module TSOS {
                     _RunnablePIDs.push(_CurrPCB.pid);
                     console.log(_RunnablePIDs);
                     _StdOut.advanceLine();
+                    _CurrPCB.location = "Memory";
                     _ResidentList.push(_CurrPCB);
+                }else if(_CurrMemBlock > 2 && _Formatted == true){
+                    _RunnablePIDs.push(_CurrPCB.pid);
+                    _StdOut.putText("pid:"+_PID + " loaded on disk as filename:"+_DefaultProgName+_PID);
+                    _StdOut.advanceLine();
+                    _CurrPCB.location = "FS";
+                    _CurrPCB.base=-1;
+                    _ResidentList.push(_CurrPCB);
+                    var fileName = _DefaultProgName+_PID;
+                    _FileSystem.createFile(fileName);
+                    inputString = _FileSystem.stringToHex(inputString);
+                    _FileSystem.writeFile(fileName,inputString);
+
                 }else{
-                    _StdOut.putText("Memory full");
+                    _StdOut.putText("Memory full. Please Format Disk");
                 }
             }
-            //console.log(_ResidentList);
+            console.log(_ResidentList);
+            console.log(_Formatted);
         }
 
         public shellPS(args){
             _StdOut.putText("PIDs of Programs in memory: ");
             for(var i=0; i<_RunnablePIDs.length; i++){
                 _StdOut.putText(_RunnablePIDs[i] + " ");
+            }
+        }
+
+        public shellCreateFile(args){
+            var filename = "";
+            if(args.length == 0 || args.length > 1){
+                _StdOut.putText("Must enter a filename --- create <filename>")
+            }else{
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Creating File...");
+                if(_FileSystem.createFile(filename)){
+                    _StdOut.putText("Successfully Created: " + filename);
+                }else{
+                    _StdOut.putText("Failed to Create File: " + filename);
+                }
+            }
+        }
+
+        public shellReadFile(args){
+            var filename = "";
+            if(args.length == 0 || args.length > 1){
+                _StdOut.putText("Must enter a filename --- read <filename>")
+            }else{
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Reading File...");
+                var fileData = _FileSystem.readFile(filename);
+                _StdOut.advanceLine();
+                while(fileData.length > 50){
+                    _StdOut.putText(fileData.substr(0,50));
+                    _StdOut.advanceLine();
+                    fileData = fileData.substr(50, (fileData.length));
+                }
+                _StdOut.putText(fileData);
+
+            }
+        }
+
+        public shellWriteFile(args){
+            var filename = "";
+            if(args.length == 0){
+                _StdOut.putText("Must enter a filename --- write <filename> <'file data'>")
+            }else{
+                filename = args[0];
+                var whatToWrite;
+                var bool = false;
+                for(var i=1; i<args.length; i++){
+                    console.log(args[i]);
+                    whatToWrite+=args[i].toString() + " ";
+                }
+            }
+            var splitStr = whatToWrite.split("'");
+            console.log(splitStr);
+            console.log(splitStr[1]);
+            whatToWrite = splitStr[1];
+
+            _StdOut.putText(" Writing to File...");
+            var fileData = _FileSystem.writeFile(filename, whatToWrite);
+            _StdOut.putText("Successful");
+        }
+
+        public shellDeleteFile(args){
+            var filename = "";
+            if(args.length == 0 || args.length > 1){
+                _StdOut.putText("Must enter a filename --- read <filename>")
+            }else{
+                filename = args[0];
+                console.log(args[0]);
+                _StdOut.putText(" Deleting File...");
+                var fileData = _FileSystem.deleteFile(filename);
+                _StdOut.advanceLine();
+                _StdOut.putText("File '"+filename+"' Deleted");
+
+            }
+        }
+
+        public shellLS(){
+            for(var i=0; i<_ListOfFileNames.length; i++){
+                _StdOut.putText(_ListOfFileNames[i]);
+                _StdOut.advanceLine();
             }
         }
 
@@ -521,6 +675,9 @@ module TSOS {
                     }
                 }
                 if (validPID = true){
+                    if(_CurrPCB.location === "FS"){
+                        _Scheduler.SwapinToMem();
+                    }
                     //run program
                     //console.log("CURR PID: " + _CurrPCB.pid);
                     //console.log(_CurrPCB.base);
@@ -538,6 +695,27 @@ module TSOS {
         public shellRunAll(args){
             _StdOut.putText("RUNNING ALL");
             _ReadyQueue = [];
+            for(var i = 0; i<_ResidentList.length; i++){
+                console.log("" +_ResidentList[i]);
+            }
+            if(_SchedType == "fcfs"){
+                console.log("fcfs");
+                _ResidentList.sort(function (a,b){
+                    return parseFloat(a.pid) - parseFloat(b.pid)
+                });
+            }
+            //compare function with help from stackOverFlow//
+            if(_SchedType == "priority"){
+                console.log("Sort _ReadyQueue");
+                _ResidentList.sort(function (a,b){
+                    return parseFloat(a.priority) - parseFloat(b.priority)
+                });
+            }
+            console.log(_ResidentList);
+
+            for(var i=0; i<_ResidentList.length; i++){
+                console.log(_ResidentList[i].priority);
+            }
             //console.log(_ResidentList);
 
             for(var i=0; i < _ResidentList.length; i++){
@@ -546,7 +724,8 @@ module TSOS {
                     _ReadyQueue[i].processState = "Waiting";
                 }
             }
-            //console.log(_ReadyQueue);
+
+            console.log(_ReadyQueue);
             _CurrPCB = _ReadyQueue[0];
             _CurrPCB.processState = "Running";
             _CPU.isExecuting = true;
@@ -565,6 +744,24 @@ module TSOS {
             CPU_CLOCK_INTERVAL = num;
         }
 
+        public shellFormat(args){
+            console.log(_FileSystem);
+            _FileSystem.initialize();
+        }
+
+        public shellSetScheduleType(args){
+            if(args.length == 0){
+                _StdOut.putText("Please Enter a Scheduling Type [roundrobin, priority, fcfs]")
+            }else{
+                _SchedType = args[0];
+                console.log(_SchedType);
+            }
+        }
+
+        public shellShowScheduleType(args){
+            _StdOut.putText("Current Scheduling Algorithm: " + _SchedType);
+        }
+
         public shellKillProg(args){
             var pid = args[0];
             console.log(pid);
@@ -573,7 +770,7 @@ module TSOS {
                     console.log(pid + "--------------------" + _ReadyQueue[i].pid + "--------------------" );
                     _ReadyQueue.splice(i, 1);
                 }
-               console.log(_RunnablePIDs);
+                console.log(_RunnablePIDs);
             }
             for(var i=0; i < _RunnablePIDs.length; i++){
                 var int = _RunnablePIDs[i];

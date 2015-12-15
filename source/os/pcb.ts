@@ -17,7 +17,8 @@ module TSOS {
                      public base:number = (_CurrMemBlock*256),
                      public limit:number = ((_CurrMemBlock*256)+255),
                      public processState: string = "",
-                     public location:any = null) {
+                     public location:any = null,
+                     public priority:number = null) {
          }
      }
 

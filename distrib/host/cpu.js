@@ -298,7 +298,7 @@ var TSOS;
                 this.programFinished();
             }
             else {
-                _StdOut.putText(" -- PID [" + _CurrPCB.pid + "] Has Terminated -- ");
+                //_StdOut.putText(" -- PID [" + _CurrPCB.pid +"] Has Terminated -- ");
                 _StdOut.advanceLine();
                 _StdOut.putText(">");
                 this.isExecuting = false;
@@ -307,7 +307,7 @@ var TSOS;
         Cpu.prototype.programFinished = function () {
             this.updateCPUMemoryThings();
             _ReadyQueue[0].processState = "Terminated";
-            _Scheduler.roundRobinContextSwitch();
+            _Scheduler.roundRobin();
         };
         Cpu.prototype.updateCPUMemoryThings = function () {
             document.getElementById("cpuElementPC").innerHTML = this.PC.toString();

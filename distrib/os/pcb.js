@@ -5,7 +5,7 @@
 var TSOS;
 (function (TSOS) {
     var PCB = (function () {
-        function PCB(PC, Acc, Xreg, Yreg, Zflag, pid, instructionRegister, base, limit, processState, location) {
+        function PCB(PC, Acc, Xreg, Yreg, Zflag, pid, instructionRegister, base, limit, processState, location, priority) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
@@ -17,6 +17,7 @@ var TSOS;
             if (limit === void 0) { limit = ((_CurrMemBlock * 256) + 255); }
             if (processState === void 0) { processState = ""; }
             if (location === void 0) { location = null; }
+            if (priority === void 0) { priority = null; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
@@ -28,6 +29,7 @@ var TSOS;
             this.limit = limit;
             this.processState = processState;
             this.location = location;
+            this.priority = priority;
         }
         return PCB;
     })();

@@ -52,7 +52,6 @@ module TSOS {
             }
         }
 
-
        public updateMemoryAtLocation(baseRegister, memLoc, code): void {
            var startRow = 0;
 

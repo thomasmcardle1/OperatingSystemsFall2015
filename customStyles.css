@@ -1,0 +1,166 @@
+html {
+    font-family: sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+.columnwidth{
+
+    height:80px;
+    width:300px;
+    border-left: 1px solid rgb(221, 221, 221);
+}
+
+.calendar-row {
+    border-right: 1px solid rgb(221, 221, 221);
+}
+
+.calendar-row:last-child {
+    border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+.top-navbar {
+    background-color: #cc0033;
+}
+
+.main-container {
+    margin-top: 40px;
+}
+
+#next-month, #previous-month {
+    margin-bottom: 10px;
+}
+
+#top-navbar {
+    position:fixed;
+    width:100%;
+    background-color: #cc0033;
+    color:white;
+    border-radius: 0px;
+    border-width: 5px;
+    border-color: #cc0033;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+.navbar-default {
+    border-color: #cc0033 !important;
+    border-radius: 0px;
+    width:100%;
+}
+.container-fluid{
+    width: 100%;
+    background-color: #cc0033;
+
+}
+
+#username{
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+.columnwidth:hover {
+    background-color: #ffe5e5;
+    cursor:pointer;
+}
+
+.navbar-nav a:hover{
+    background-color: #a30028;
+    cursor: pointer;
+}
+
+.navbar-nav li a:hover {
+    color: #fff !important;
+}
+
+
+.search-container {
+    display: none;
+}
+
+#hide-button {
+    display: none;
+}
+
+.form-inline {
+    border: none !important;
+}
+
+.top-link {
+    font-size: 32px;
+    text-align: center;
+}
+
+#courseComparisonContent{
+    padding-left: 250px;
+}
+
+@media(min-width: 768px) {
+    .mobile-navbar {
+        display: none;
+    }
+}
+
+#newStudentTable{
+    width: 50%;
+    margin: 0 auto;
+}
+#newStudentTableLbl{
+    width: 20%;
+    text-align: left;
+}
+#newStudentTableInput{
+    width: auto;
+}
+#newStudentTableInput input{
+    width: 100%;
+}
+#asterik{
+    color: red;
+    width: 170px;
+}
+
+#page-footer {
+    height:20px;
+    margin: 0 auto;
+    bottom: 0px;
+    position: fixed;
+    text-align: center;
+    color: white;
+    background-color: #cc0033;
+    width: 100%;
+}
+
+#sealimg{
+     padding: 0px;
+     height: 55px;
+     width: auto;
+ }
+#seal{
+    padding: 0px;
+}
+#seal:hover {
+    background-color: transparent;
+    cursor: auto;
+}
+#blackseal{
+    position: fixed;
+    bottom: 0px;
+}
+#navRegisterBtn{
+    font-size: large;
+}
+
+#wrapper{
+    margin-top: 49px;
+}
+
+.sidebar-nav a:hover{
+    background-color: #a30028;
+    cursor: pointer;
+}
+
+.centered-table{
+    margin-left: 250px;
+    width: 50%;
+}

@@ -47,6 +47,8 @@ var _NumberOfPrograms = 3;
 //Memory Things
 var _ResidentList = [];
 var _ReadyQueue = [];
+var _Priority = 10;
+var _DefaultPriority = 10;
 var _SingleStep = false;
 var _Memory = null;
 var _MemorySize = 768;
@@ -57,7 +59,15 @@ var _TableRow = 0;
 var _CurrMemBlock = -1;
 var _RunnablePIDs = [];
 var _RunningPID = null;
+//File System Things
+var _HardDriveTable = null;
+var _FileSystem = null;
+var _Formatted = false;
+var _DefaultProgName = "program";
+var _SwappingBase = 0;
+var _ListOfFileNames = [];
 //CPU SCHEDULER
+var _SchedType = "roundrobin";
 var _Scheduler;
 var _QUANTUM = 6;
 var _CycleCounter = 0;
