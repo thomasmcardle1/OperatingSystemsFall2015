@@ -65,6 +65,7 @@ var _FileSystem = null;
 var _Formatted = false;
 var _DefaultProgName = "program";
 var _SwappingBase = 0;
+var _ListOfFileNames = [];
 //CPU SCHEDULER
 var _SchedType = "roundrobin";
 var _Scheduler;

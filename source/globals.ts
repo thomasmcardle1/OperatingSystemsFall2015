@@ -79,6 +79,7 @@ var _FileSystem:any= null;
 var _Formatted:boolean=false;
 var _DefaultProgName: string = "program";
 var _SwappingBase:any = 0;
+var _ListOfFileNames:any = [];
 
 //CPU SCHEDULER
 var _SchedType:any = "roundrobin";

@@ -104,6 +104,13 @@ module TSOS {
                 "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
 
+            //Lists All Files on FS
+            sc = new ShellCommand(this.shellLS,
+                "ls",
+                "Lists All <filenames> of Files on File System");
+            this.commandList[this.commandList.length] = sc;
+
+
             //Create New File
             sc = new ShellCommand(this.shellCreateFile,
                 "create",
@@ -643,6 +650,13 @@ module TSOS {
                 _StdOut.advanceLine();
                 _StdOut.putText("File '"+filename+"' Deleted");
 
+            }
+        }
+
+        public shellLS(){
+            for(var i=0; i<_ListOfFileNames.length; i++){
+                _StdOut.putText(_ListOfFileNames[i]);
+                _StdOut.advanceLine();
             }
         }
 

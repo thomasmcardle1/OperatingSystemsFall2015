@@ -64,6 +64,9 @@ var TSOS;
             //Joke command
             sc = new TSOS.ShellCommand(this.shellPunchLine, "punchline", "- Punch Line!!");
             this.commandList[this.commandList.length] = sc;
+            //Lists All Files on FS
+            sc = new TSOS.ShellCommand(this.shellLS, "ls", "Lists All <filenames> of Files on File System");
+            this.commandList[this.commandList.length] = sc;
             //Create New File
             sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "- <filename> Creates New File");
             this.commandList[this.commandList.length] = sc;
@@ -547,6 +550,12 @@ var TSOS;
                 var fileData = _FileSystem.deleteFile(filename);
                 _StdOut.advanceLine();
                 _StdOut.putText("File '" + filename + "' Deleted");
+            }
+        };
+        Shell.prototype.shellLS = function () {
+            for (var i = 0; i < _ListOfFileNames.length; i++) {
+                _StdOut.putText(_ListOfFileNames[i]);
+                _StdOut.advanceLine();
             }
         };
         Shell.prototype.shellRun = function (args) {

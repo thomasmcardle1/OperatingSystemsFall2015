@@ -92,6 +92,7 @@ var TSOS;
                 bool = true;
             }
             this.updateFileSystemTable();
+            _ListOfFileNames.push(fileName);
             return bool;
         };
         fileSystemDeviceDriver.prototype.readFile = function (fileName) {
@@ -242,6 +243,12 @@ var TSOS;
                 var fileLocation = sessionStorage.getItem(fileDirKey).substr(1, 3);
                 var hexFileData = sessionStorage.getItem(fileLocation);
                 var stringFileData;
+                //Remove from List of file names
+                for (var i = 0; i < _ListOfFileNames.length; i++) {
+                    if (_ListOfFileNames[i] == fileName) {
+                        _ListOfFileNames.splice(i, 1);
+                    }
+                }
                 if (fileDirKey != null) {
                     sessionStorage.setItem(fileDirKey, blank);
                 }
