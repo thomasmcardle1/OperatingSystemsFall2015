@@ -46,7 +46,7 @@ module TSOS {
                         }
                     }
                 }
-            console.log(freeKey);
+            //console.log(freeKey);
             return freeKey;
         }
 
@@ -68,7 +68,7 @@ module TSOS {
                         }
                     }
                 }
-            console.log(freeKey);
+            //console.log(freeKey);
             return freeKey;
         }
 
@@ -80,7 +80,7 @@ module TSOS {
             if(freeDirBlock == -1 || freeFileBlock == -1){
                 bool = false;
             }else{
-                console.log(freeDirBlock +""+freeFileBlock);
+                //console.log(freeDirBlock +""+freeFileBlock);
                 var meta = "1"+freeFileBlock;
                 var data = meta+hexFile;
                 for(var i=data.length; i<this.fileSize;i++){
@@ -91,7 +91,7 @@ module TSOS {
                     fileData += "~";
                 }
                 sessionStorage.setItem(freeDirBlock, data);
-                console.log("File Name: " + data);
+                //console.log("File Name: " + data);
                 sessionStorage.setItem(freeFileBlock, fileData);
                 bool = true;
             }
@@ -140,13 +140,13 @@ module TSOS {
                             var getString = hexData.substr(4, (hexData.length));
                             fileData += this.HexToString(getString);
                             nextFileLoc = hexData.substr(1, 3);
-                            console.log(nextFileLoc);
+                            //console.log(nextFileLoc);
                         } else {
-                            console.log(nextFileLoc);
+                            //console.log(nextFileLoc);
                             var getString = hexData.substr(4, (hexData.length));
-                            console.log("getString: " + getString);
+                            //console.log("getString: " + getString);
                             fileData += this.HexToString(getString);
-                            console.log(fileData);
+                            //console.log(fileData);
                             stringFileData = fileData;
                             check = 0;
                         }
@@ -154,7 +154,7 @@ module TSOS {
                     stringFileData = fileData;
                 }
             }
-            console.log("Read File Return: " + stringFileData);
+            //console.log("Read File Return: " + stringFileData);
             return stringFileData;
         }
 
@@ -172,7 +172,7 @@ module TSOS {
                             var key = this.keyGenerator(x,y,z);
                             var data = sessionStorage.getItem(key);
                             var meta = data.substr(4,64);
-                            console.log(meta);
+                            //console.log(meta);
                             if(meta == hexFileName){
                                 fileDirKey = key;
                                 break loop1;
@@ -182,10 +182,10 @@ module TSOS {
                 }
             if(fileDirKey != null){
                 var fileLocation = sessionStorage.getItem(fileDirKey).substr(1,3);
-                console.log(fileLocation);
+                //console.log(fileLocation);
                 var hexFileData = this.stringToHex(fileData);
-                console.log(hexFileData.length);
-                console.log(hexFileData);
+                //console.log(hexFileData.length);
+                //console.log(hexFileData);
                 if(hexFileData.length <= 60){
                     hexFileData = "1---"+hexFileData;
                     for(var i=hexFileData.length; i<this.fileSize;i++){
@@ -208,14 +208,14 @@ module TSOS {
                             var string = "1~~~";
                             sessionStorage.setItem(firstfreeFileBlock,string);
                             freeFileBlock = this.findFreeFileBlock();
-                            console.log(freeFileBlock);
+                            //console.log(freeFileBlock);
                             var subString = hexFileData.substr(0,60);
                             var newData = "1" + freeFileBlock + subString;
                             sessionStorage.setItem(firstfreeFileBlock, newData);
-                            console.log("Before SubString: " + newData);
+                            //console.log("Before SubString: " + newData);
                             hexFileData = hexFileData.substr(60, (hexFileData.length));
-                            console.log("hex file: " + hexFileData);
-                            console.log(hexFileData.length);
+                            //console.log("hex file: " + hexFileData);
+                            //console.log(hexFileData.length);
                         }
                     }
                 }
@@ -243,7 +243,7 @@ module TSOS {
                             var key = this.keyGenerator(x,y,z);
                             var data = sessionStorage.getItem(key);
                             var meta = data.substr(4,64);
-                            console.log(meta);
+                            //console.log(meta);
                             if(meta == hexFile){
                                 fileDirKey = key;
                                 break loop1;
@@ -261,7 +261,7 @@ module TSOS {
                     sessionStorage.setItem(fileDirKey, blank);
                 }
                 if(hexFileData.substr(0,4) == "1---"){
-                    console.log(hexFileData);
+                    //console.log(hexFileData);
                     sessionStorage.setItem(fileLocation, blank);
                 }else{
                     var check = 1;
@@ -273,7 +273,7 @@ module TSOS {
                             var getString = hexData.substr(4,(hexData.length));
                             sessionStorage.setItem(nextFileLoc, blank);
                             nextFileLoc = hexData.substr(1,3);
-                            console.log(nextFileLoc);
+                            //console.log(nextFileLoc);
                         }else{
                             sessionStorage.setItem(nextFileLoc, blank);
                             check =0;

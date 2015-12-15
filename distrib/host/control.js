@@ -208,6 +208,8 @@ var TSOS;
         Control.updateReadyQueueTable = function () {
             var output = "<thead style='font-weight:bold'>";
             output += "<th>PID</th>";
+            output += "<th>Base</th>";
+            output += "<th>Limit</th>";
             output += "<th>PC</th>";
             output += "<th>ACC</th>";
             output += "<th>X- Reg</th>";
@@ -220,6 +222,8 @@ var TSOS;
             for (var i = 0; i < _ReadyQueue.length; i++) {
                 output += "<tr>";
                 output += "<td> " + _ReadyQueue[i].pid + "</td>";
+                output += "<td> " + _ReadyQueue[i].base + "</td>";
+                output += "<td> " + _ReadyQueue[i].limit + "</td>";
                 output += "<td> " + _ReadyQueue[i].PC + "</td>";
                 output += "<td> " + _ReadyQueue[i].Acc + "</td>";
                 output += "<td> " + _ReadyQueue[i].Xreg + "</td>";

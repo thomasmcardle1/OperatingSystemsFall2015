@@ -4,6 +4,7 @@
 ///<reference path="userCommand.ts" />
 ///<reference path="memoryManager.ts" />
 ///<reference path="../host/memory.ts" />
+///<reference path="fileSystemDeviceDriver.ts" />
 /* ------------
  Shell.ts
 
@@ -535,9 +536,6 @@ module TSOS {
                     _CurrPCB.limit = limit;
                 }
 
-                //console.log("PCB: " + _CurrPCB.base + " "+ _CurrPCB.limit);
-                //console.log(_CurrPCB.base + "  " + _CurrPCB.limit);
-
                 if(_CurrMemBlock <= 2){
                     var pid = (_MemoryManager.loadProgram(_CurrMemBlock, newInputString));
                     _StdOut.putText(pid);
@@ -556,6 +554,7 @@ module TSOS {
                     _ResidentList.push(_CurrPCB);
                     var fileName = _DefaultProgName+_PID;
                     _FileSystem.createFile(fileName);
+                    inputString = _FileSystem.stringToHex(inputString);
                     _FileSystem.writeFile(fileName,inputString);
 
                 }else{
@@ -662,6 +661,9 @@ module TSOS {
                     }
                 }
                 if (validPID = true){
+                    if(_CurrPCB.location === "FS"){
+                        _Scheduler.SwapinToMem();
+                    }
                     //run program
                     //console.log("CURR PID: " + _CurrPCB.pid);
                     //console.log(_CurrPCB.base);
