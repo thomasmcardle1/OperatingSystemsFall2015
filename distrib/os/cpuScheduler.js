@@ -67,11 +67,6 @@ var TSOS;
                     var pcbToBePushed = _CurrPCB;
                     _ReadyQueue[0].processState = "Waiting";
                     _CurrPCB = _ReadyQueue[0];
-                    console.log("PID && Loaction: " + _CurrPCB.pid + " " + _CurrPCB.location + " " + _CurrPCB.base);
-                    var loc = _CurrPCB.location;
-                    if (loc === "FS") {
-                        this.SwapinToMemRunAll();
-                    }
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
                     _CPU.PC = _ReadyQueue[0].PC;

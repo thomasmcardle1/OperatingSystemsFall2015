@@ -129,7 +129,7 @@ module TSOS {
                 "- <filename> reads New File");
             this.commandList[this.commandList.length] = sc;
 
-             //Shows Currrent Scheduling
+            //Shows Currrent Scheduling
             sc = new ShellCommand(this.shellShowScheduleType,
                 "getschedule",
                 "- displays current scheuling");
@@ -752,9 +752,15 @@ module TSOS {
         public shellSetScheduleType(args){
             if(args.length == 0){
                 _StdOut.putText("Please Enter a Scheduling Type [roundrobin, priority, fcfs]")
-            }else{
+            }else if(args[0] == "roundrobin" || args[0] == "priority" || args[0] == "fcfs"){
                 _SchedType = args[0];
                 console.log(_SchedType);
+                document.getElementById("readyQueTableLabel").innerHTML = ("Read Queue -- "+_SchedType);
+                _StdOut.putText("Scheduling Type Set to: " + _SchedType);
+            }else{
+                _StdOut.putText("Please Enter a Valid Scheduling Type:");
+                _StdOut.advanceLine();
+                _StdOut.putText("[roundrobin, priority, fcfs]");
             }
         }
 
