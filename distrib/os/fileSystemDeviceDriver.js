@@ -45,7 +45,6 @@ var TSOS;
                     }
                 }
             }
-            console.log(freeKey);
             return freeKey;
         };
         fileSystemDeviceDriver.prototype.findFreeFileBlock = function () {
@@ -107,7 +106,6 @@ var TSOS;
                         var key = this.keyGenerator(x, y, z);
                         var data = sessionStorage.getItem(key);
                         var meta = data.substr(4, 64);
-                        console.log(meta);
                         if (meta == hexFile) {
                             fileDirKey = key;
                             break loop1;
@@ -115,43 +113,37 @@ var TSOS;
                     }
                 }
             }
-            var fileLocation = sessionStorage.getItem(fileDirKey).substr(1, 3);
-            var hexFileData = sessionStorage.getItem(fileLocation);
-            console.log(hexFileData);
-            var stringFileData;
-            if (hexFileData.substr(0, 4) == "1---") {
-                console.log(hexFileData);
-                stringFileData = this.HexToString(hexFileData);
-                console.log(stringFileData);
-                return stringFileData;
-            }
-            else {
-                var fileData = "";
-                var check = 1;
-                var nextFileLoc = fileLocation;
-                while (check != 0) {
-                    var hexData = sessionStorage.getItem(nextFileLoc);
-                    var meta = hexData.substr(0, 4);
-                    console.log(meta);
-                    if (meta != '1---') {
-                        var getString = hexData.substr(4, (hexData.length));
-                        fileData += this.HexToString(getString);
-                        console.log(fileData);
-                        nextFileLoc = hexData.substr(1, 3);
-                        console.log(nextFileLoc);
-                    }
-                    else {
-                        console.log(nextFileLoc);
-                        var getString = hexData.substr(4, (hexData.length));
-                        console.log("getString: " + getString);
-                        fileData += this.HexToString(getString);
-                        console.log(fileData);
-                        stringFileData = fileData;
-                        check = 0;
-                    }
+            if (fileDirKey != null) {
+                var fileLocation = sessionStorage.getItem(fileDirKey).substr(1, 3);
+                var hexFileData = sessionStorage.getItem(fileLocation);
+                var stringFileData;
+                if (hexFileData.substr(0, 4) == "1---") {
+                    stringFileData = this.HexToString(hexFileData);
+                    return stringFileData;
                 }
-                stringFileData = fileData;
+                else {
+                    var fileData = "";
+                    var check = 1;
+                    var nextFileLoc = fileLocation;
+                    while (check != 0) {
+                        var hexData = sessionStorage.getItem(nextFileLoc);
+                        var meta = hexData.substr(0, 4);
+                        if (meta != '1---') {
+                            var getString = hexData.substr(4, (hexData.length));
+                            fileData += this.HexToString(getString);
+                            nextFileLoc = hexData.substr(1, 3);
+                        }
+                        else {
+                            var getString = hexData.substr(4, (hexData.length));
+                            fileData += this.HexToString(getString);
+                            stringFileData = fileData;
+                            check = 0;
+                        }
+                    }
+                    stringFileData = fileData;
+                }
             }
+            console.log("Read File Return: " + stringFileData);
             return stringFileData;
         };
         fileSystemDeviceDriver.prototype.writeFile = function (fileName, fileData) {
@@ -178,8 +170,6 @@ var TSOS;
             var fileLocation = sessionStorage.getItem(fileDirKey).substr(1, 3);
             console.log(fileLocation);
             var hexFileData = this.stringToHex(fileData);
-            console.log(hexFileData.length);
-            console.log(hexFileData);
             if (hexFileData.length <= 60) {
                 hexFileData = "1---" + hexFileData;
                 for (var i = hexFileData.length; i < this.fileSize; i++) {
@@ -210,8 +200,6 @@ var TSOS;
                         sessionStorage.setItem(firstfreeFileBlock, newData);
                         console.log("Before SubString: " + newData);
                         hexFileData = hexFileData.substr(60, (hexFileData.length));
-                        console.log("hex file: " + hexFileData);
-                        console.log(hexFileData.length);
                     }
                 }
             }
@@ -262,7 +250,6 @@ var TSOS;
                         var getString = hexData.substr(4, (hexData.length));
                         sessionStorage.setItem(nextFileLoc, blank);
                         nextFileLoc = hexData.substr(1, 3);
-                        console.log(nextFileLoc);
                     }
                     else {
                         sessionStorage.setItem(nextFileLoc, blank);

@@ -5,74 +5,39 @@ module TSOS {
         constructor() {
         }
 
-        public roundRobinCycle(): void {
-            if(_CycleCounter >= _QUANTUM && _ReadyQueue.length > 0 && _SchedType == "roundrobin"){
+        public roundRobinCycle():void {
+            if (_CycleCounter >= _QUANTUM && _ReadyQueue.length > 0 && _SchedType == "roundrobin") {
                 this.roundRobin();
                 _CycleCounter = 0;
-            }else if(_SchedType == "fcfs"){
+            } else if (_SchedType == "fcfs") {
                 this.FCFS();
-            }else if(_SchedType == "priority"){
+            } else if (_SchedType == "priority") {
                 this.Priority();
             }
             _CycleCounter++;
             _CPU.cycle();
         }
 
-        public roundRobin(): void {
+        public roundRobin():void {
 
             if (_ReadyQueue.length > 1) {
-                if(_CurrPCB.processState == "Terminated"){
+                if (_CurrPCB.processState == "Terminated") {
                     var term = _ReadyQueue.shift();
                     //_StdOut.putText(" PID [" + term.pid +"] terminated ");
                     _CycleCounter = 0;
                     _CurrPCB = _ReadyQueue[0];
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
-                    _CPU.PC = _ReadyQueue[0].PC -1;
-                }else{
+                    _CPU.PC = _ReadyQueue[0].PC - 1;
+                } else {
                     var pcbToBePushed = _CurrPCB;
                     _ReadyQueue[0].processState = "Waiting";
                     _ReadyQueue.push(pcbToBePushed);
                     _ReadyQueue.shift();
                     _CurrPCB = _ReadyQueue[0];
-                    if(_CurrPCB.location === "FS"){
-                        _CurrPCB.base = 0;
-                        _CurrPCB.limit = 255;
-
-                        var memDataToBeMoved = "";
-                        for(var i=0; i<255; i++){
-                            memDataToBeMoved += _Memory.getMemAtLocation(i);
-                        }
-                        console.log("Data To Be Swapped: " + memDataToBeMoved);
-
-                        for (var i = 0; i < _ReadyQueue.length; i++) {
-                            if (_ReadyQueue[i].base === 0) {
-                                var pid = _ReadyQueue[i].pid;
-                                _ReadyQueue[i].location = "FS";
-                            }
-                        }
-
-                        _CurrPCB.location = "memory";
-
-                        var programFromDisk = _FileSystem.readFile(_DefaultProgName+pid);
-                        console.log("Program On Disk: " + programFromDisk);
-
-                        for(var i=0; i < 255; i++){
-                            _MemoryManager.updateMemoryAtLocation(0,i,"00");
-                        }
-
-                        var code = programFromDisk.replace( /\n/g, " " ).split( " " );
-                        console.log(code);
-                        for(var i=0; i < code.length; i++){
-                            _MemoryManager.updateMemoryAtLocation(0,i,code[i]);
-                        }
-
-                        if(pidOfBase != "undefined"){
-                            _FileSystem.createFile("-")
-                        }
-
+                    if (_CurrPCB.location === "FS") {
+                        this.Swap();
                     }
-
 
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
@@ -90,18 +55,18 @@ module TSOS {
             _CPU.isExecuting = true;
         }
 
-        public FCFS(): void {
+        public FCFS():void {
 
             if (_ReadyQueue.length > 1) {
-                if(_CurrPCB.processState == "Terminated"){
+                if (_CurrPCB.processState == "Terminated") {
                     var term = _ReadyQueue.shift();
-                    _StdOut.putText(" PID [" + term.pid +"] terminated ");
+                    _StdOut.putText(" PID [" + term.pid + "] terminated ");
                     _CycleCounter = 0;
                     _CurrPCB = _ReadyQueue[0];
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
-                    _CPU.PC = _ReadyQueue[0].PC -1;
-                }else{
+                    _CPU.PC = _ReadyQueue[0].PC - 1;
+                } else {
                     var pcbToBePushed = _CurrPCB;
                     _ReadyQueue[0].processState = "Waiting";
                     _CurrPCB = _ReadyQueue[0];
@@ -123,15 +88,15 @@ module TSOS {
         public Priority():void {
             console.log("Priority" + _ReadyQueue[0].priority);
             if (_ReadyQueue.length > 1) {
-                if(_CurrPCB.processState == "Terminated"){
+                if (_CurrPCB.processState == "Terminated") {
                     var term = _ReadyQueue.shift();
-                    _StdOut.putText(" PID [" + term.pid +"] terminated ");
+                    _StdOut.putText(" PID [" + term.pid + "] terminated ");
                     _CycleCounter = 0;
                     _CurrPCB = _ReadyQueue[0];
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
-                    _CPU.PC = _ReadyQueue[0].PC -1;
-                }else{
+                    _CPU.PC = _ReadyQueue[0].PC - 1;
+                } else {
                     var pcbToBePushed = _CurrPCB;
                     _ReadyQueue[0].processState = "Waiting";
                     _CurrPCB = _ReadyQueue[0];
@@ -154,5 +119,74 @@ module TSOS {
             }
             _CPU.isExecuting = true;
         }
+
+        private Swap() {
+
+            var memDataToBeMoved = "";
+            for (var i = 0; i < 255; i++) {
+                memDataToBeMoved += _Memory.getMemAtLocation(i);
+                memDataToBeMoved += " ";
+            }
+
+            console.log("Data To Be Swapped to FS: " + memDataToBeMoved);
+            var pidToMove;
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                if (_ReadyQueue[i].base === 0) {
+                    pidToMove = _ReadyQueue[i].pid;
+                    _ReadyQueue[i].location = "FS";
+                    if(_SwappingBase >= 512){
+                        _SwappingBase = 0;
+                    }else{
+                        _SwappingBase += 256;
+                    }
+                }
+            }
+
+            _CurrPCB.location = "Memory";
+            console.log("CURRENT PCB ID: " + _CurrPCB.pid);
+            var pid = _CurrPCB.pid;
+            var filename = ""+_DefaultProgName + pid;
+            var programFromDiskHex = _FileSystem.readFile(filename);
+            console.log(programFromDiskHex);
+            var splitCode = programFromDiskHex.split(" ");
+
+            for (var i = 0; i < 255; i++) {
+                _MemoryManager.updateMemoryAtLocation(0, i, "00");
+            }
+
+            for (var i = 0; i < splitCode.length - 1; i++) {
+                _MemoryManager.updateMemoryAtLocation(0, i, splitCode[i]);
+            }
+
+            var filenameToBeMoved = ""+_DefaultProgName+pidToMove;
+            if(_FileSystem.readFile(filenameToBeMoved) === "undefined"){
+                _FileSystem.createFile(filenameToBeMoved);
+                console.log("File To Be Created : " + filenameToBeMoved);
+            }else{
+                _FileSystem.deleteFile(filenameToBeMoved);
+                _FileSystem.createFile(filenameToBeMoved);
+                console.log("File To Be Created : " + filename);
+            }
+            console.log("writing file Name: " + filenameToBeMoved + " File Data: " + memDataToBeMoved);
+            _FileSystem.writeFile(filenameToBeMoved, memDataToBeMoved);
+            TSOS.Control.updateReadyQueueTable();
+        }
+
+        private HexToString(hexData){
+            var string = "";
+            for (var i = 0; i < hexData.length; i+=2){
+                string += String.fromCharCode(parseInt(hexData.substr(i, 2), 16));
+            }
+            return string;
+        }
+
+        public stringToHex(string){
+            var hexString = "";
+            for(var i = 0; i < string.length; i++){
+                hexString += string.charCodeAt(i).toString(16);
+            }
+            return hexString;
+        }
+
     }
 }

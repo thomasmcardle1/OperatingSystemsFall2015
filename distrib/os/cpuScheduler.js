@@ -36,33 +36,7 @@ var TSOS;
                     _ReadyQueue.shift();
                     _CurrPCB = _ReadyQueue[0];
                     if (_CurrPCB.location === "FS") {
-                        _CurrPCB.base = 0;
-                        _CurrPCB.limit = 255;
-                        var memDataToBeMoved = "";
-                        for (var i = 0; i < 255; i++) {
-                            memDataToBeMoved += _Memory.getMemAtLocation(i);
-                        }
-                        console.log("Data To Be Swapped: " + memDataToBeMoved);
-                        for (var i = 0; i < _ReadyQueue.length; i++) {
-                            if (_ReadyQueue[i].base === 0) {
-                                var pid = _ReadyQueue[i].pid;
-                                _ReadyQueue[i].location = "FS";
-                            }
-                        }
-                        _CurrPCB.location = "memory";
-                        var programFromDisk = _FileSystem.readFile(_DefaultProgName + pid);
-                        console.log("Program On Disk: " + programFromDisk);
-                        for (var i = 0; i < 255; i++) {
-                            _MemoryManager.updateMemoryAtLocation(0, i, "00");
-                        }
-                        var code = programFromDisk.replace(/\n/g, " ").split(" ");
-                        console.log(code);
-                        for (var i = 0; i < code.length; i++) {
-                            _MemoryManager.updateMemoryAtLocation(0, i, code[i]);
-                        }
-                        if (pidOfBase != "undefined") {
-                            _FileSystem.createFile("");
-                        }
+                        this.Swap();
                     }
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     _ReadyQueue[0].processState = "Running";
@@ -135,6 +109,67 @@ var TSOS;
                 _CurrMemBlock = _CurrPCB.baseRegister / 256;
             }
             _CPU.isExecuting = true;
+        };
+        CPUScheduler.prototype.Swap = function () {
+            var memDataToBeMoved = "";
+            for (var i = 0; i < 255; i++) {
+                memDataToBeMoved += _Memory.getMemAtLocation(i);
+                memDataToBeMoved += " ";
+            }
+            console.log("Data To Be Swapped to FS: " + memDataToBeMoved);
+            var pidToMove;
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                if (_ReadyQueue[i].base === 0) {
+                    pidToMove = _ReadyQueue[i].pid;
+                    _ReadyQueue[i].location = "FS";
+                    if (_SwappingBase >= 512) {
+                        _SwappingBase = 0;
+                    }
+                    else {
+                        _SwappingBase += 256;
+                    }
+                }
+            }
+            _CurrPCB.location = "Memory";
+            console.log("CURRENT PCB ID: " + _CurrPCB.pid);
+            var pid = _CurrPCB.pid;
+            var filename = "" + _DefaultProgName + pid;
+            var programFromDiskHex = _FileSystem.readFile(filename);
+            console.log(programFromDiskHex);
+            var splitCode = programFromDiskHex.split(" ");
+            for (var i = 0; i < 255; i++) {
+                _MemoryManager.updateMemoryAtLocation(0, i, "00");
+            }
+            for (var i = 0; i < splitCode.length - 1; i++) {
+                _MemoryManager.updateMemoryAtLocation(0, i, splitCode[i]);
+            }
+            var filenameToBeMoved = "" + _DefaultProgName + pidToMove;
+            if (_FileSystem.readFile(filenameToBeMoved) === "undefined") {
+                _FileSystem.createFile(filenameToBeMoved);
+                console.log("File To Be Created : " + filenameToBeMoved);
+            }
+            else {
+                _FileSystem.deleteFile(filenameToBeMoved);
+                _FileSystem.createFile(filenameToBeMoved);
+                console.log("File To Be Created : " + filename);
+            }
+            console.log("writing file Name: " + filenameToBeMoved + " File Data: " + memDataToBeMoved);
+            _FileSystem.writeFile(filenameToBeMoved, memDataToBeMoved);
+            TSOS.Control.updateReadyQueueTable();
+        };
+        CPUScheduler.prototype.HexToString = function (hexData) {
+            var string = "";
+            for (var i = 0; i < hexData.length; i += 2) {
+                string += String.fromCharCode(parseInt(hexData.substr(i, 2), 16));
+            }
+            return string;
+        };
+        CPUScheduler.prototype.stringToHex = function (string) {
+            var hexString = "";
+            for (var i = 0; i < string.length; i++) {
+                hexString += string.charCodeAt(i).toString(16);
+            }
+            return hexString;
         };
         return CPUScheduler;
     })();

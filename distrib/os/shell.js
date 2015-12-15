@@ -453,11 +453,12 @@ var TSOS;
                     _CurrPCB.location = "Memory";
                     _ResidentList.push(_CurrPCB);
                 }
-                else if (_CurrMemBlock > 2 || _Formatted == true) {
+                else if (_CurrMemBlock > 2 && _Formatted == true) {
                     _RunnablePIDs.push(_CurrPCB.pid);
                     _StdOut.putText("pid:" + _PID + " loaded on disk as filename:" + _DefaultProgName + _PID);
                     _StdOut.advanceLine();
                     _CurrPCB.location = "FS";
+                    _CurrPCB.base = -1;
                     _ResidentList.push(_CurrPCB);
                     var fileName = _DefaultProgName + _PID;
                     _FileSystem.createFile(fileName);

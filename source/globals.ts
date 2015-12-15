@@ -73,11 +73,12 @@ var _CurrMemBlock: number = -1;
 var _RunnablePIDs: any[] = [];
 var _RunningPID: any = null;
 
-//Hard Drive Things
+//File System Things
 var _HardDriveTable:any= null;
 var _FileSystem:any= null;
 var _Formatted:boolean=false;
 var _DefaultProgName: string = "program";
+var _SwappingBase:any = 0;
 
 //CPU SCHEDULER
 var _SchedType:any = "roundrobin";

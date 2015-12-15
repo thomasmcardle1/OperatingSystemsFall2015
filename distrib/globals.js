@@ -59,11 +59,12 @@ var _TableRow = 0;
 var _CurrMemBlock = -1;
 var _RunnablePIDs = [];
 var _RunningPID = null;
-//Hard Drive Things
+//File System Things
 var _HardDriveTable = null;
 var _FileSystem = null;
 var _Formatted = false;
 var _DefaultProgName = "program";
+var _SwappingBase = 0;
 //CPU SCHEDULER
 var _SchedType = "roundrobin";
 var _Scheduler;
