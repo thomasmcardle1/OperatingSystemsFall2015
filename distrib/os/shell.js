@@ -639,6 +639,8 @@ var TSOS;
         Shell.prototype.shellFormat = function (args) {
             console.log(_FileSystem);
             _FileSystem.initialize();
+            _StdOut.advanceLine();
+            _StdOut.putText("Format Successful");
         };
         Shell.prototype.shellSetScheduleType = function (args) {
             if (args.length == 0) {
@@ -652,7 +654,7 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Please Enter a Valid Scheduling Type:");
-                y;
+                _StdOut.advanceLine();
                 _StdOut.putText("[roundrobin, priority, fcfs]");
             }
         };
